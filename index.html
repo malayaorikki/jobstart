@@ -27,9 +27,22 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-font-smoothing: antialiased; }
+    html {
+      -webkit-font-smoothing: antialiased;
+      /* Lock the type scale to what's authored below — without this, mobile
+         browsers (Android Chrome especially) silently "boost" font sizes in
+         narrow columns, which is exactly what makes a page look like a
+         different, inconsistent scale from device to device. */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
     body { font-family: var(--font-body); background-color: var(--bg); color: var(--text); line-height: 1.55; padding: 24px 16px 60px; }
-    .container { max-width: 900px; margin: 0 auto; }
+    .container { max-width: 900px; margin: 0 auto; transition: max-width 0.2s ease; }
+    /* Widen the canvas on larger screens so dashboard-style views (like the
+       job seeker profile) have room for a real multi-column layout instead
+       of one narrow mobile-width column stretched down the page. */
+    @media (min-width: 1000px) { .container { max-width: 1000px; } }
+    @media (min-width: 1240px) { .container.wide { max-width: 1200px; } }
 
     h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
 
@@ -39,8 +52,7 @@
 
     /* Header & Navigation */
     header { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 28px; padding-top: 4px; }
-    .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-    .logo-mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); display: inline-flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 2px 6px rgba(15,118,110,0.35); }
+    .logo { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; font-style: italic; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
     .logo-text .accent-dot { color: var(--accent); }
     .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-top: 6px; }
 
@@ -123,6 +135,40 @@
 
     .hero-result { background: linear-gradient(135deg, var(--primary-dark), var(--primary) 60%, var(--primary-light)); color: white; }
 
+    /* Job Seeker Profile — desktop dashboard layout.
+       Sidebar (identity + skills + preferences + resume actions) stays put
+       on the left; the main column (job matches + skill-gap courses) scrolls
+       independently on the right so nothing has to be hunted for. */
+    .profile-dashboard { display: grid; grid-template-columns: 1fr; gap: 22px; align-items: start; }
+    @media (min-width: 1000px) { .profile-dashboard { grid-template-columns: 320px 1fr; gap: 24px; } }
+    .profile-sidebar { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+    @media (min-width: 1000px) { .profile-sidebar { position: sticky; top: 24px; } }
+    .profile-main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+    .profile-id-card { display: flex; align-items: center; gap: 14px; }
+    .profile-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; flex-shrink: 0; }
+    .profile-id-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+    .profile-id-role { font-size: 0.82rem; opacity: 0.9; }
+
+    .sidebar-section-title { font-family: var(--font-display); font-size: 0.98rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .pref-chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pref-chip { display: inline-flex; align-items: center; gap: 6px; background: #f6fbfa; border: 1px solid var(--border); color: var(--text); padding: 6px 11px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+    .pref-chip .pref-chip-label { color: var(--text-muted); font-weight: 500; }
+
+    .quick-stats-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .quick-stat { flex: 1; min-width: 130px; background: rgba(255,255,255,0.14); border-radius: var(--radius-sm); padding: 12px 14px; }
+    .quick-stat-num { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; line-height: 1.1; }
+    .quick-stat-label { font-size: 0.74rem; opacity: 0.9; margin-top: 2px; }
+
+    .jobs-list-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .jobs-list-header h3 { margin-bottom: 0; }
+    .job-cards-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 1400px) { .job-cards-grid { grid-template-columns: 1fr 1fr; } }
+    .courses-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 1400px) { .courses-grid { grid-template-columns: 1fr 1fr 1fr; } }
+    .courses-grid .list-row { margin-bottom: 0; }
+    .job-cards-grid .job-card { margin-bottom: 0; }
+
     /* Skill Meter */
     .skill-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; }
     .skill-name { font-size: 0.88rem; font-weight: 600; }
@@ -164,7 +210,7 @@
     .form-label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
     .form-input, .form-textarea {
       width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-      font-family: var(--font-body); font-size: 0.92rem; color: var(--text); background: white;
+      font-family: var(--font-body); font-size: 1rem; color: var(--text); background: white;
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(20,184,166,0.15); }
@@ -187,7 +233,7 @@
     .tag-input-row .form-input { flex: 1; }
 
     /* Portal Chooser */
-    .portal-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .portal-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
     @media (min-width: 700px) { .portal-grid { grid-template-columns: repeat(3, 1fr); } }
     .portal-card { text-align: left; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px 22px; background: white; cursor: pointer; transition: all 0.15s ease; display: flex; flex-direction: column; gap: 12px; }
     .portal-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -12px rgba(28,35,33,0.18); border-color: var(--primary-light); }
@@ -200,7 +246,8 @@
     .portal-steps { list-style: none; font-size: 0.82rem; color: var(--text); display: flex; flex-direction: column; gap: 5px; margin: 2px 0 4px; }
     .portal-steps li { display: flex; align-items: flex-start; gap: 7px; }
     .portal-steps li::before { content: "→"; color: var(--primary); font-weight: 700; flex-shrink: 0; }
-    .portal-card .btn { align-self: flex-start; margin-top: 4px; }
+    .portal-card .btn { align-self: flex-start; margin-top: auto; }
+    .portal-steps { margin-bottom: 0; }
 
     /* Dashboard sub-nav (used inside Company / Training portals) */
     .dash-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
@@ -211,6 +258,48 @@
     .dash-tab:hover { border-color: var(--primary-light); color: var(--text); }
     .dash-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
 
+    /* Company Portal — sidebar nav, kept identical in shape to the job-seeker
+       profile-sidebar so the whole app feels like one consistent product.
+       Every company sub-view (job posts, applications, candidate search,
+       post-a-job) renders inside this same shell, so switching between them
+       is one click from an always-visible menu instead of a "← Back" chain. */
+    .company-hero { background: linear-gradient(135deg, var(--accent-dark), var(--accent) 65%, #ffb199); color: white; }
+    .company-nav { display: flex; flex-direction: column; gap: 6px; }
+    .company-nav-btn {
+      display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+      padding: 11px 14px; border-radius: var(--radius-sm); border: 1.5px solid transparent;
+      background: transparent; color: var(--text); font-family: var(--font-body);
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease;
+    }
+    .company-nav-btn .nav-icon { font-size: 1rem; flex-shrink: 0; }
+    .company-nav-btn .nav-count { margin-left: auto; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); background: var(--bg); border-radius: 20px; padding: 2px 9px; }
+    .company-nav-btn:hover { background: #fff4ef; color: var(--accent-dark); }
+    .company-nav-btn.active { background: #fff1ea; border-color: var(--accent); color: var(--accent-dark); }
+    .company-nav-btn.active .nav-count { background: white; color: var(--accent-dark); }
+    .company-nav-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+    .company-btn { background: var(--accent); }
+    .company-btn:hover { background: var(--accent-dark); }
+    .company-btn-outline { border-color: var(--accent); color: var(--accent-dark); }
+    .company-btn-outline:hover { background: #fff4ef; }
+
+    /* Training Providers Portal — same sidebar-nav shell as the company
+       portal, in its own indigo accent so it's visually distinct at a glance
+       while still feeling like one consistent app. */
+    .training-hero { background: linear-gradient(135deg, #3730a3, #4338ca 60%, #6366f1); color: white; }
+    .training-nav-btn {
+      display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+      padding: 11px 14px; border-radius: var(--radius-sm); border: 1.5px solid transparent;
+      background: transparent; color: var(--text); font-family: var(--font-body);
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease;
+    }
+    .training-nav-btn .nav-icon { font-size: 1rem; flex-shrink: 0; }
+    .training-nav-btn .nav-count { margin-left: auto; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); background: var(--bg); border-radius: 20px; padding: 2px 9px; }
+    .training-nav-btn:hover { background: #eef2ff; color: #4338ca; }
+    .training-nav-btn.active { background: #eef2ff; border-color: #4338ca; color: #4338ca; }
+    .training-nav-btn.active .nav-count { background: white; color: #4338ca; }
+    .training-btn { background: #4338ca; }
+    .training-btn:hover { background: #3730a3; }
+
     /* Generic list rows (candidates, applications, courses) */
     .list-row { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; background: white; transition: all 0.15s ease; }
     .list-row:last-child { margin-bottom: 0; }
@@ -220,6 +309,9 @@
     .list-row-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
     .badge-purple { background: #eef2ff; color: #4338ca; }
     .badge-gray { background: #f1efe9; color: var(--text-muted); }
+    .badge-red { background: #fee2e2; color: #b91c1c; }
+    .status-select { padding: 8px 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 1rem; font-weight: 600; color: var(--text); background: white; cursor: pointer; }
+    .status-select:focus { outline: none; border-color: var(--primary-light); }
     .skill-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 
     .empty-state { text-align: center; padding: 30px 18px; color: var(--text-muted); font-size: 0.88rem; }
@@ -243,8 +335,7 @@
   <div class="container">
     <header class="no-print">
       <a href="#" class="logo" onclick="event.preventDefault(); goPortalChooser();">
-        <span class="logo-mark">🚀</span>
-        <span class="logo-text">JobStart<span class="accent-dot">.</span></span>
+        <span class="logo-text">JobStart</span>
       </a>
       <div class="subtitle" id="appSubtitle">Where job seekers, employers, and training providers meet</div>
     </header>
@@ -745,6 +836,28 @@
     /* Applications a company receives are pushed here when a jobseeker applies. */
     let APPLICATIONS = [];
 
+    /* Application status pipeline — single source of truth for labels, badge colors,
+       and ordering. "applied" is the default status the moment someone applies;
+       every other status is set explicitly by the employer (or, for "withdrawn",
+       by the applicant). Keeping this as one map means the status shown to the
+       applicant and the status shown to the employer can never drift apart. */
+    const APPLICATION_STATUSES = ["applied", "under_review", "shortlisted", "interview", "hired", "rejected", "withdrawn"];
+    const STATUS_META = {
+      applied:      { label: "Applied",         badge: "badge-gray"   },
+      under_review: { label: "Under Review",    badge: "badge-blue"   },
+      shortlisted:  { label: "Shortlisted",     badge: "badge-purple" },
+      interview:    { label: "Interview",       badge: "badge-amber"  },
+      hired:        { label: "Hired/Accepted",  badge: "badge-green"  },
+      rejected:     { label: "Rejected",        badge: "badge-red"    },
+      withdrawn:    { label: "Withdrawn",       badge: "badge-gray"   }
+    };
+    // Statuses an applicant can still withdraw from — once hired/rejected/withdrawn, it's final.
+    const WITHDRAWABLE_STATUSES = ["applied", "under_review", "shortlisted", "interview"];
+
+    function getMyApplication(jobId) {
+      return APPLICATIONS.find(a => a.jobId === jobId && a.candidateId === "me") || null;
+    }
+
     /* Course enrollments, pushed when a jobseeker enrolls from their results page. */
     let ENROLLMENTS = [];
 
@@ -754,7 +867,7 @@
 
     let state = {
       portal: null, // null | "seeker" | "company" | "training"
-      view: "portal", // portal | home | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyCandidates | companyApplications | trainingHome | trainingOfferCourse
+      view: "portal", // portal | home | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyCandidates | companyApplications | trainingHome | trainingGaps | trainingOfferCourse
       currentQ: 0,
       xp: 0,
       answers: {},
@@ -777,6 +890,7 @@
       },
       appliedJobs: {},
       selectedCompanyModal: null,
+      selectedCourseModal: null, // course currently open in the course-details modal
       resume: null,           // built lazily via ensureResumeDefaults()
       applyReviewJob: null,   // job currently being reviewed for application
       pendingApplyJobId: null, // job id waiting on a resume edit before submitting
@@ -819,12 +933,16 @@
 
       if (state.currentQ < QUESTIONS.length - 1) {
         state.currentQ++;
-        render();
-      } else {
-        state.view = "results";
-        upsertMyCandidateProfile();
-        render();
       }
+      render();
+    }
+
+    // Called from the "Submit Quiz" button that appears once the final
+    // question has been answered — takes the user to their results/profile.
+    function submitQuiz() {
+      state.view = "results";
+      upsertMyCandidateProfile();
+      render();
     }
 
     // Publishes/refreshes "your" profile into the shared candidate pool so the
@@ -864,6 +982,7 @@
         preferences: { setup: "Open", relocate: "Regional", salary: "₱18k-₱25k", shift: "Day", edu: "College Degree" },
         appliedJobs: {},
         selectedCompanyModal: null,
+        selectedCourseModal: null,
         resume: null,
         applyReviewJob: null,
         pendingApplyJobId: null,
@@ -889,7 +1008,12 @@
 
     function goToPortal(portal) {
       state.portal = portal;
-      if (portal === "seeker") state.view = "home";
+      if (portal === "seeker") {
+        // If this user has already completed the quiz, take them straight back
+        // to their profile/results page instead of the job-seeker landing page.
+        const hasProfile = CANDIDATE_POOL.some(c => c.id === "me");
+        state.view = hasProfile ? "results" : "home";
+      }
       else if (portal === "company") state.view = "companyHome";
       else if (portal === "training") state.view = "trainingHome";
       render();
@@ -945,8 +1069,14 @@
       return Math.min(98, Math.max(55, match));
     }
 
-    function toggleApplyJob(jobId) {
-      state.appliedJobs[jobId] = !state.appliedJobs[jobId];
+    // Withdraw an in-progress application. Only allowed while the application
+    // is still in a withdrawable state (not already hired/rejected/withdrawn).
+    function withdrawApplication(jobId) {
+      const app = getMyApplication(jobId);
+      if (app && WITHDRAWABLE_STATUSES.includes(app.status)) {
+        app.status = "withdrawn";
+      }
+      state.appliedJobs[jobId] = false;
       render();
     }
 
@@ -1134,25 +1264,48 @@ ${r.strengths.join(", ")}
         const job = JOBS.find(j => j.id === state.pendingApplyJobId);
         ensureResumeDefaults();
         upsertMyCandidateProfile();
-        APPLICATIONS.push({
-          id: "app_" + Date.now(),
-          jobId: state.pendingApplyJobId,
-          jobTitle: job ? job.title : "Job",
-          company: job ? job.company : "",
-          candidateId: "me",
-          candidateName: state.resume.name || "Anonymous Applicant",
-          candidateSkills: { ...state.skills },
-          objective: state.resume.objective,
-          status: "new",
-          appliedAt: Date.now()
-        });
+        // Re-applying after a withdrawal reactivates the existing application
+        // record (reset to "applied") instead of creating a duplicate row.
+        const existing = getMyApplication(state.pendingApplyJobId);
+        if (existing) {
+          existing.status = "applied";
+          existing.appliedAt = Date.now();
+          existing.candidateName = state.resume.name || "Anonymous Applicant";
+          existing.candidateSkills = { ...state.skills };
+          existing.objective = state.resume.objective;
+        } else {
+          APPLICATIONS.push({
+            id: "app_" + Date.now(),
+            jobId: state.pendingApplyJobId,
+            jobTitle: job ? job.title : "Job",
+            company: job ? job.company : "",
+            candidateId: "me",
+            candidateName: state.resume.name || "Anonymous Applicant",
+            candidateSkills: { ...state.skills },
+            objective: state.resume.objective,
+            status: "applied",
+            appliedAt: Date.now()
+          });
+        }
       }
       state.applyReviewJob = null;
       state.pendingApplyJobId = null;
       render();
     }
 
-    // Jobseeker enrolls in a training-provider course from their results page.
+    // Opens the course-details modal so a jobseeker can review a course before enrolling.
+    function openCourseModal(courseId) {
+      const course = COURSES.find(c => c.id === courseId);
+      state.selectedCourseModal = course || null;
+      render();
+    }
+
+    function closeCourseModal() {
+      state.selectedCourseModal = null;
+      render();
+    }
+
+    // Jobseeker enrolls in a training-provider course, normally from the course-details modal.
     function enrollInCourse(courseId) {
       if (state.enrolledCourseIds[courseId]) return;
       const course = COURSES.find(c => c.id === courseId);
@@ -1162,6 +1315,7 @@ ${r.strengths.join(", ")}
       ensureResumeDefaults();
       ENROLLMENTS.push({
         id: "enr_" + Date.now(),
+        candidateId: "me",
         courseId,
         courseTitle: course.title,
         provider: course.provider,
@@ -1171,9 +1325,78 @@ ${r.strengths.join(", ")}
       render();
     }
 
+    // Jobseeker cancels an existing enrollment — allowed at any time.
+    function cancelEnrollment(courseId) {
+      if (!state.enrolledCourseIds[courseId]) return;
+      const course = COURSES.find(c => c.id === courseId);
+      if (course) course.enrolled = Math.max(0, (course.enrolled || 0) - 1);
+      delete state.enrolledCourseIds[courseId];
+      ENROLLMENTS = ENROLLMENTS.filter(e => !(e.courseId === courseId && e.candidateId === "me"));
+      render();
+    }
+
     /* ==========================================================================
        COMPANIES PORTAL — post jobs, search candidates, review applications, hire
        ========================================================================== */
+
+    // Shared sidebar nav for every company-portal screen, so a company can
+    // jump straight between "Job posts", "Applications" and "Search
+    // candidates" without threading back through a home screen first.
+    function renderCompanyNav(activeView) {
+      const myJobs = getCompanyPostedJobs();
+      const myJobIds = myJobs.map(j => j.id);
+      const appCount = APPLICATIONS.filter(a => myJobIds.includes(a.jobId)).length;
+      const items = [
+        { view: "companyHome", icon: "💼", label: "Job posts", count: myJobs.length },
+        { view: "companyApplications", icon: "📥", label: "Applications", count: appCount },
+        { view: "companyCandidates", icon: "🔍", label: "Search candidates", count: null }
+      ];
+      return `
+        <div class="card no-print">
+          <div class="sidebar-section-title">🏢 Company Portal</div>
+          <div class="company-nav">
+            ${items.map(it => `
+              <button class="company-nav-btn ${activeView === it.view ? "active" : ""}"
+                onclick="${it.view === 'companyApplications' ? 'backToApplicationsOverview(); ' : ''}state.view='${it.view}'; render();">
+                <span class="nav-icon">${it.icon}</span>
+                <span>${it.label}</span>
+                ${it.count !== null ? `<span class="nav-count">${it.count}</span>` : ""}
+              </button>
+            `).join("")}
+          </div>
+          <hr class="company-nav-divider" />
+          <button class="btn company-btn" style="width:100%;" onclick="openPostJobForm()">+ Post a job</button>
+        </div>
+      `;
+    }
+
+    // Shared hero/stats banner for every company-portal screen — pulled out
+    // of the "Job posts" view so it renders identically no matter which tab
+    // is active, instead of vanishing when you switch tabs.
+    function renderCompanyHero() {
+      const myJobs = getCompanyPostedJobs();
+      const myJobIds = myJobs.map(j => j.id);
+      const myApps = APPLICATIONS.filter(a => myJobIds.includes(a.jobId));
+      const companyName = myJobs.length ? myJobs[myJobs.length - 1].company : "Your Company";
+      const initials = companyName.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join("");
+      return `
+        <div class="card company-hero">
+          <div class="profile-id-card" style="margin-bottom: 20px;">
+            <div class="profile-avatar">${initials || "🏢"}</div>
+            <div>
+              <div class="profile-id-name">${companyName}</div>
+              <div class="profile-id-role">Companies Portal · Hiring dashboard</div>
+            </div>
+          </div>
+          <div class="quick-stats-row">
+            <div class="quick-stat"><div class="quick-stat-num">${myJobs.length}</div><div class="quick-stat-label">Jobs posted</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${myApps.length}</div><div class="quick-stat-label">Applications received</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${myApps.filter(a => a.status === 'hired').length}</div><div class="quick-stat-label">Hired</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${CANDIDATE_POOL.length}</div><div class="quick-stat-label">Searchable candidates</div></div>
+          </div>
+        </div>
+      `;
+    }
 
     function openPostJobForm() {
       state.view = "companyPostJob";
@@ -1260,6 +1483,56 @@ ${r.strengths.join(", ")}
       render();
     }
 
+    // Shared sidebar nav for every training-portal screen, mirroring
+    // renderCompanyNav so both employer-side portals feel like the same product.
+    function renderTrainingNav(activeView) {
+      const items = [
+        { view: "trainingHome", icon: "🎓", label: "Courses offered", count: COURSES.length },
+        { view: "trainingGaps", icon: "📊", label: "Skill gap insights", count: null }
+      ];
+      return `
+        <div class="card no-print">
+          <div class="sidebar-section-title">📚 Training Portal</div>
+          <div class="company-nav">
+            ${items.map(it => `
+              <button class="training-nav-btn ${activeView === it.view ? "active" : ""}"
+                onclick="state.view='${it.view}'; render();">
+                <span class="nav-icon">${it.icon}</span>
+                <span>${it.label}</span>
+                ${it.count !== null ? `<span class="nav-count">${it.count}</span>` : ""}
+              </button>
+            `).join("")}
+          </div>
+          <hr class="company-nav-divider" />
+          <button class="btn training-btn" style="width:100%;" onclick="openOfferCourseForm()">+ Offer a course</button>
+        </div>
+      `;
+    }
+
+    // Shared hero/stats banner for every training-portal screen — pulled out
+    // of the "Courses offered" view so it stays visible no matter which tab
+    // is active.
+    function renderTrainingHero() {
+      const totalEnrollments = ENROLLMENTS.length;
+      return `
+        <div class="card training-hero">
+          <div class="profile-id-card" style="margin-bottom: 20px;">
+            <div class="profile-avatar">🎓</div>
+            <div>
+              <div class="profile-id-name">Training Providers Portal</div>
+              <div class="profile-id-role">Turn skill gaps into enrollments</div>
+            </div>
+          </div>
+          <div class="quick-stats-row">
+            <div class="quick-stat"><div class="quick-stat-num">${COURSES.length}</div><div class="quick-stat-label">Courses offered</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${totalEnrollments}</div><div class="quick-stat-label">Total enrollments</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${CANDIDATE_POOL.length}</div><div class="quick-stat-label">Jobseekers in pool</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${Object.keys(EMPTY_SKILLS).length}</div><div class="quick-stat-label">Skill categories tracked</div></div>
+          </div>
+        </div>
+      `;
+    }
+
     function submitCourseOffer() {
       const d = state.courseDraft;
       if (!d.provider.trim() || !d.title.trim()) {
@@ -1300,6 +1573,14 @@ ${r.strengths.join(", ")}
     function render() {
       const app = document.getElementById("app");
       let html = "";
+
+      // The job seeker profile (results) and the company portal both use a
+      // wider two-column sidebar layout, so they get the extra desktop
+      // breathing room; every other view keeps the tighter, centered
+      // reading width.
+      const WIDE_VIEWS = ["results", "companyHome", "companyPostJob", "companyCandidates", "companyApplications", "trainingHome", "trainingGaps", "trainingOfferCourse"];
+      const containerEl = document.querySelector(".container");
+      if (containerEl) containerEl.classList.toggle("wide", WIDE_VIEWS.includes(state.view));
 
       // 0. PORTAL CHOOSER — the three sides of the platform
       if (state.view === "portal") {
@@ -1371,9 +1652,6 @@ ${r.strengths.join(", ")}
       // 1. HOME VIEW
       else if (state.view === "home") {
         html = `
-          <div class="no-print" style="margin-bottom: 4px;">
-            <button class="btn btn-secondary" onclick="goPortalChooser()" style="padding: 8px 16px; font-size: 0.82rem;">↺ All portals</button>
-          </div>
           <div class="card hero">
             <div class="hero-eyebrow">Job Seeker Portal</div>
             <h1>Find your ideal career — one tap at a time</h1>
@@ -1488,109 +1766,165 @@ ${r.strengths.join(", ")}
 
             <div class="quiz-footer">
               <button class="btn btn-secondary" onclick="prevQuestion()" ${state.currentQ === 0 ? 'disabled' : ''}>← Back</button>
-              <span class="quiz-hint">Tap an option to continue</span>
+              ${
+                state.currentQ === QUESTIONS.length - 1
+                  ? (state.answers[state.currentQ] !== undefined
+                      ? `<button class="btn" onclick="submitQuiz()">Submit Quiz ✓</button>`
+                      : `<span class="quiz-hint">Select an option to finish</span>`)
+                  : `<span class="quiz-hint">Tap an option to continue</span>`
+              }
             </div>
           </div>
         `;
       }
 
-      // 3. RESULTS VIEW
+      // 3. RESULTS VIEW — the job seeker's profile / dashboard
       else if (state.view === "results") {
         const best = calculateTopFit();
         const { strengths, gaps } = getStrengthsAndGaps();
+        const myName = (state.resume && state.resume.name) ? state.resume.name : "";
+        const initials = myName ? myName.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join("") : "🙂";
+        const myApps = APPLICATIONS.filter(a => a.candidateId === "me");
+        const activeAppsCount = myApps.filter(a => WITHDRAWABLE_STATUSES.includes(a.status)).length;
+        const strongMatchCount = JOBS.filter(job => calcJobMatch(job) >= 75).length;
+        const enrolledCount = Object.keys(state.enrolledCourseIds).length;
 
         html = `
-          <div class="no-print" style="margin-bottom: 4px;">
-            <button class="btn btn-secondary" onclick="goPortalChooser()" style="padding: 8px 16px; font-size: 0.82rem;">↺ All portals</button>
-          </div>
+          <!-- Identity + best-fit banner -->
           <div class="card hero-result">
-            <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.9; font-weight: 700;">Your best match</div>
-            <h2 style="font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; margin: 6px 0;">${best.title}</h2>
+            <div class="profile-id-card" style="margin-bottom: 20px;">
+              <div class="profile-avatar">${initials}</div>
+              <div>
+                <div class="profile-id-name">${myName || "Your profile"}</div>
+                <div class="profile-id-role">Best fit: ${best.title}</div>
+              </div>
+            </div>
             <p style="margin-bottom: 14px; opacity: 0.95;">Estimated entry salary: <strong>${best.salary}</strong></p>
-            <div style="background: rgba(255,255,255,0.16); padding: 14px; border-radius: var(--radius-sm); font-size: 0.9rem; line-height: 1.5;">
+            <div style="background: rgba(255,255,255,0.16); padding: 14px; border-radius: var(--radius-sm); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
               💡 <strong>Next step:</strong> ${best.nextStep}
+            </div>
+            <div class="quick-stats-row">
+              <div class="quick-stat"><div class="quick-stat-num">${strongMatchCount}</div><div class="quick-stat-label">Strong job matches</div></div>
+              <div class="quick-stat"><div class="quick-stat-num">${activeAppsCount}</div><div class="quick-stat-label">Active applications</div></div>
+              <div class="quick-stat"><div class="quick-stat-num">${enrolledCount}</div><div class="quick-stat-label">Courses enrolled</div></div>
             </div>
           </div>
 
-          <div class="results-grid">
-            <!-- Skill Scoring Profile -->
-            <div class="card">
-              <h3 style="margin-bottom: 16px;">📊 Your Skill Profile</h3>
-              ${Object.entries(state.skills).map(([key, val]) => `
-                <div class="skill-row">
-                  <span class="skill-name" style="text-transform: capitalize;">${key}</span>
-                  <div class="skill-dots">
-                    ${[1,2,3,4,5].map(d => `<div class="dot ${d <= val ? 'active' : ''}"></div>`).join("")}
+          <div class="profile-dashboard">
+            <!-- SIDEBAR: skill profile, preferences, resume actions — stays in view -->
+            <div class="profile-sidebar no-print">
+              <div class="card">
+                <div class="sidebar-section-title">📊 Your Skill Profile</div>
+                ${Object.entries(state.skills).map(([key, val]) => `
+                  <div class="skill-row">
+                    <span class="skill-name" style="text-transform: capitalize;">${SKILL_LABELS[key] || key}</span>
+                    <div class="skill-dots">
+                      ${[1,2,3,4,5].map(d => `<div class="dot ${d <= val ? 'active' : ''}"></div>`).join("")}
+                    </div>
                   </div>
-                </div>
-              `).join("")}
-              <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border);" />
-              <div>
-                <p style="font-size: 0.85rem; margin-bottom: 4px;">Overall Level: <span class="badge badge-blue">${getSkillLevel(Object.values(state.skills).reduce((a,b)=>a+b,0)/8)}</span></p>
+                `).join("")}
+                <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border);" />
+                <p style="font-size: 0.85rem; margin-bottom: 6px;">Overall Level: <span class="badge badge-blue">${getSkillLevel(Object.values(state.skills).reduce((a,b)=>a+b,0)/8)}</span></p>
                 <p style="font-size: 0.85rem;">Top Strengths: <strong style="text-transform: capitalize;">${strengths.join(", ")}</strong></p>
+              </div>
+
+              <div class="card">
+                <div class="sidebar-section-title">🎯 Your Preferences</div>
+                <div class="pref-chip-list">
+                  <span class="pref-chip">🏠 <span class="pref-chip-label">Setup:</span> ${state.preferences.setup}</span>
+                  <span class="pref-chip">📍 <span class="pref-chip-label">Relocate:</span> ${state.preferences.relocate}</span>
+                  <span class="pref-chip">💰 <span class="pref-chip-label">Salary:</span> ${state.preferences.salary}</span>
+                  <span class="pref-chip">🕒 <span class="pref-chip-label">Shift:</span> ${state.preferences.shift}</span>
+                  <span class="pref-chip">🎓 <span class="pref-chip-label">Education:</span> ${state.preferences.edu}</span>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="sidebar-section-title">📄 Your Resume</div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Editable and ready to attach when you apply.</p>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <button class="btn" style="width:100%;" onclick="openResumeBuilder()">📝 Build / edit my resume</button>
+                  <button class="btn btn-secondary" style="width:100%;" onclick="ensureResumeDefaults(); state.view='visualResume'; render();">🖼️ Preview &amp; print</button>
+                </div>
               </div>
             </div>
 
-            <!-- Job Matches -->
-            <div class="card">
-              <h3 style="margin-bottom: 16px;">💼 Jobs matched to you</h3>
-              ${JOBS.map(job => {
-                const matchPct = calcJobMatch(job);
-                const isApplied = state.appliedJobs[job.id];
-                return `
-                  <div class="job-card">
-                    <div class="job-header">
-                      <div>
-                        <div class="job-title">${job.title}</div>
-                        <span class="company-link" onclick="openCompanyModal('${job.company}')">${job.company}</span>
-                      </div>
-                      <span class="badge badge-green">${matchPct}% match</span>
-                    </div>
-                    <div style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 14px;">
-                      📍 ${job.location} &nbsp;·&nbsp; 💰 ${job.salary}
-                    </div>
-                    ${isApplied
-                      ? `<button class="btn btn-secondary" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="toggleApplyJob(${job.id})">✓ Applied — tap to withdraw</button>`
-                      : `<button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="startApply(${job.id})">⚡ Apply with my resume</button>`
-                    }
-                  </div>
-                `;
-              }).join("")}
-            </div>
-          </div>
-
-          <!-- Courses to close skill gaps -->
-          <div class="card">
-            <h3 style="margin-bottom: 4px;">🎓 Close your skill gaps</h3>
-            <p class="section-hint">Courses from training providers on JobStart, matched to your lowest-scoring skills: <strong style="text-transform:capitalize;">${gaps.map(g => SKILL_LABELS[g] || g).join(", ")}</strong>.</p>
-            ${(() => {
-              const matches = COURSES.filter(c => gaps.includes(c.skill));
-              const list = matches.length ? matches : COURSES.slice(0, 3);
-              return list.map(c => `
-                <div class="list-row">
-                  <div class="list-row-top">
-                    <div>
-                      <div class="list-row-title">${c.title}</div>
-                      <div class="list-row-meta">${c.provider} · ${c.duration} · ${c.price}</div>
-                    </div>
-                    <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
-                  </div>
-                  ${state.enrolledCourseIds[c.id]
-                    ? `<button class="btn btn-secondary" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" disabled>✓ Enrolled</button>`
-                    : `<button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="enrollInCourse('${c.id}')">🎓 Enroll</button>`
-                  }
+            <!-- MAIN: job matches + skill-gap courses -->
+            <div class="profile-main">
+              <div class="card">
+                <div class="jobs-list-header">
+                  <h3>💼 Jobs matched to you</h3>
+                  <span class="section-subtitle" style="margin-bottom:0;">${JOBS.length} open roles, ranked by fit</span>
                 </div>
-              `).join("");
-            })()}
-          </div>
+                <div class="job-cards-grid">
+                  ${JOBS.map(job => {
+                    const matchPct = calcJobMatch(job);
+                    // Read the applicant's real, current pipeline status for this job — not just
+                    // a boolean "applied" flag — so the button/badge never gets stuck showing
+                    // "Applied" after the employer has moved it along (or the person withdrew).
+                    const myApp = getMyApplication(job.id);
+                    const meta = myApp ? STATUS_META[myApp.status] : null;
+                    let actionHtml;
+                    if (!myApp || myApp.status === "withdrawn") {
+                      actionHtml = `<button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="startApply(${job.id})">⚡ ${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
+                    } else if (WITHDRAWABLE_STATUSES.includes(myApp.status)) {
+                      actionHtml = `
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                          <span class="badge ${meta.badge}">${meta.label}</span>
+                          <button class="btn btn-secondary" style="flex:1; padding: 9px 12px; font-size: 0.85rem;" onclick="withdrawApplication(${job.id})">Withdraw application</button>
+                        </div>`;
+                    } else {
+                      // Final states (hired / rejected) — status-only, no withdraw action.
+                      actionHtml = `<span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:9px 12px; box-sizing:border-box; font-size:0.85rem;">${meta.label}</span>`;
+                    }
+                    return `
+                      <div class="job-card">
+                        <div class="job-header">
+                          <div>
+                            <div class="job-title">${job.title}</div>
+                            <span class="company-link" onclick="openCompanyModal('${job.company}')">${job.company}</span>
+                          </div>
+                          <span class="badge badge-green">${matchPct}% match</span>
+                        </div>
+                        <div style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 14px;">
+                          📍 ${job.location} &nbsp;·&nbsp; 💰 ${job.salary}
+                        </div>
+                        ${actionHtml}
+                      </div>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
 
-          <!-- Resume Export Options -->
-          <div class="card" style="text-align: center;">
-            <h3>📄 Turn this into a resume</h3>
-            <p style="color: var(--text-muted); margin-bottom: 18px;">Fill in your details and export a ready-to-use resume — fully editable before you apply.</p>
-            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-              <button class="btn" onclick="openResumeBuilder()">📝 Build / edit my resume</button>
-              <button class="btn btn-secondary" onclick="ensureResumeDefaults(); state.view='visualResume'; render();">🖼️ Preview & print</button>
+              <!-- Courses to close skill gaps -->
+              <div class="card">
+                <h3 style="margin-bottom: 4px;">🎓 Close your skill gaps</h3>
+                <p class="section-hint">Courses from training providers on JobStart, matched to your lowest-scoring skills: <strong style="text-transform:capitalize;">${gaps.map(g => SKILL_LABELS[g] || g).join(", ")}</strong>.</p>
+                <div class="courses-grid">
+                  ${(() => {
+                    const matches = COURSES.filter(c => gaps.includes(c.skill));
+                    const list = matches.length ? matches : COURSES.slice(0, 3);
+                    return list.map(c => `
+                      <div class="list-row">
+                        <div class="list-row-top">
+                          <div>
+                            <div class="list-row-title">${c.title}</div>
+                            <div class="list-row-meta">${c.provider} · ${c.duration} · ${c.price}</div>
+                          </div>
+                          <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
+                        </div>
+                        ${state.enrolledCourseIds[c.id]
+                          ? `<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                               <span class="badge badge-green" style="flex-shrink:0;">✓ Enrolled</span>
+                               <button class="btn btn-secondary" style="flex:1; padding: 9px 12px; font-size: 0.85rem;" onclick="openCourseModal('${c.id}')">View details</button>
+                             </div>`
+                          : `<button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="openCourseModal('${c.id}')">📘 View course details</button>`
+                        }
+                      </div>
+                    `).join("");
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
         `;
@@ -1833,54 +2167,42 @@ ${r.strengths.join(", ")}
         `;
       }
 
-      // 6. COMPANIES PORTAL — dashboard home
+      // 6. COMPANIES PORTAL — dashboard home ("Job posts" tab)
       else if (state.view === "companyHome") {
         const myJobs = getCompanyPostedJobs();
-        const myJobIds = myJobs.map(j => j.id);
-        const myApps = APPLICATIONS.filter(a => myJobIds.includes(a.jobId));
         html = `
-          <div class="no-print" style="margin-bottom: 4px;">
-            <button class="btn btn-secondary" onclick="goPortalChooser()" style="padding: 8px 16px; font-size: 0.82rem;">↺ All portals</button>
-          </div>
-          <div class="card dash-header">
-            <div>
-              <div class="dash-eyebrow">Companies Portal</div>
-              <div class="dash-title">Your hiring dashboard</div>
+          ${renderCompanyHero()}
+
+          <div class="profile-dashboard">
+            <!-- SIDEBAR: always-visible nav across every company screen -->
+            <div class="profile-sidebar">
+              ${renderCompanyNav("companyHome")}
             </div>
-            <button class="btn" onclick="openPostJobForm()">+ Post a job</button>
-          </div>
 
-          <div class="card">
-            <div class="stats-bar">
-              <div class="stat-item"><div class="stat-number">${myJobs.length}</div><div class="stat-label">Jobs posted</div></div>
-              <div class="stat-item"><div class="stat-number">${myApps.length}</div><div class="stat-label">Applications received</div></div>
-              <div class="stat-item"><div class="stat-number">${CANDIDATE_POOL.length}</div><div class="stat-label">Searchable candidates</div></div>
-              <div class="stat-item"><div class="stat-number">${myApps.filter(a => a.status === 'hired').length}</div><div class="stat-label">Hired</div></div>
-            </div>
-          </div>
-
-          <div class="dash-tabs no-print">
-            <button class="dash-tab active">Your job posts</button>
-            <button class="dash-tab" onclick="state.view='companyCandidates'; render();">🔍 Search candidates</button>
-          </div>
-
-          <div class="card">
-            <h3 style="margin-bottom: 14px;">💼 Jobs you've posted</h3>
-            ${myJobs.length ? myJobs.map(job => {
-              const count = APPLICATIONS.filter(a => a.jobId === job.id).length;
-              return `
-                <div class="list-row">
-                  <div class="list-row-top">
-                    <div>
-                      <div class="list-row-title">${job.title}</div>
-                      <div class="list-row-meta">📍 ${job.location} &nbsp;·&nbsp; 💰 ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
-                    </div>
-                    <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
-                  </div>
-                  <button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="state.view='companyApplications'; viewApplicationsForJob(${job.id});">View applications</button>
+            <!-- MAIN: jobs this company has posted -->
+            <div class="profile-main">
+              <div class="card">
+                <div class="jobs-list-header">
+                  <h3>💼 Jobs you've posted</h3>
+                  <span class="section-subtitle" style="margin-bottom:0;">${myJobs.length} active listing${myJobs.length === 1 ? "" : "s"}</span>
                 </div>
-              `;
-            }).join("") : `<div class="empty-state">You haven't posted any jobs yet. <br><button class="btn" style="margin-top:12px;" onclick="openPostJobForm()">+ Post your first job</button></div>`}
+                ${myJobs.length ? myJobs.map(job => {
+                  const count = APPLICATIONS.filter(a => a.jobId === job.id).length;
+                  return `
+                    <div class="list-row">
+                      <div class="list-row-top">
+                        <div>
+                          <div class="list-row-title">${job.title}</div>
+                          <div class="list-row-meta">📍 ${job.location} &nbsp;·&nbsp; 💰 ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
+                        </div>
+                        <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
+                      </div>
+                      <button class="btn btn-outline company-btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="state.view='companyApplications'; viewApplicationsForJob(${job.id});">View applications</button>
+                    </div>
+                  `;
+                }).join("") : `<div class="empty-state">You haven't posted any jobs yet. <br><button class="btn company-btn" style="margin-top:12px;" onclick="openPostJobForm()">+ Post your first job</button></div>`}
+              </div>
+            </div>
           </div>
         `;
       }
@@ -1889,55 +2211,61 @@ ${r.strengths.join(", ")}
       else if (state.view === "companyPostJob") {
         const d = state.jobDraft;
         html = `
-          <div class="no-print" style="margin-bottom: 16px;">
-            <button class="btn btn-secondary" onclick="state.view='companyHome'; render();">← Back to dashboard</button>
-          </div>
-          <div class="card">
-            <h3 style="margin-bottom: 4px;">📢 Post a job</h3>
-            <p class="section-hint">This job will immediately appear in jobseekers' match results.</p>
+          ${renderCompanyHero()}
 
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Company name</label>
-                <input type="text" class="form-input" placeholder="e.g. Acme Corp" value="${d.company}" oninput="state.jobDraft.company=this.value">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Job title</label>
-                <input type="text" class="form-input" placeholder="e.g. Customer Support Associate" value="${d.title}" oninput="state.jobDraft.title=this.value">
-              </div>
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderCompanyNav("companyPostJob")}
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Location</label>
-                <input type="text" class="form-input" placeholder="e.g. Taguig City / Hybrid" value="${d.location}" oninput="state.jobDraft.location=this.value">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Salary range</label>
-                <input type="text" class="form-input" placeholder="e.g. ₱22,000 - ₱28,000" value="${d.salary}" oninput="state.jobDraft.salary=this.value">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Employment type</label>
-                <select class="form-input" onchange="state.jobDraft.type=this.value">
-                  ${["Full-time","Part-time","Contract","Internship"].map(t => `<option value="${t}" ${d.type===t?"selected":""}>${t}</option>`).join("")}
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Work setup</label>
-                <select class="form-input" onchange="state.jobDraft.setup=this.value">
-                  ${["Onsite","Hybrid","Remote"].map(t => `<option value="${t}" ${d.setup===t?"selected":""}>${t}</option>`).join("")}
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Primary skill required</label>
-              <select class="form-input" onchange="state.jobDraft.reqSkill=this.value">
-                ${Object.entries(SKILL_LABELS).map(([k,v]) => `<option value="${k}" ${d.reqSkill===k?"selected":""}>${v}</option>`).join("")}
-              </select>
-            </div>
+            <div class="profile-main">
+              <div class="card">
+                <h3 style="margin-bottom: 4px;">📢 Post a job</h3>
+                <p class="section-hint">This job will immediately appear in jobseekers' match results.</p>
 
-            <button class="btn" style="width:100%; margin-top:8px;" onclick="submitJobPost()">🚀 Post job</button>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Company name</label>
+                    <input type="text" class="form-input" placeholder="e.g. Acme Corp" value="${d.company}" oninput="state.jobDraft.company=this.value">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Job title</label>
+                    <input type="text" class="form-input" placeholder="e.g. Customer Support Associate" value="${d.title}" oninput="state.jobDraft.title=this.value">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" placeholder="e.g. Taguig City / Hybrid" value="${d.location}" oninput="state.jobDraft.location=this.value">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Salary range</label>
+                    <input type="text" class="form-input" placeholder="e.g. ₱22,000 - ₱28,000" value="${d.salary}" oninput="state.jobDraft.salary=this.value">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Employment type</label>
+                    <select class="form-input" onchange="state.jobDraft.type=this.value">
+                      ${["Full-time","Part-time","Contract","Internship"].map(t => `<option value="${t}" ${d.type===t?"selected":""}>${t}</option>`).join("")}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Work setup</label>
+                    <select class="form-input" onchange="state.jobDraft.setup=this.value">
+                      ${["Onsite","Hybrid","Remote"].map(t => `<option value="${t}" ${d.setup===t?"selected":""}>${t}</option>`).join("")}
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Primary skill required</label>
+                  <select class="form-input" onchange="state.jobDraft.reqSkill=this.value">
+                    ${Object.entries(SKILL_LABELS).map(([k,v]) => `<option value="${k}" ${d.reqSkill===k?"selected":""}>${v}</option>`).join("")}
+                  </select>
+                </div>
+
+                <button class="btn company-btn" style="width:100%; margin-top:8px;" onclick="submitJobPost()">🚀 Post job</button>
+              </div>
+            </div>
           </div>
         `;
       }
@@ -1946,31 +2274,37 @@ ${r.strengths.join(", ")}
       else if (state.view === "companyCandidates") {
         const results = searchCandidatesList();
         html = `
-          <div class="no-print" style="margin-bottom: 16px;">
-            <button class="btn btn-secondary" onclick="state.view='companyHome'; render();">← Back to dashboard</button>
-          </div>
-          <div class="card">
-            <h3 style="margin-bottom: 4px;">🔍 Search qualified candidates</h3>
-            <p class="section-hint">Search by name, best-fit role, or a skill (e.g. "tech", "sales").</p>
-            <input type="text" class="form-input" placeholder="Search candidates…" value="${state.candidateQuery}" oninput="state.candidateQuery=this.value; render();" style="margin-bottom: 18px;">
-            ${results.length ? results.map(c => {
-              const topSkills = Object.entries(c.skills).sort((a,b) => b[1]-a[1]).slice(0,3);
-              return `
-                <div class="list-row">
-                  <div class="list-row-top">
-                    <div>
-                      <div class="list-row-title">${c.name}</div>
-                      <div class="list-row-meta">${c.bestFitTitle}</div>
+          ${renderCompanyHero()}
+
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderCompanyNav("companyCandidates")}
+            </div>
+            <div class="profile-main">
+              <div class="card">
+                <h3 style="margin-bottom: 4px;">🔍 Search qualified candidates</h3>
+                <p class="section-hint">Search by name, best-fit role, or a skill (e.g. "tech", "sales").</p>
+                <input type="text" class="form-input" placeholder="Search candidates…" value="${state.candidateQuery}" oninput="state.candidateQuery=this.value; render();" style="margin-bottom: 18px;">
+                ${results.length ? results.map(c => {
+                  const topSkills = Object.entries(c.skills).sort((a,b) => b[1]-a[1]).slice(0,3);
+                  return `
+                    <div class="list-row">
+                      <div class="list-row-top">
+                        <div>
+                          <div class="list-row-title">${c.name}</div>
+                          <div class="list-row-meta">${c.bestFitTitle}</div>
+                        </div>
+                        <span class="badge badge-green">${c.preferences.setup}</span>
+                      </div>
+                      <div class="skill-chip-row">
+                        ${topSkills.map(([sk,val]) => `<span class="tag-chip" style="cursor:default;">${SKILL_LABELS[sk]||sk} · ${val}/5</span>`).join("")}
+                      </div>
+                      <button class="btn btn-outline company-btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="openCandidateModal('${c.id}')">View profile</button>
                     </div>
-                    <span class="badge badge-green">${c.preferences.setup}</span>
-                  </div>
-                  <div class="skill-chip-row">
-                    ${topSkills.map(([sk,val]) => `<span class="tag-chip" style="cursor:default;">${SKILL_LABELS[sk]||sk} · ${val}/5</span>`).join("")}
-                  </div>
-                  <button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="openCandidateModal('${c.id}')">View profile</button>
-                </div>
-              `;
-            }).join("") : `<div class="empty-state">No candidates match that search.</div>`}
+                  `;
+                }).join("") : `<div class="empty-state">No candidates match that search.</div>`}
+              </div>
+            </div>
           </div>
         `;
       }
@@ -1978,11 +2312,9 @@ ${r.strengths.join(", ")}
       // 6d. COMPANIES PORTAL — applications received
       else if (state.view === "companyApplications") {
         const myJobs = getCompanyPostedJobs();
+        let mainHtml;
         if (!state.selectedApplicationsJobId) {
-          html = `
-            <div class="no-print" style="margin-bottom: 16px;">
-              <button class="btn btn-secondary" onclick="state.view='companyHome'; render();">← Back to dashboard</button>
-            </div>
+          mainHtml = `
             <div class="card">
               <h3 style="margin-bottom: 14px;">📥 Applications received</h3>
               ${myJobs.length ? myJobs.map(job => {
@@ -2001,140 +2333,207 @@ ${r.strengths.join(", ")}
           `;
         } else {
           const job = JOBS.find(j => j.id === state.selectedApplicationsJobId);
-          const apps = APPLICATIONS.filter(a => a.jobId === state.selectedApplicationsJobId);
-          html = `
+          // Most recent applications first, so new applicants aren't buried at the bottom.
+          const apps = APPLICATIONS.filter(a => a.jobId === state.selectedApplicationsJobId)
+            .sort((a, b) => b.appliedAt - a.appliedAt);
+          mainHtml = `
             <div class="no-print" style="margin-bottom: 16px;">
               <button class="btn btn-secondary" onclick="backToApplicationsOverview()">← Back to all jobs</button>
             </div>
             <div class="card">
               <h3 style="margin-bottom: 4px;">📥 Applicants for ${job ? job.title : "this job"}</h3>
-              <p class="section-hint">${apps.length} application${apps.length === 1 ? "" : "s"} received.</p>
-              ${apps.length ? apps.map(a => `
+              <p class="section-hint">${apps.length} application${apps.length === 1 ? "" : "s"} received &nbsp;·&nbsp; newest first.</p>
+              ${apps.length ? apps.map(a => {
+                const meta = STATUS_META[a.status] || STATUS_META.applied;
+                return `
                 <div class="list-row">
                   <div class="list-row-top">
                     <div>
                       <div class="list-row-title">${a.candidateName}</div>
                       <div class="list-row-meta">Applied ${new Date(a.appliedAt).toLocaleDateString()}</div>
                     </div>
-                    <span class="badge ${a.status==='hired'?'badge-green':a.status==='reviewed'?'badge-amber':'badge-gray'}">${a.status}</span>
+                    <span class="badge ${meta.badge}">${meta.label}</span>
                   </div>
                   <p style="font-size:0.86rem; margin-bottom:12px; color: var(--text);">${a.objective || ""}</p>
                   <div class="skill-chip-row">
                     ${Object.entries(a.candidateSkills).sort((x,y)=>y[1]-x[1]).slice(0,3).map(([sk,val]) => `<span class="tag-chip" style="cursor:default;">${SKILL_LABELS[sk]||sk} · ${val}/5</span>`).join("")}
                   </div>
-                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button class="btn btn-secondary" style="flex:1; padding: 9px 12px; font-size: 0.85rem;" onclick="updateApplicationStatus('${a.id}','reviewed')">👀 Mark reviewed</button>
-                    <button class="btn" style="flex:1; padding: 9px 12px; font-size: 0.85rem;" onclick="updateApplicationStatus('${a.id}','hired')">✅ Hire</button>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                    <label style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Status:
+                      <select class="status-select" onchange="updateApplicationStatus('${a.id}', this.value)">
+                        ${APPLICATION_STATUSES.filter(s => s !== "withdrawn" || a.status === "withdrawn").map(s =>
+                          `<option value="${s}" ${a.status === s ? "selected" : ""}>${STATUS_META[s].label}</option>`
+                        ).join("")}
+                      </select>
+                    </label>
                   </div>
                 </div>
-              `).join("") : `<div class="empty-state">No applications yet for this job.</div>`}
+              `;}).join("") : `<div class="empty-state">No applications yet for this job.</div>`}
             </div>
           `;
         }
-      }
-
-      // 7. TRAINING PROVIDERS PORTAL — dashboard home
-      else if (state.view === "trainingHome") {
-        const myCourses = COURSES;
-        const gaps = computeSkillGapReport();
-        const totalEnrollments = ENROLLMENTS.length;
         html = `
-          <div class="no-print" style="margin-bottom: 4px;">
-            <button class="btn btn-secondary" onclick="goPortalChooser()" style="padding: 8px 16px; font-size: 0.82rem;">↺ All portals</button>
-          </div>
-          <div class="card dash-header">
-            <div>
-              <div class="dash-eyebrow">Training Providers Portal</div>
-              <div class="dash-title">Turn skill gaps into enrollments</div>
+          ${renderCompanyHero()}
+
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderCompanyNav("companyApplications")}
             </div>
-            <button class="btn" style="background:#4338ca;" onclick="openOfferCourseForm()">+ Offer a course</button>
-          </div>
-
-          <div class="card">
-            <div class="stats-bar">
-              <div class="stat-item"><div class="stat-number">${myCourses.length}</div><div class="stat-label">Courses offered</div></div>
-              <div class="stat-item"><div class="stat-number">${totalEnrollments}</div><div class="stat-label">Total enrollments</div></div>
-              <div class="stat-item"><div class="stat-number">${CANDIDATE_POOL.length}</div><div class="stat-label">Jobseekers in pool</div></div>
+            <div class="profile-main">
+              ${mainHtml}
             </div>
-          </div>
-
-          <div class="card">
-            <h3 style="margin-bottom: 4px;">📊 Skill gaps across jobseekers</h3>
-            <p class="section-hint">Lower average score = bigger opportunity for a course that closes that gap.</p>
-            ${gaps.map(g => `
-              <div class="gap-bar-row">
-                <span class="gap-bar-label">${SKILL_LABELS[g.key] || g.key}</span>
-                <div class="gap-bar-track"><div class="gap-bar-fill" style="width:${(g.avg/5)*100}%"></div></div>
-                <span class="gap-bar-val">${g.avg.toFixed(1)} / 5</span>
-              </div>
-            `).join("")}
-          </div>
-
-          <div class="card">
-            <h3 style="margin-bottom: 14px;">🎓 Courses on JobStart</h3>
-            ${myCourses.map(c => `
-              <div class="list-row">
-                <div class="list-row-top">
-                  <div>
-                    <div class="list-row-title">${c.title}</div>
-                    <div class="list-row-meta">${c.provider} · ${c.duration} · ${c.price} · ${c.level}</div>
-                  </div>
-                  <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
-                </div>
-                <div style="font-size:0.82rem; color: var(--text-muted);">${c.enrolled} enrolled via JobStart</div>
-              </div>
-            `).join("")}
           </div>
         `;
       }
 
-      // 7b. TRAINING PROVIDERS PORTAL — offer a course
+      // 7. TRAINING PROVIDERS PORTAL — dashboard home ("Courses offered" tab)
+      else if (state.view === "trainingHome") {
+        const myCourses = COURSES;
+        html = `
+          ${renderTrainingHero()}
+
+          <div class="profile-dashboard">
+            <!-- SIDEBAR: always-visible nav across every training screen -->
+            <div class="profile-sidebar">
+              ${renderTrainingNav("trainingHome")}
+            </div>
+
+            <!-- MAIN: every course listed on JobStart -->
+            <div class="profile-main">
+              <div class="card">
+                <div class="jobs-list-header">
+                  <h3>🎓 Courses on JobStart</h3>
+                  <span class="section-subtitle" style="margin-bottom:0;">${myCourses.length} course${myCourses.length === 1 ? "" : "s"} listed</span>
+                </div>
+                ${myCourses.length ? myCourses.map(c => `
+                  <div class="list-row">
+                    <div class="list-row-top">
+                      <div>
+                        <div class="list-row-title">${c.title}</div>
+                        <div class="list-row-meta">${c.provider} · ${c.duration} · ${c.price} · ${c.level}</div>
+                      </div>
+                      <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
+                    </div>
+                    <div style="font-size:0.82rem; color: var(--text-muted);">${c.enrolled} enrolled via JobStart</div>
+                  </div>
+                `).join("") : `<div class="empty-state">No courses listed yet. <br><button class="btn training-btn" style="margin-top:12px;" onclick="openOfferCourseForm()">+ Offer your first course</button></div>`}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 7b. TRAINING PROVIDERS PORTAL — skill gap insights
+      else if (state.view === "trainingGaps") {
+        const gaps = computeSkillGapReport();
+        html = `
+          ${renderTrainingHero()}
+
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderTrainingNav("trainingGaps")}
+            </div>
+            <div class="profile-main">
+              <div class="card">
+                <h3 style="margin-bottom: 4px;">📊 Skill gaps across jobseekers</h3>
+                <p class="section-hint">Lower average score = bigger opportunity for a course that closes that gap.</p>
+                ${gaps.map(g => `
+                  <div class="gap-bar-row">
+                    <span class="gap-bar-label">${SKILL_LABELS[g.key] || g.key}</span>
+                    <div class="gap-bar-track"><div class="gap-bar-fill" style="width:${(g.avg/5)*100}%"></div></div>
+                    <span class="gap-bar-val">${g.avg.toFixed(1)} / 5</span>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 7c. TRAINING PROVIDERS PORTAL — offer a course
       else if (state.view === "trainingOfferCourse") {
         const d = state.courseDraft;
         html = `
-          <div class="no-print" style="margin-bottom: 16px;">
-            <button class="btn btn-secondary" onclick="state.view='trainingHome'; render();">← Back to dashboard</button>
+          ${renderTrainingHero()}
+
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderTrainingNav("trainingOfferCourse")}
+            </div>
+            <div class="profile-main">
+              <div class="card">
+                <h3 style="margin-bottom: 4px;">📚 Offer a course or certification</h3>
+                <p class="section-hint">This will show up as a recommendation to jobseekers whose assessment reveals this exact gap.</p>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Provider / organization name</label>
+                    <input type="text" class="form-input" placeholder="e.g. TESDA Online Program" value="${d.provider}" oninput="state.courseDraft.provider=this.value">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Course title</label>
+                    <input type="text" class="form-input" placeholder="e.g. Excel for Business Fundamentals" value="${d.title}" oninput="state.courseDraft.title=this.value">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Duration</label>
+                    <input type="text" class="form-input" placeholder="e.g. 4 weeks" value="${d.duration}" oninput="state.courseDraft.duration=this.value">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Price</label>
+                    <input type="text" class="form-input" placeholder="e.g. Free or ₱1,500" value="${d.price}" oninput="state.courseDraft.price=this.value">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Skill gap this course closes</label>
+                    <select class="form-input" onchange="state.courseDraft.skill=this.value">
+                      ${Object.entries(SKILL_LABELS).map(([k,v]) => `<option value="${k}" ${d.skill===k?"selected":""}>${v}</option>`).join("")}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Level</label>
+                    <select class="form-input" onchange="state.courseDraft.level=this.value">
+                      ${["Beginner","Intermediate","Advanced"].map(t => `<option value="${t}" ${d.level===t?"selected":""}>${t}</option>`).join("")}
+                    </select>
+                  </div>
+                </div>
+
+                <button class="btn training-btn" style="width:100%; margin-top:8px;" onclick="submitCourseOffer()">📚 Publish course</button>
+              </div>
+            </div>
           </div>
-          <div class="card">
-            <h3 style="margin-bottom: 4px;">📚 Offer a course or certification</h3>
-            <p class="section-hint">This will show up as a recommendation to jobseekers whose assessment reveals this exact gap.</p>
+        `;
+      }
 
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Provider / organization name</label>
-                <input type="text" class="form-input" placeholder="e.g. TESDA Online Program" value="${d.provider}" oninput="state.courseDraft.provider=this.value">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Course title</label>
-                <input type="text" class="form-input" placeholder="e.g. Excel for Business Fundamentals" value="${d.title}" oninput="state.courseDraft.title=this.value">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Duration</label>
-                <input type="text" class="form-input" placeholder="e.g. 4 weeks" value="${d.duration}" oninput="state.courseDraft.duration=this.value">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Price</label>
-                <input type="text" class="form-input" placeholder="e.g. Free or ₱1,500" value="${d.price}" oninput="state.courseDraft.price=this.value">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Skill gap this course closes</label>
-                <select class="form-input" onchange="state.courseDraft.skill=this.value">
-                  ${Object.entries(SKILL_LABELS).map(([k,v]) => `<option value="${k}" ${d.skill===k?"selected":""}>${v}</option>`).join("")}
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Level</label>
-                <select class="form-input" onchange="state.courseDraft.level=this.value">
-                  ${["Beginner","Intermediate","Advanced"].map(t => `<option value="${t}" ${d.level===t?"selected":""}>${t}</option>`).join("")}
-                </select>
-              </div>
-            </div>
+      // 7c. COURSE DETAILS MODAL — jobseeker reviews a course before enrolling, and can cancel anytime
+      if (state.selectedCourseModal) {
+        const c = state.selectedCourseModal;
+        const isEnrolled = !!state.enrolledCourseIds[c.id];
+        html += `
+          <div class="modal-overlay" onclick="closeCourseModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+              <button class="close-btn" onclick="closeCourseModal()" aria-label="Close">×</button>
+              <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 4px;">${c.title}</h2>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">${c.provider}</div>
 
-            <button class="btn" style="width:100%; margin-top:8px; background:#4338ca;" onclick="submitCourseOffer()">📚 Publish course</button>
+              <div style="background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;">
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Skill focus</span><span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Level</span><strong>${c.level}</strong></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Duration</span><strong>${c.duration}</strong></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Price</span><strong>${c.price}</strong></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Enrolled via JobStart</span><strong>${c.enrolled || 0}</strong></div>
+              </div>
+
+              ${isEnrolled
+                ? `<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                     <span class="badge badge-green">✓ You're enrolled</span>
+                     <button class="btn btn-secondary" style="flex:1;" onclick="cancelEnrollment('${c.id}')">Cancel enrollment</button>
+                   </div>`
+                : `<button class="btn" style="width:100%;" onclick="enrollInCourse('${c.id}')">🎓 Enroll in this course</button>`
+              }
+            </div>
           </div>
         `;
       }
