@@ -64,7 +64,7 @@
     .progress-info { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
     .progress-bar-bg { position: relative; width: 100%; height: 10px; background: var(--border); border-radius: 20px; overflow: visible; }
     .progress-bar-fill { position: relative; height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--primary), var(--primary-light)); transition: width 0.35s ease; }
-    .progress-bar-fill::after { content: "🚀"; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15)); }
+    .progress-bar-fill::after { content: ""; position: absolute; right: -1px; top: 50%; width: 12px; height: 12px; transform: translateY(-50%); background: var(--card-bg); border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
     .xp-badge { background: #fff1ea; color: var(--accent-dark); padding: 3px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.01em; }
 
     /* Hero / Home View */
@@ -96,7 +96,6 @@
     @media (min-width: 700px) { .paths-grid { grid-template-columns: repeat(2, 1fr); } }
     .path-card { display: flex; align-items: flex-start; gap: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; background: white; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; text-align: left; }
     .path-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); border-color: var(--primary-light); }
-    .path-icon { width: 38px; height: 38px; border-radius: 10px; background: #effaf9; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; }
     .path-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 3px; }
     .path-salary { font-size: 0.8rem; color: var(--text-muted); }
 
@@ -195,6 +194,28 @@
     .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(28,35,33,0.55); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(2px); }
     .modal-content { background: white; border-radius: var(--radius); max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 28px; position: relative; }
     .close-btn { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; border: none; background: #f1efe9; font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+
+    /* Minimalist row-level edit/delete icon buttons — for the small set of
+       actions where the poster manages their own listing (job posts, course
+       offers). Icon-only, muted by default, colored only on hover so they
+       don't compete with the row's primary content. */
+    .row-icon-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .row-icon-btn { width: 26px; height: 26px; border-radius: 50%; border: none; background: transparent; color: var(--text-muted); font-size: 0.85rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s ease, color 0.15s ease; }
+    .row-icon-btn:hover { background: #f1efe9; color: var(--text); }
+    .row-icon-btn.danger:hover { background: #fdecec; color: #c0392b; }
+    .row-icon-btn.confirming { width: auto; padding: 0 10px; border-radius: 13px; background: #fdecec; color: #c0392b; font-size: 0.76rem; font-weight: 700; }
+    .row-icon-btn.confirming:hover { background: #fbdada; }
+
+    /* Text-style edit/delete pair — used below a post's detail header instead
+       of the row-icon buttons, so the actions read as explicit labeled
+       controls rather than small ambiguous icons. */
+    .row-text-actions { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .row-text-btn { background: none; border: none; padding: 0; font-family: var(--font-body); font-size: 0.84rem; font-weight: 600; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+    .row-text-btn:hover { color: var(--text); }
+    .row-text-btn.danger { color: #c0392b; }
+    .row-text-btn.danger:hover { color: #a4291f; }
+    .row-text-btn.confirming { color: #a4291f; text-decoration: none; background: #fdecec; padding: 3px 10px; border-radius: 12px; }
+    .row-text-btn.confirming:hover { background: #fbdada; }
     .close-btn:hover { background: #e7e2da; }
 
     /* Visual Resume Styling (Screen & Print) */
@@ -214,6 +235,25 @@
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(20,184,166,0.15); }
+    .form-input.has-error, .form-textarea.has-error { border-color: #dc2626; }
+    .form-input.has-error:focus, .form-textarea.has-error:focus { box-shadow: 0 0 0 3px rgba(220,38,38,0.15); }
+    .field-error { color: #dc2626; font-size: 0.78rem; margin-top: 5px; }
+    /* Company portal forms focus in the accent (orange) color instead of the default teal */
+    .company-hero ~ .profile-dashboard .form-input:focus,
+    .company-hero ~ .profile-dashboard .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(251,122,87,0.18); }
+    /* Training portal forms focus in the indigo color instead of the default teal */
+    .training-hero ~ .profile-dashboard .form-input:focus,
+    .training-hero ~ .profile-dashboard .form-textarea:focus { border-color: #4338ca; box-shadow: 0 0 0 3px rgba(67,56,202,0.15); }
+    /* Company/training portals: badges, chips, and bars inside the main column default to teal —
+       rebrand anything that isn't a workflow-status color so the whole page (not just the
+       sidebar/hero/form focus states) reads as one consistent accent per portal. */
+    .company-hero ~ .profile-dashboard .badge-blue { background: #fff1ea; color: var(--accent-dark); }
+    .training-hero ~ .profile-dashboard .badge-blue { background: #eef2ff; color: #4338ca; }
+    .company-hero ~ .profile-dashboard .tag-chip { background: #fff4ef; color: var(--accent-dark); }
+    .company-hero ~ .profile-dashboard .tag-chip button { color: var(--accent-dark); }
+    .training-hero ~ .profile-dashboard .tag-chip { background: #eef2ff; color: #4338ca; }
+    .training-hero ~ .profile-dashboard .tag-chip button { color: #4338ca; }
+    .training-hero ~ .profile-dashboard .gap-bar-fill { background: linear-gradient(90deg, #4338ca, #3730a3); }
     .form-textarea { resize: vertical; min-height: 76px; line-height: 1.5; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
@@ -237,6 +277,10 @@
     @media (min-width: 700px) { .portal-grid { grid-template-columns: repeat(3, 1fr); } }
     .portal-card { text-align: left; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px 22px; background: white; cursor: pointer; transition: all 0.15s ease; display: flex; flex-direction: column; gap: 12px; }
     .portal-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -12px rgba(28,35,33,0.18); border-color: var(--primary-light); }
+    /* Each card hovers/accents in its own portal color instead of the default teal,
+       matching the "Enter as..." button below it. */
+    .portal-card.company:hover { border-color: var(--accent); }
+    .portal-card.training:hover { border-color: #4338ca; }
     .portal-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
     .portal-card.seeker .portal-icon { background: #effaf9; }
     .portal-card.company .portal-icon { background: #fff1ea; }
@@ -246,6 +290,8 @@
     .portal-steps { list-style: none; font-size: 0.82rem; color: var(--text); display: flex; flex-direction: column; gap: 5px; margin: 2px 0 4px; }
     .portal-steps li { display: flex; align-items: flex-start; gap: 7px; }
     .portal-steps li::before { content: "→"; color: var(--primary); font-weight: 700; flex-shrink: 0; }
+    .portal-card.company .portal-steps li::before { color: var(--accent); }
+    .portal-card.training .portal-steps li::before { color: #4338ca; }
     .portal-card .btn { align-self: flex-start; margin-top: auto; }
     .portal-steps { margin-bottom: 0; }
 
@@ -260,7 +306,7 @@
 
     /* Company Portal — sidebar nav, kept identical in shape to the job-seeker
        profile-sidebar so the whole app feels like one consistent product.
-       Every company sub-view (job posts, applications, candidate search,
+       Every company sub-view (job posts, applications,
        post-a-job) renders inside this same shell, so switching between them
        is one click from an always-visible menu instead of a "← Back" chain. */
     .company-hero { background: linear-gradient(135deg, var(--accent-dark), var(--accent) 65%, #ffb199); color: white; }
@@ -304,6 +350,9 @@
     .list-row { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; background: white; transition: all 0.15s ease; }
     .list-row:last-child { margin-bottom: 0; }
     .list-row:hover { border-color: var(--primary-light); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); }
+    /* Company/training portals: list rows hover in the section's own accent color */
+    .company-hero ~ .profile-dashboard .list-row:hover { border-color: var(--accent); }
+    .training-hero ~ .profile-dashboard .list-row:hover { border-color: #4338ca; }
     .list-row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
     .list-row-title { font-weight: 700; font-size: 0.98rem; }
     .list-row-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
@@ -312,6 +361,7 @@
     .badge-red { background: #fee2e2; color: #b91c1c; }
     .status-select { padding: 8px 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 1rem; font-weight: 600; color: var(--text); background: white; cursor: pointer; }
     .status-select:focus { outline: none; border-color: var(--primary-light); }
+    .company-hero ~ .profile-dashboard .status-select:focus { border-color: var(--accent); }
     .skill-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 
     .empty-state { text-align: center; padding: 30px 18px; color: var(--text-muted); font-size: 0.88rem; }
@@ -701,7 +751,7 @@
       }
     ];
 
-    const JOBS = [
+    let JOBS = [
       {
         id: 101,
         title: "Customer Support Associate",
@@ -792,7 +842,6 @@
       }
     };
 
-    const PATH_ICONS = { bpo: "📞", tech: "💻", sales: "💵", creative: "🎨", admin: "🗂️" };
 
     const SKILL_LABELS = {
       communication: "Communication", tech: "Tech / Digital", customerService: "Customer Service",
@@ -867,7 +916,7 @@
 
     let state = {
       portal: null, // null | "seeker" | "company" | "training"
-      view: "portal", // portal | home | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyCandidates | companyApplications | trainingHome | trainingGaps | trainingOfferCourse
+      view: "portal", // portal | home | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyApplications | trainingHome | trainingGaps | trainingOfferCourse
       currentQ: 0,
       xp: 0,
       answers: {},
@@ -891,18 +940,21 @@
       appliedJobs: {},
       selectedCompanyModal: null,
       selectedCourseModal: null, // course currently open in the course-details modal
+      selectedJobModal: null, // job currently open in the job-details modal
       resume: null,           // built lazily via ensureResumeDefaults()
       applyReviewJob: null,   // job currently being reviewed for application
       pendingApplyJobId: null, // job id waiting on a resume edit before submitting
 
       // --- Companies portal ---
-      jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite" },
-      candidateQuery: "",
-      selectedCandidate: null,
+      jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null },
+      jobDraftErrors: {},
       selectedApplicationsJobId: null,
+      pendingDeleteJobId: null, // job id whose delete icon is awaiting a confirming second click
 
       // --- Training Providers portal ---
-      courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "" },
+      courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null },
+      courseDraftErrors: {},
+      pendingDeleteCourseId: null, // course id whose delete icon is awaiting a confirming second click
 
       // --- Cross-portal tracking ---
       enrolledCourseIds: {}
@@ -983,14 +1035,17 @@
         appliedJobs: {},
         selectedCompanyModal: null,
         selectedCourseModal: null,
+        selectedJobModal: null,
         resume: null,
         applyReviewJob: null,
         pendingApplyJobId: null,
-        jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite" },
-        candidateQuery: "",
-        selectedCandidate: null,
+        jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null },
+        jobDraftErrors: {},
         selectedApplicationsJobId: null,
-        courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "" },
+        pendingDeleteJobId: null,
+        courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null },
+        courseDraftErrors: {},
+        pendingDeleteCourseId: null,
         enrolledCourseIds: {}
       };
       render();
@@ -1293,15 +1348,29 @@ ${r.strengths.join(", ")}
       render();
     }
 
+    // Opens the job-details modal so a jobseeker can review a role before applying.
+    function openJobModal(jobId) {
+      const job = JOBS.find(j => j.id === jobId);
+      state.selectedJobModal = job || null;
+      render();
+    }
+
+    function closeJobModal() {
+      state.selectedJobModal = null;
+      render();
+    }
+
     // Opens the course-details modal so a jobseeker can review a course before enrolling.
     function openCourseModal(courseId) {
       const course = COURSES.find(c => c.id === courseId);
       state.selectedCourseModal = course || null;
+      state.pendingDeleteCourseId = null;
       render();
     }
 
     function closeCourseModal() {
       state.selectedCourseModal = null;
+      state.pendingDeleteCourseId = null;
       render();
     }
 
@@ -1347,13 +1416,12 @@ ${r.strengths.join(", ")}
       const myJobIds = myJobs.map(j => j.id);
       const appCount = APPLICATIONS.filter(a => myJobIds.includes(a.jobId)).length;
       const items = [
-        { view: "companyHome", icon: "💼", label: "Job posts", count: myJobs.length },
-        { view: "companyApplications", icon: "📥", label: "Applications", count: appCount },
-        { view: "companyCandidates", icon: "🔍", label: "Search candidates", count: null }
+        { view: "companyHome", icon: "", label: "Job posts", count: myJobs.length },
+        { view: "companyApplications", icon: "", label: "Applications", count: appCount }
       ];
       return `
         <div class="card no-print">
-          <div class="sidebar-section-title">🏢 Company Portal</div>
+          <div class="sidebar-section-title">Company Portal</div>
           <div class="company-nav">
             ${items.map(it => `
               <button class="company-nav-btn ${activeView === it.view ? "active" : ""}"
@@ -1382,7 +1450,7 @@ ${r.strengths.join(", ")}
       return `
         <div class="card company-hero">
           <div class="profile-id-card" style="margin-bottom: 20px;">
-            <div class="profile-avatar">${initials || "🏢"}</div>
+            <div class="profile-avatar">${initials || ""}</div>
             <div>
               <div class="profile-id-name">${companyName}</div>
               <div class="profile-id-role">Companies Portal · Hiring dashboard</div>
@@ -1392,21 +1460,51 @@ ${r.strengths.join(", ")}
             <div class="quick-stat"><div class="quick-stat-num">${myJobs.length}</div><div class="quick-stat-label">Jobs posted</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${myApps.length}</div><div class="quick-stat-label">Applications received</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${myApps.filter(a => a.status === 'hired').length}</div><div class="quick-stat-label">Hired</div></div>
-            <div class="quick-stat"><div class="quick-stat-num">${CANDIDATE_POOL.length}</div><div class="quick-stat-label">Searchable candidates</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${CANDIDATE_POOL.length}</div><div class="quick-stat-label">Jobseekers in pool</div></div>
           </div>
         </div>
       `;
     }
 
-    function openPostJobForm() {
+    function openPostJobForm(jobId) {
+      state.jobDraftErrors = {};
+      if (jobId) {
+        const job = JOBS.find(j => j.id === jobId);
+        state.jobDraft = job
+          ? { company: job.company, title: job.title, location: job.location, salary: job.salary, type: job.type, reqSkill: job.reqSkill, setup: job.setup, editId: job.id }
+          : { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+      } else {
+        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+      }
       state.view = "companyPostJob";
       render();
     }
 
     function submitJobPost() {
       const d = state.jobDraft;
-      if (!d.company.trim() || !d.title.trim()) {
-        alert("Please add at least a company name and job title.");
+      const errors = {};
+      if (!d.company.trim()) errors.company = "Company name is required.";
+      if (!d.title.trim()) errors.title = "Job title is required.";
+      state.jobDraftErrors = errors;
+      if (Object.keys(errors).length) {
+        render();
+        return;
+      }
+      if (d.editId) {
+        const job = JOBS.find(j => j.id === d.editId);
+        if (job) {
+          job.title = d.title.trim();
+          job.company = d.company.trim();
+          job.location = d.location.trim() || "Philippines";
+          job.salary = d.salary.trim() || "Negotiable";
+          job.type = d.type;
+          job.reqSkill = d.reqSkill;
+          job.setup = d.setup;
+        }
+        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+        state.jobDraftErrors = {};
+        state.view = "companyHome";
+        render();
         return;
       }
       const newJob = {
@@ -1430,8 +1528,26 @@ ${r.strengths.join(", ")}
           link: "https://www.google.com/search?q=" + encodeURIComponent(newJob.company + " Careers")
         };
       }
-      state.jobDraft = { company: d.company, title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite" };
+      state.jobDraft = { company: d.company, title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+      state.jobDraftErrors = {};
       state.view = "companyHome";
+      render();
+    }
+
+    // Deletes a job post (and any applications against it) from the Companies portal.
+    // Requires two clicks: the first arms a brief inline "confirm?" state on the
+    // icon itself (no native dialog — those are blocked in sandboxed previews),
+    // the second, on the same job, actually deletes it.
+    function deleteJob(jobId) {
+      if (state.pendingDeleteJobId !== jobId) {
+        state.pendingDeleteJobId = jobId;
+        render();
+        return;
+      }
+      JOBS = JOBS.filter(j => j.id !== jobId);
+      APPLICATIONS = APPLICATIONS.filter(a => a.jobId !== jobId);
+      if (state.selectedApplicationsJobId === jobId) state.selectedApplicationsJobId = null;
+      state.pendingDeleteJobId = null;
       render();
     }
 
@@ -1439,32 +1555,15 @@ ${r.strengths.join(", ")}
       return JOBS.filter(j => j.companyPosted);
     }
 
-    function searchCandidatesList() {
-      const q = state.candidateQuery.trim().toLowerCase();
-      if (!q) return CANDIDATE_POOL;
-      return CANDIDATE_POOL.filter(c => {
-        if (c.name.toLowerCase().includes(q) || c.bestFitTitle.toLowerCase().includes(q)) return true;
-        return Object.entries(c.skills).some(([sk, val]) => val >= 3 && (SKILL_LABELS[sk] || sk).toLowerCase().includes(q));
-      });
-    }
-
-    function openCandidateModal(id) {
-      state.selectedCandidate = CANDIDATE_POOL.find(c => c.id === id) || null;
-      render();
-    }
-
-    function closeCandidateModal() {
-      state.selectedCandidate = null;
-      render();
-    }
-
     function viewApplicationsForJob(jobId) {
       state.selectedApplicationsJobId = jobId;
+      state.pendingDeleteJobId = null;
       render();
     }
 
     function backToApplicationsOverview() {
       state.selectedApplicationsJobId = null;
+      state.pendingDeleteJobId = null;
       render();
     }
 
@@ -1478,7 +1577,16 @@ ${r.strengths.join(", ")}
        TRAINING PROVIDERS PORTAL — offer courses, close skill gaps, track learners
        ========================================================================== */
 
-    function openOfferCourseForm() {
+    function openOfferCourseForm(courseId) {
+      state.courseDraftErrors = {};
+      if (courseId) {
+        const course = COURSES.find(c => c.id === courseId);
+        state.courseDraft = course
+          ? { provider: course.provider, title: course.title, skill: course.skill, level: course.level, duration: course.duration, price: course.price, editId: course.id }
+          : { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+      } else {
+        state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+      }
       state.view = "trainingOfferCourse";
       render();
     }
@@ -1487,12 +1595,12 @@ ${r.strengths.join(", ")}
     // renderCompanyNav so both employer-side portals feel like the same product.
     function renderTrainingNav(activeView) {
       const items = [
-        { view: "trainingHome", icon: "🎓", label: "Courses offered", count: COURSES.length },
-        { view: "trainingGaps", icon: "📊", label: "Skill gap insights", count: null }
+        { view: "trainingHome", icon: "", label: "Courses offered", count: COURSES.length },
+        { view: "trainingGaps", icon: "", label: "Skill gap insights", count: null }
       ];
       return `
         <div class="card no-print">
-          <div class="sidebar-section-title">📚 Training Portal</div>
+          <div class="sidebar-section-title">Training Portal</div>
           <div class="company-nav">
             ${items.map(it => `
               <button class="training-nav-btn ${activeView === it.view ? "active" : ""}"
@@ -1517,7 +1625,7 @@ ${r.strengths.join(", ")}
       return `
         <div class="card training-hero">
           <div class="profile-id-card" style="margin-bottom: 20px;">
-            <div class="profile-avatar">🎓</div>
+            <div class="profile-avatar"></div>
             <div>
               <div class="profile-id-name">Training Providers Portal</div>
               <div class="profile-id-role">Turn skill gaps into enrollments</div>
@@ -1535,8 +1643,28 @@ ${r.strengths.join(", ")}
 
     function submitCourseOffer() {
       const d = state.courseDraft;
-      if (!d.provider.trim() || !d.title.trim()) {
-        alert("Please add at least a provider name and course title.");
+      const errors = {};
+      if (!d.provider.trim()) errors.provider = "Provider name is required.";
+      if (!d.title.trim()) errors.title = "Course title is required.";
+      state.courseDraftErrors = errors;
+      if (Object.keys(errors).length) {
+        render();
+        return;
+      }
+      if (d.editId) {
+        const course = COURSES.find(c => c.id === d.editId);
+        if (course) {
+          course.provider = d.provider.trim();
+          course.title = d.title.trim();
+          course.skill = d.skill;
+          course.level = d.level;
+          course.duration = d.duration.trim() || "Self-paced";
+          course.price = d.price.trim() || "Free";
+        }
+        state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+        state.courseDraftErrors = {};
+        state.view = "trainingHome";
+        render();
         return;
       }
       COURSES.push({
@@ -1549,8 +1677,25 @@ ${r.strengths.join(", ")}
         price: d.price.trim() || "Free",
         enrolled: 0
       });
-      state.courseDraft = { provider: d.provider, title: "", skill: "communication", level: "Beginner", duration: "", price: "" };
+      state.courseDraft = { provider: d.provider, title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+      state.courseDraftErrors = {};
       state.view = "trainingHome";
+      render();
+    }
+
+    // Deletes a course offer (and any enrollments against it) from the Training Providers portal.
+    // Same two-click inline confirm pattern as deleteJob — see comment there.
+    function deleteCourse(courseId) {
+      if (state.pendingDeleteCourseId !== courseId) {
+        state.pendingDeleteCourseId = courseId;
+        render();
+        return;
+      }
+      COURSES = COURSES.filter(c => c.id !== courseId);
+      ENROLLMENTS = ENROLLMENTS.filter(e => e.courseId !== courseId);
+      delete state.enrolledCourseIds[courseId];
+      state.pendingDeleteCourseId = null;
+      if (state.selectedCourseModal && state.selectedCourseModal.id === courseId) state.selectedCourseModal = null;
       render();
     }
 
@@ -1578,7 +1723,7 @@ ${r.strengths.join(", ")}
       // wider two-column sidebar layout, so they get the extra desktop
       // breathing room; every other view keeps the tighter, centered
       // reading width.
-      const WIDE_VIEWS = ["results", "companyHome", "companyPostJob", "companyCandidates", "companyApplications", "trainingHome", "trainingGaps", "trainingOfferCourse"];
+      const WIDE_VIEWS = ["results", "companyHome", "companyPostJob", "companyApplications", "trainingHome", "trainingGaps", "trainingOfferCourse"];
       const containerEl = document.querySelector(".container");
       if (containerEl) containerEl.classList.toggle("wide", WIDE_VIEWS.includes(state.view));
 
@@ -1616,11 +1761,10 @@ ${r.strengths.join(", ")}
               </div>
               <ul class="portal-steps">
                 <li>Post open jobs</li>
-                <li>Search qualified candidates</li>
                 <li>Receive applications</li>
                 <li>Hire</li>
               </ul>
-              <button class="btn" style="background: var(--accent);">Enter as a Company</button>
+              <button class="btn company-btn">Enter as a Company</button>
             </div>
 
             <div class="portal-card training" onclick="goToPortal('training')">
@@ -1634,16 +1778,7 @@ ${r.strengths.join(", ")}
                 <li>Help users close skill gaps</li>
                 <li>Improve employability</li>
               </ul>
-              <button class="btn" style="background: #4338ca;">Enter as a Training Provider</button>
-            </div>
-          </div>
-
-          <div class="card" style="text-align:center;">
-            <div class="stats-bar">
-              <div class="stat-item"><div class="stat-number">${CANDIDATE_POOL.length}</div><div class="stat-label">Jobseeker profiles</div></div>
-              <div class="stat-item"><div class="stat-number">${JOBS.length}</div><div class="stat-label">Open roles</div></div>
-              <div class="stat-item"><div class="stat-number">${COURSES.length}</div><div class="stat-label">Courses offered</div></div>
-              <div class="stat-item"><div class="stat-number">${APPLICATIONS.length}</div><div class="stat-label">Applications sent</div></div>
+              <button class="btn training-btn">Enter as a Training Provider</button>
             </div>
           </div>
         `;
@@ -1656,12 +1791,7 @@ ${r.strengths.join(", ")}
             <div class="hero-eyebrow">Job Seeker Portal</div>
             <h1>Find your ideal career — one tap at a time</h1>
             <p>Answer 30 quick multiple-choice questions. No typing needed. We'll surface your top strengths, a realistic salary range, and job openings in the Philippines that actually fit you.</p>
-            <button class="btn" onclick="state.view='quiz'; render();">🚀 Start the quiz</button>
-            <div class="hero-meta">
-              <span>⏱️ ~5 minutes</span>
-              <span>✅ 30 questions</span>
-              <span>🎯 Personalized matches</span>
-            </div>
+            <button class="btn" onclick="state.view='quiz'; render();">Start the quiz</button>
           </div>
 
           <div class="card">
@@ -1701,7 +1831,6 @@ ${r.strengths.join(", ")}
             <div class="paths-grid">
               ${CAREER_PROFILES.map(p => `
                 <div class="path-card" onclick="state.view='quiz'; render();">
-                  <div class="path-icon">${PATH_ICONS[p.id] || "💼"}</div>
                   <div>
                     <div class="path-title">${p.title}</div>
                     <div class="path-salary">${p.salary}</div>
@@ -1725,7 +1854,7 @@ ${r.strengths.join(", ")}
             <div class="hero-eyebrow">Ready when you are</div>
             <h1 style="font-size: 1.6rem;">Your next role could be 5 minutes away</h1>
             <p>No sign-up required to see your results.</p>
-            <button class="btn" onclick="state.view='quiz'; render();">🚀 Start the quiz</button>
+            <button class="btn" onclick="state.view='quiz'; render();">Start the quiz</button>
           </div>
         `;
       }
@@ -1736,14 +1865,9 @@ ${r.strengths.join(", ")}
         const progressPct = Math.round(((state.currentQ + 1) / QUESTIONS.length) * 100);
 
         html = `
-          <div class="no-print" style="margin-bottom: 4px; display:flex; justify-content:flex-end;">
-            <button class="btn btn-secondary" onclick="state.view='home'; render();" style="padding: 8px 16px; font-size: 0.82rem;">✕ Exit quiz</button>
-          </div>
-
           <div class="progress-container">
             <div class="progress-info">
               <span>Question ${state.currentQ + 1} of ${QUESTIONS.length}</span>
-              <span class="xp-badge">⚡ ${state.xp} XP</span>
             </div>
             <div class="progress-bar-bg">
               <div class="progress-bar-fill" style="width: ${progressPct}%"></div>
@@ -1783,7 +1907,7 @@ ${r.strengths.join(", ")}
         const best = calculateTopFit();
         const { strengths, gaps } = getStrengthsAndGaps();
         const myName = (state.resume && state.resume.name) ? state.resume.name : "";
-        const initials = myName ? myName.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join("") : "🙂";
+        const initials = myName ? myName.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join("") : "";
         const myApps = APPLICATIONS.filter(a => a.candidateId === "me");
         const activeAppsCount = myApps.filter(a => WITHDRAWABLE_STATUSES.includes(a.status)).length;
         const strongMatchCount = JOBS.filter(job => calcJobMatch(job) >= 75).length;
@@ -1801,7 +1925,7 @@ ${r.strengths.join(", ")}
             </div>
             <p style="margin-bottom: 14px; opacity: 0.95;">Estimated entry salary: <strong>${best.salary}</strong></p>
             <div style="background: rgba(255,255,255,0.16); padding: 14px; border-radius: var(--radius-sm); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
-              💡 <strong>Next step:</strong> ${best.nextStep}
+              <strong>Next step:</strong> ${best.nextStep}
             </div>
             <div class="quick-stats-row">
               <div class="quick-stat"><div class="quick-stat-num">${strongMatchCount}</div><div class="quick-stat-label">Strong job matches</div></div>
@@ -1814,7 +1938,7 @@ ${r.strengths.join(", ")}
             <!-- SIDEBAR: skill profile, preferences, resume actions — stays in view -->
             <div class="profile-sidebar no-print">
               <div class="card">
-                <div class="sidebar-section-title">📊 Your Skill Profile</div>
+                <div class="sidebar-section-title">Your Skill Profile</div>
                 ${Object.entries(state.skills).map(([key, val]) => `
                   <div class="skill-row">
                     <span class="skill-name" style="text-transform: capitalize;">${SKILL_LABELS[key] || key}</span>
@@ -1829,22 +1953,22 @@ ${r.strengths.join(", ")}
               </div>
 
               <div class="card">
-                <div class="sidebar-section-title">🎯 Your Preferences</div>
+                <div class="sidebar-section-title">Your Preferences</div>
                 <div class="pref-chip-list">
-                  <span class="pref-chip">🏠 <span class="pref-chip-label">Setup:</span> ${state.preferences.setup}</span>
-                  <span class="pref-chip">📍 <span class="pref-chip-label">Relocate:</span> ${state.preferences.relocate}</span>
-                  <span class="pref-chip">💰 <span class="pref-chip-label">Salary:</span> ${state.preferences.salary}</span>
-                  <span class="pref-chip">🕒 <span class="pref-chip-label">Shift:</span> ${state.preferences.shift}</span>
-                  <span class="pref-chip">🎓 <span class="pref-chip-label">Education:</span> ${state.preferences.edu}</span>
+                  <span class="pref-chip"><span class="pref-chip-label">Setup:</span> ${state.preferences.setup}</span>
+                  <span class="pref-chip"><span class="pref-chip-label">Relocate:</span> ${state.preferences.relocate}</span>
+                  <span class="pref-chip"><span class="pref-chip-label">Salary:</span> ${state.preferences.salary}</span>
+                  <span class="pref-chip"><span class="pref-chip-label">Shift:</span> ${state.preferences.shift}</span>
+                  <span class="pref-chip"><span class="pref-chip-label">Education:</span> ${state.preferences.edu}</span>
                 </div>
               </div>
 
               <div class="card">
-                <div class="sidebar-section-title">📄 Your Resume</div>
+                <div class="sidebar-section-title">Your Resume</div>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Editable and ready to attach when you apply.</p>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                  <button class="btn" style="width:100%;" onclick="openResumeBuilder()">📝 Build / edit my resume</button>
-                  <button class="btn btn-secondary" style="width:100%;" onclick="ensureResumeDefaults(); state.view='visualResume'; render();">🖼️ Preview &amp; print</button>
+                  <button class="btn" style="width:100%;" onclick="openResumeBuilder()">Build / edit my resume</button>
+                  <button class="btn btn-secondary" style="width:100%;" onclick="ensureResumeDefaults(); state.view='visualResume'; render();">Preview &amp; print</button>
                 </div>
               </div>
             </div>
@@ -1853,7 +1977,7 @@ ${r.strengths.join(", ")}
             <div class="profile-main">
               <div class="card">
                 <div class="jobs-list-header">
-                  <h3>💼 Jobs matched to you</h3>
+                  <h3>Jobs matched to you</h3>
                   <span class="section-subtitle" style="margin-bottom:0;">${JOBS.length} open roles, ranked by fit</span>
                 </div>
                 <div class="job-cards-grid">
@@ -1866,10 +1990,10 @@ ${r.strengths.join(", ")}
                     const meta = myApp ? STATUS_META[myApp.status] : null;
                     let actionHtml;
                     if (!myApp || myApp.status === "withdrawn") {
-                      actionHtml = `<button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="startApply(${job.id})">⚡ ${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
+                      actionHtml = "";
                     } else if (WITHDRAWABLE_STATUSES.includes(myApp.status)) {
                       actionHtml = `
-                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;" onclick="event.stopPropagation();">
                           <span class="badge ${meta.badge}">${meta.label}</span>
                           <button class="btn btn-secondary" style="flex:1; padding: 9px 12px; font-size: 0.85rem;" onclick="withdrawApplication(${job.id})">Withdraw application</button>
                         </div>`;
@@ -1878,16 +2002,16 @@ ${r.strengths.join(", ")}
                       actionHtml = `<span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:9px 12px; box-sizing:border-box; font-size:0.85rem;">${meta.label}</span>`;
                     }
                     return `
-                      <div class="job-card">
+                      <div class="job-card" onclick="openJobModal(${job.id})" style="cursor:pointer;">
                         <div class="job-header">
                           <div>
                             <div class="job-title">${job.title}</div>
-                            <span class="company-link" onclick="openCompanyModal('${job.company}')">${job.company}</span>
+                            <span class="company-link" onclick="event.stopPropagation(); openCompanyModal('${job.company}')">${job.company}</span>
                           </div>
                           <span class="badge badge-green">${matchPct}% match</span>
                         </div>
-                        <div style="font-size: 0.83rem; color: var(--text-muted); margin-bottom: 14px;">
-                          📍 ${job.location} &nbsp;·&nbsp; 💰 ${job.salary}
+                        <div style="font-size: 0.83rem; color: var(--text-muted); ${actionHtml ? 'margin-bottom: 14px;' : ''}">
+                          ${job.location} &nbsp;·&nbsp; ${job.salary}
                         </div>
                         ${actionHtml}
                       </div>
@@ -1898,14 +2022,14 @@ ${r.strengths.join(", ")}
 
               <!-- Courses to close skill gaps -->
               <div class="card">
-                <h3 style="margin-bottom: 4px;">🎓 Close your skill gaps</h3>
+                <h3 style="margin-bottom: 4px;">Close your skill gaps</h3>
                 <p class="section-hint">Courses from training providers on JobStart, matched to your lowest-scoring skills: <strong style="text-transform:capitalize;">${gaps.map(g => SKILL_LABELS[g] || g).join(", ")}</strong>.</p>
                 <div class="courses-grid">
                   ${(() => {
                     const matches = COURSES.filter(c => gaps.includes(c.skill));
                     const list = matches.length ? matches : COURSES.slice(0, 3);
                     return list.map(c => `
-                      <div class="list-row">
+                      <div class="list-row" onclick="openCourseModal('${c.id}')" style="cursor:pointer;">
                         <div class="list-row-top">
                           <div>
                             <div class="list-row-title">${c.title}</div>
@@ -1914,11 +2038,8 @@ ${r.strengths.join(", ")}
                           <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
                         </div>
                         ${state.enrolledCourseIds[c.id]
-                          ? `<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                               <span class="badge badge-green" style="flex-shrink:0;">✓ Enrolled</span>
-                               <button class="btn btn-secondary" style="flex:1; padding: 9px 12px; font-size: 0.85rem;" onclick="openCourseModal('${c.id}')">View details</button>
-                             </div>`
-                          : `<button class="btn btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="openCourseModal('${c.id}')">📘 View course details</button>`
+                          ? `<span class="badge badge-green">✓ Enrolled</span>`
+                          : ""
                         }
                       </div>
                     `).join("");
@@ -1939,8 +2060,8 @@ ${r.strengths.join(", ")}
           <div class="no-print" style="margin-bottom: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
             <button class="btn btn-secondary" onclick="state.view='results'; render();">← Back to dashboard</button>
             <div style="display:flex; gap:10px;">
-              <button class="btn btn-secondary" onclick="openResumeBuilder()">✏️ Edit</button>
-              <button class="btn" onclick="window.print();">🖨️ Print / save as PDF</button>
+              <button class="btn btn-secondary" onclick="openResumeBuilder()">Edit</button>
+              <button class="btn" onclick="window.print();">Print / save as PDF</button>
             </div>
           </div>
 
@@ -2018,7 +2139,7 @@ ${r.strengths.join(", ")}
           </div>
 
           <div class="card">
-            <h3 style="margin-bottom: 4px;">📝 Build your resume</h3>
+            <h3 style="margin-bottom: 4px;">Build your resume</h3>
             <p class="section-hint">Everything here is editable. Update it any time — before applying, or later.</p>
 
             <h4 class="cv-section-title" style="margin-top:8px;">Name & Contact Information</h4>
@@ -2160,8 +2281,8 @@ ${r.strengths.join(", ")}
 
           <div class="card" style="text-align:center;">
             <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-              <button class="btn" onclick="finishResumeBuilder('save')">💾 Save resume</button>
-              <button class="btn btn-secondary" onclick="finishResumeBuilder('preview')">🖼️ Preview & print</button>
+              <button class="btn" onclick="finishResumeBuilder('save')">Save resume</button>
+              <button class="btn btn-secondary" onclick="finishResumeBuilder('preview')">Preview & print</button>
             </div>
           </div>
         `;
@@ -2183,21 +2304,20 @@ ${r.strengths.join(", ")}
             <div class="profile-main">
               <div class="card">
                 <div class="jobs-list-header">
-                  <h3>💼 Jobs you've posted</h3>
+                  <h3>Jobs you've posted</h3>
                   <span class="section-subtitle" style="margin-bottom:0;">${myJobs.length} active listing${myJobs.length === 1 ? "" : "s"}</span>
                 </div>
                 ${myJobs.length ? myJobs.map(job => {
                   const count = APPLICATIONS.filter(a => a.jobId === job.id).length;
                   return `
-                    <div class="list-row">
+                    <div class="list-row" onclick="state.view='companyApplications'; viewApplicationsForJob(${job.id});" style="cursor:pointer;">
                       <div class="list-row-top">
                         <div>
                           <div class="list-row-title">${job.title}</div>
-                          <div class="list-row-meta">📍 ${job.location} &nbsp;·&nbsp; 💰 ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
+                          <div class="list-row-meta">${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
                         </div>
                         <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
                       </div>
-                      <button class="btn btn-outline company-btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="state.view='companyApplications'; viewApplicationsForJob(${job.id});">View applications</button>
                     </div>
                   `;
                 }).join("") : `<div class="empty-state">You haven't posted any jobs yet. <br><button class="btn company-btn" style="margin-top:12px;" onclick="openPostJobForm()">+ Post your first job</button></div>`}
@@ -2210,6 +2330,7 @@ ${r.strengths.join(", ")}
       // 6b. COMPANIES PORTAL — post a job
       else if (state.view === "companyPostJob") {
         const d = state.jobDraft;
+        const errs = state.jobDraftErrors || {};
         html = `
           ${renderCompanyHero()}
 
@@ -2219,17 +2340,19 @@ ${r.strengths.join(", ")}
             </div>
             <div class="profile-main">
               <div class="card">
-                <h3 style="margin-bottom: 4px;">📢 Post a job</h3>
-                <p class="section-hint">This job will immediately appear in jobseekers' match results.</p>
+                <h3 style="margin-bottom: 4px;">${d.editId ? "Edit job listing" : "Post a job"}</h3>
+                <p class="section-hint">${d.editId ? "Update the details below — changes apply immediately." : "This job will immediately appear in jobseekers' match results."}</p>
 
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label">Company name</label>
-                    <input type="text" class="form-input" placeholder="e.g. Acme Corp" value="${d.company}" oninput="state.jobDraft.company=this.value">
+                    <label class="form-label">Company name *</label>
+                    <input type="text" class="form-input ${errs.company ? 'has-error' : ''}" placeholder="e.g. Acme Corp" value="${d.company}" oninput="state.jobDraft.company=this.value; if(state.jobDraftErrors) delete state.jobDraftErrors.company;">
+                    ${errs.company ? `<div class="field-error">${errs.company}</div>` : ""}
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Job title</label>
-                    <input type="text" class="form-input" placeholder="e.g. Customer Support Associate" value="${d.title}" oninput="state.jobDraft.title=this.value">
+                    <label class="form-label">Job title *</label>
+                    <input type="text" class="form-input ${errs.title ? 'has-error' : ''}" placeholder="e.g. Customer Support Associate" value="${d.title}" oninput="state.jobDraft.title=this.value; if(state.jobDraftErrors) delete state.jobDraftErrors.title;">
+                    ${errs.title ? `<div class="field-error">${errs.title}</div>` : ""}
                   </div>
                 </div>
                 <div class="form-row">
@@ -2263,46 +2386,7 @@ ${r.strengths.join(", ")}
                   </select>
                 </div>
 
-                <button class="btn company-btn" style="width:100%; margin-top:8px;" onclick="submitJobPost()">🚀 Post job</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      // 6c. COMPANIES PORTAL — search qualified candidates
-      else if (state.view === "companyCandidates") {
-        const results = searchCandidatesList();
-        html = `
-          ${renderCompanyHero()}
-
-          <div class="profile-dashboard">
-            <div class="profile-sidebar">
-              ${renderCompanyNav("companyCandidates")}
-            </div>
-            <div class="profile-main">
-              <div class="card">
-                <h3 style="margin-bottom: 4px;">🔍 Search qualified candidates</h3>
-                <p class="section-hint">Search by name, best-fit role, or a skill (e.g. "tech", "sales").</p>
-                <input type="text" class="form-input" placeholder="Search candidates…" value="${state.candidateQuery}" oninput="state.candidateQuery=this.value; render();" style="margin-bottom: 18px;">
-                ${results.length ? results.map(c => {
-                  const topSkills = Object.entries(c.skills).sort((a,b) => b[1]-a[1]).slice(0,3);
-                  return `
-                    <div class="list-row">
-                      <div class="list-row-top">
-                        <div>
-                          <div class="list-row-title">${c.name}</div>
-                          <div class="list-row-meta">${c.bestFitTitle}</div>
-                        </div>
-                        <span class="badge badge-green">${c.preferences.setup}</span>
-                      </div>
-                      <div class="skill-chip-row">
-                        ${topSkills.map(([sk,val]) => `<span class="tag-chip" style="cursor:default;">${SKILL_LABELS[sk]||sk} · ${val}/5</span>`).join("")}
-                      </div>
-                      <button class="btn btn-outline company-btn-outline" style="width:100%; padding: 9px 12px; font-size: 0.85rem;" onclick="openCandidateModal('${c.id}')">View profile</button>
-                    </div>
-                  `;
-                }).join("") : `<div class="empty-state">No candidates match that search.</div>`}
+                <button class="btn company-btn" style="width:100%; margin-top:8px;" onclick="submitJobPost()">${d.editId ? "Save changes" : "Post job"}</button>
               </div>
             </div>
           </div>
@@ -2316,16 +2400,18 @@ ${r.strengths.join(", ")}
         if (!state.selectedApplicationsJobId) {
           mainHtml = `
             <div class="card">
-              <h3 style="margin-bottom: 14px;">📥 Applications received</h3>
+              <h3 style="margin-bottom: 14px;">Applications received</h3>
               ${myJobs.length ? myJobs.map(job => {
                 const count = APPLICATIONS.filter(a => a.jobId === job.id).length;
                 return `
                   <div class="list-row" onclick="viewApplicationsForJob(${job.id})" style="cursor:pointer;">
                     <div class="list-row-top">
-                      <div class="list-row-title">${job.title}</div>
+                      <div>
+                        <div class="list-row-title">${job.title}</div>
+                        <div class="list-row-meta">${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
+                      </div>
                       <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
                     </div>
-                    <div class="list-row-meta">${job.location}</div>
                   </div>
                 `;
               }).join("") : `<div class="empty-state">Post a job first to start receiving applications.</div>`}
@@ -2341,7 +2427,16 @@ ${r.strengths.join(", ")}
               <button class="btn btn-secondary" onclick="backToApplicationsOverview()">← Back to all jobs</button>
             </div>
             <div class="card">
-              <h3 style="margin-bottom: 4px;">📥 Applicants for ${job ? job.title : "this job"}</h3>
+              <h3 style="margin-bottom: 4px;">Applicants for ${job ? job.title : "this job"}</h3>
+              ${job ? `
+                <div class="row-text-actions">
+                  <button class="row-text-btn" onclick="openPostJobForm(${job.id})">Edit job</button>
+                  ${state.pendingDeleteJobId === job.id
+                    ? `<button class="row-text-btn danger confirming" onclick="deleteJob(${job.id})">Click again to confirm delete</button>`
+                    : `<button class="row-text-btn danger" onclick="deleteJob(${job.id})">Delete job</button>`
+                  }
+                </div>
+              ` : ""}
               <p class="section-hint">${apps.length} application${apps.length === 1 ? "" : "s"} received &nbsp;·&nbsp; newest first.</p>
               ${apps.length ? apps.map(a => {
                 const meta = STATUS_META[a.status] || STATUS_META.applied;
@@ -2402,11 +2497,11 @@ ${r.strengths.join(", ")}
             <div class="profile-main">
               <div class="card">
                 <div class="jobs-list-header">
-                  <h3>🎓 Courses on JobStart</h3>
+                  <h3>Courses on JobStart</h3>
                   <span class="section-subtitle" style="margin-bottom:0;">${myCourses.length} course${myCourses.length === 1 ? "" : "s"} listed</span>
                 </div>
                 ${myCourses.length ? myCourses.map(c => `
-                  <div class="list-row">
+                  <div class="list-row" onclick="openCourseModal('${c.id}')" style="cursor:pointer;">
                     <div class="list-row-top">
                       <div>
                         <div class="list-row-title">${c.title}</div>
@@ -2435,7 +2530,7 @@ ${r.strengths.join(", ")}
             </div>
             <div class="profile-main">
               <div class="card">
-                <h3 style="margin-bottom: 4px;">📊 Skill gaps across jobseekers</h3>
+                <h3 style="margin-bottom: 4px;">Skill gaps across jobseekers</h3>
                 <p class="section-hint">Lower average score = bigger opportunity for a course that closes that gap.</p>
                 ${gaps.map(g => `
                   <div class="gap-bar-row">
@@ -2453,6 +2548,7 @@ ${r.strengths.join(", ")}
       // 7c. TRAINING PROVIDERS PORTAL — offer a course
       else if (state.view === "trainingOfferCourse") {
         const d = state.courseDraft;
+        const errs = state.courseDraftErrors || {};
         html = `
           ${renderTrainingHero()}
 
@@ -2462,17 +2558,19 @@ ${r.strengths.join(", ")}
             </div>
             <div class="profile-main">
               <div class="card">
-                <h3 style="margin-bottom: 4px;">📚 Offer a course or certification</h3>
-                <p class="section-hint">This will show up as a recommendation to jobseekers whose assessment reveals this exact gap.</p>
+                <h3 style="margin-bottom: 4px;">${d.editId ? "Edit course" : "Offer a course or certification"}</h3>
+                <p class="section-hint">${d.editId ? "Update the details below — changes apply immediately." : "This will show up as a recommendation to jobseekers whose assessment reveals this exact gap."}</p>
 
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label">Provider / organization name</label>
-                    <input type="text" class="form-input" placeholder="e.g. TESDA Online Program" value="${d.provider}" oninput="state.courseDraft.provider=this.value">
+                    <label class="form-label">Provider / organization name *</label>
+                    <input type="text" class="form-input ${errs.provider ? 'has-error' : ''}" placeholder="e.g. TESDA Online Program" value="${d.provider}" oninput="state.courseDraft.provider=this.value; if(state.courseDraftErrors) delete state.courseDraftErrors.provider;">
+                    ${errs.provider ? `<div class="field-error">${errs.provider}</div>` : ""}
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Course title</label>
-                    <input type="text" class="form-input" placeholder="e.g. Excel for Business Fundamentals" value="${d.title}" oninput="state.courseDraft.title=this.value">
+                    <label class="form-label">Course title *</label>
+                    <input type="text" class="form-input ${errs.title ? 'has-error' : ''}" placeholder="e.g. Excel for Business Fundamentals" value="${d.title}" oninput="state.courseDraft.title=this.value; if(state.courseDraftErrors) delete state.courseDraftErrors.title;">
+                    ${errs.title ? `<div class="field-error">${errs.title}</div>` : ""}
                   </div>
                 </div>
                 <div class="form-row">
@@ -2500,8 +2598,48 @@ ${r.strengths.join(", ")}
                   </div>
                 </div>
 
-                <button class="btn training-btn" style="width:100%; margin-top:8px;" onclick="submitCourseOffer()">📚 Publish course</button>
+                <button class="btn training-btn" style="width:100%; margin-top:8px;" onclick="submitCourseOffer()">${d.editId ? "Save changes" : "Publish course"}</button>
               </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 7b. JOB DETAILS MODAL — jobseeker reviews a role before applying, or manages an existing application
+      if (state.selectedJobModal) {
+        const job = state.selectedJobModal;
+        const matchPct = calcJobMatch(job);
+        const myApp = getMyApplication(job.id);
+        const meta = myApp ? STATUS_META[myApp.status] : null;
+        let modalActionHtml;
+        if (!myApp || myApp.status === "withdrawn") {
+          modalActionHtml = `<button class="btn" style="width:100%;" onclick="startApply(${job.id})">${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
+        } else if (WITHDRAWABLE_STATUSES.includes(myApp.status)) {
+          modalActionHtml = `
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span class="badge ${meta.badge}">${meta.label}</span>
+              <button class="btn btn-secondary" style="flex:1;" onclick="withdrawApplication(${job.id})">Withdraw application</button>
+            </div>`;
+        } else {
+          modalActionHtml = `<span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:11px 12px; box-sizing:border-box;">${meta.label}</span>`;
+        }
+        html += `
+          <div class="modal-overlay" onclick="closeJobModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+              <button class="close-btn" onclick="closeJobModal()" aria-label="Close">×</button>
+              <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 4px;">${job.title}</h2>
+              <span class="company-link" onclick="closeJobModal(); openCompanyModal('${job.company}')" style="font-size: 0.9rem;">${job.company}</span>
+
+              <div style="background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin: 18px 0;">
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Match to your profile</span><span class="badge badge-green">${matchPct}% match</span></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Location</span><strong>${job.location}</strong></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Salary</span><strong>${job.salary}</strong></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Employment type</span><strong>${job.type}</strong></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Work setup</span><strong>${job.setup}</strong></div>
+                <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Key skill</span><span class="badge badge-blue">${SKILL_LABELS[job.reqSkill] || job.reqSkill}</span></div>
+              </div>
+
+              ${modalActionHtml}
             </div>
           </div>
         `;
@@ -2511,11 +2649,21 @@ ${r.strengths.join(", ")}
       if (state.selectedCourseModal) {
         const c = state.selectedCourseModal;
         const isEnrolled = !!state.enrolledCourseIds[c.id];
+        const isProviderView = state.portal === "training";
         html += `
           <div class="modal-overlay" onclick="closeCourseModal()">
             <div class="modal-content" onclick="event.stopPropagation()">
               <button class="close-btn" onclick="closeCourseModal()" aria-label="Close">×</button>
-              <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 4px;">${c.title}</h2>
+              <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 4px; margin-right: 28px;">${c.title}</h2>
+              ${isProviderView ? `
+                <div class="row-text-actions">
+                  <button class="row-text-btn" onclick="closeCourseModal(); openOfferCourseForm('${c.id}')">Edit course</button>
+                  ${state.pendingDeleteCourseId === c.id
+                    ? `<button class="row-text-btn danger confirming" onclick="deleteCourse('${c.id}')">Click again to confirm delete</button>`
+                    : `<button class="row-text-btn danger" onclick="deleteCourse('${c.id}')">Delete course</button>`
+                  }
+                </div>
+              ` : ""}
               <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">${c.provider}</div>
 
               <div style="background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;">
@@ -2526,12 +2674,14 @@ ${r.strengths.join(", ")}
                 <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Enrolled via JobStart</span><strong>${c.enrolled || 0}</strong></div>
               </div>
 
-              ${isEnrolled
-                ? `<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                     <span class="badge badge-green">✓ You're enrolled</span>
-                     <button class="btn btn-secondary" style="flex:1;" onclick="cancelEnrollment('${c.id}')">Cancel enrollment</button>
-                   </div>`
-                : `<button class="btn" style="width:100%;" onclick="enrollInCourse('${c.id}')">🎓 Enroll in this course</button>`
+              ${isProviderView
+                ? ""
+                : isEnrolled
+                  ? `<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                       <span class="badge badge-green">✓ You're enrolled</span>
+                       <button class="btn btn-secondary" style="flex:1;" onclick="cancelEnrollment('${c.id}')">Cancel enrollment</button>
+                     </div>`
+                  : `<button class="btn" style="width:100%;" onclick="enrollInCourse('${c.id}')">Enroll in this course</button>`
               }
             </div>
           </div>
@@ -2590,40 +2740,9 @@ ${r.strengths.join(", ")}
               <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:18px;">You can edit your resume before submitting.</p>
 
               <div style="display:flex; justify-content: space-between; align-items:center; gap: 10px; flex-wrap: wrap;">
-                <button class="btn btn-secondary" onclick="editResumeFromReview()">✏️ Edit resume</button>
-                <button class="btn" onclick="confirmApply()">🚀 Submit application</button>
+                <button class="btn btn-secondary" onclick="editResumeFromReview()">Edit resume</button>
+                <button class="btn" onclick="confirmApply()">Submit application</button>
               </div>
-            </div>
-          </div>
-        `;
-      }
-
-      // 10. CANDIDATE PROFILE MODAL — companies viewing a jobseeker's profile
-      if (state.selectedCandidate) {
-        const c = state.selectedCandidate;
-        html += `
-          <div class="modal-overlay" onclick="closeCandidateModal()">
-            <div class="modal-content" onclick="event.stopPropagation()">
-              <button class="close-btn" onclick="closeCandidateModal()" aria-label="Close">×</button>
-              <h2 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 4px;">${c.name}</h2>
-              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">Best fit: <strong>${c.bestFitTitle}</strong></div>
-
-              <h4 style="font-size: 0.85rem; margin-bottom: 10px;">Skill profile</h4>
-              ${Object.entries(c.skills).map(([key, val]) => `
-                <div class="skill-row">
-                  <span class="skill-name" style="text-transform: capitalize;">${SKILL_LABELS[key] || key}</span>
-                  <div class="skill-dots">
-                    ${[1,2,3,4,5].map(d => `<div class="dot ${d <= val ? 'active' : ''}"></div>`).join("")}
-                  </div>
-                </div>
-              `).join("")}
-
-              <h4 style="font-size: 0.85rem; margin: 18px 0 10px;">Preferences</h4>
-              <p style="font-size:0.88rem; margin-bottom: 18px;">
-                📍 ${c.preferences.relocate} &nbsp;·&nbsp; 🏠 ${c.preferences.setup} &nbsp;·&nbsp; 💰 ${c.preferences.salary} &nbsp;·&nbsp; 🎓 ${c.preferences.edu}
-              </p>
-
-              <span style="font-size: 0.74rem; color: var(--text-muted);">* Full contact details are shared once this candidate applies to your job.</span>
             </div>
           </div>
         `;
