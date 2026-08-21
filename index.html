@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JobStart</title>
+  <title>JobStart | Find Your Career Match</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -346,6 +346,8 @@
     .list-row { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; background: white; transition: all 0.15s ease; }
     .list-row:last-child { margin-bottom: 0; }
     .list-row:hover { border-color: var(--primary-light); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); }
+    .list-row-locked { opacity: 0.75; }
+    .list-row-locked:hover { border-color: var(--border) !important; box-shadow: none !important; }
     /* Company/training portals: list rows hover in the section's own accent color */
     .company-hero ~ .profile-dashboard .list-row:hover { border-color: var(--accent); }
     .training-hero ~ .profile-dashboard .list-row:hover { border-color: #4338ca; }
@@ -2076,6 +2078,41 @@ ${r.strengths.join(", ")}
 
             <!-- MAIN: job matches + skill-gap courses -->
             <div class="profile-main">
+              <!-- Your Applications — full history, including withdrawn attempts and any
+                   reapplications, mirroring how the company sees your applicant record. -->
+              ${(() => {
+                const myApplications = myApps
+                  .map(app => ({ job: JOBS.find(j => j.id === app.jobId), app }))
+                  .filter(x => x.job)
+                  .sort((a, b) => b.app.appliedAt - a.app.appliedAt);
+                if (!myApplications.length) return "";
+                return `
+                  <div class="card">
+                    <div class="jobs-list-header">
+                      <h3>Your Applications</h3>
+                      <span class="section-subtitle" style="margin-bottom:0;">${myApplications.length} application${myApplications.length === 1 ? "" : "s"} · newest first</span>
+                    </div>
+                    ${myApplications.map(({ job, app }) => {
+                      const meta = STATUS_META[app.status];
+                      const isWithdrawn = app.status === "withdrawn";
+                      const canWithdraw = WITHDRAWABLE_STATUSES.includes(app.status);
+                      return `
+                        <div class="list-row ${isWithdrawn ? "list-row-locked" : ""}" ${isWithdrawn ? `title="This application was withdrawn and can no longer be opened."` : `onclick="openJobModal(${job.id})" style="cursor:pointer;"`}>
+                          <div class="list-row-top">
+                            <div>
+                              <div class="list-row-title">${job.title}</div>
+                              <div class="list-row-meta">${job.company} &nbsp;·&nbsp; Applied ${new Date(app.appliedAt).toLocaleDateString()} at ${new Date(app.appliedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}</div>
+                            </div>
+                            ${!canWithdraw ? `<span class="badge ${meta.badge}">${meta.label}</span>` : ""}
+                          </div>
+                          ${canWithdraw ? `<button class="btn btn-secondary" style="width:100%; margin-top:10px; padding: 9px 12px; font-size: 0.85rem;" onclick="event.stopPropagation(); withdrawApplication(${job.id})">Withdraw application</button>` : ""}
+                        </div>
+                      `;
+                    }).join("")}
+                  </div>
+                `;
+              })()}
+
               <div class="card">
                 <div class="jobs-list-header">
                   <h3>Jobs matched to you</h3>
@@ -2092,14 +2129,9 @@ ${r.strengths.join(", ")}
                     let actionHtml;
                     if (!myApp || myApp.status === "withdrawn") {
                       actionHtml = "";
-                    } else if (WITHDRAWABLE_STATUSES.includes(myApp.status)) {
-                      actionHtml = `
-                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;" onclick="event.stopPropagation();">
-                          <span class="badge ${meta.badge}">${meta.label}</span>
-                          <button class="btn btn-secondary" style="flex:1; padding: 9px 12px; font-size: 0.85rem;" onclick="withdrawApplication(${job.id})">Withdraw application</button>
-                        </div>`;
                     } else {
-                      // Final states (hired / rejected) — status-only, no withdraw action.
+                      // Status-only badge — withdrawing an application happens from the
+                      // Your Applications card, not from this matches grid.
                       actionHtml = `<span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:9px 12px; box-sizing:border-box; font-size:0.85rem;">${meta.label}</span>`;
                     }
                     return `
@@ -2855,15 +2887,11 @@ ${r.strengths.join(", ")}
         const meta = myApp ? STATUS_META[myApp.status] : null;
         let modalActionHtml;
         if (!myApp || myApp.status === "withdrawn") {
-          modalActionHtml = `<button class="btn" style="width:100%;" onclick="startApply(${job.id})">${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
-        } else if (WITHDRAWABLE_STATUSES.includes(myApp.status)) {
-          modalActionHtml = `
-            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-              <span class="badge ${meta.badge}">${meta.label}</span>
-              <button class="btn btn-secondary" style="flex:1;" onclick="withdrawApplication(${job.id})">Withdraw application</button>
-            </div>`;
+          modalActionHtml = `<button class="btn" style="width:100%; padding:9px 12px; font-size:0.85rem; box-sizing:border-box;" onclick="startApply(${job.id})">${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
         } else {
-          modalActionHtml = `<span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:11px 12px; box-sizing:border-box;">${meta.label}</span>`;
+          // Status-only badge — withdrawing an application happens from the
+          // Your Applications card, not from here.
+          modalActionHtml = `<span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:9px 12px; box-sizing:border-box; font-size:0.85rem;">${meta.label}</span>`;
         }
         html += `
           <div class="modal-overlay" onclick="closeJobModal()">
