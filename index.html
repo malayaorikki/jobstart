@@ -111,6 +111,11 @@
     .btn-secondary:hover { background: #e7e2da; }
     .btn-outline { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); padding: 11.5px 26px; }
     .btn-outline:hover { background: #effaf9; }
+    .btn-danger { background: transparent; border: 1.5px solid #c0392b; color: #c0392b; padding: 11.5px 26px; }
+    .btn-danger:hover { background: #c0392b; color: white; }
+    .btn-danger.confirming { background: #c0392b; color: white; border-color: #c0392b; }
+    .btn-danger.confirming:hover { background: #a93226; }
+    .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
 
     /* Quiz Options */
     .q-category { text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
@@ -205,17 +210,6 @@
     .row-icon-btn.danger:hover { background: #fdecec; color: #c0392b; }
     .row-icon-btn.confirming { width: auto; padding: 0 10px; border-radius: 13px; background: #fdecec; color: #c0392b; font-size: 0.76rem; font-weight: 700; }
     .row-icon-btn.confirming:hover { background: #fbdada; }
-
-    /* Text-style edit/delete pair — used below a post's detail header instead
-       of the row-icon buttons, so the actions read as explicit labeled
-       controls rather than small ambiguous icons. */
-    .row-text-actions { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-    .row-text-btn { background: none; border: none; padding: 0; font-family: var(--font-body); font-size: 0.84rem; font-weight: 600; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-    .row-text-btn:hover { color: var(--text); }
-    .row-text-btn.danger { color: #c0392b; }
-    .row-text-btn.danger:hover { color: #a4291f; }
-    .row-text-btn.confirming { color: #a4291f; text-decoration: none; background: #fdecec; padding: 3px 10px; border-radius: 12px; }
-    .row-text-btn.confirming:hover { background: #fbdada; }
     .close-btn:hover { background: #e7e2da; }
 
     /* Visual Resume Styling (Screen & Print) */
@@ -872,14 +866,19 @@
     ];
 
     /* Mock courses offered by training providers — seeded, plus whatever new
-       providers add through the Training Providers portal. */
+       providers add through the Training Providers portal.
+       NOTE: these six seeded courses power the jobseeker-facing "skill gap"
+       recommendations (see the COURSES.filter(... skill ...) usage below) —
+       they are NOT courses the logged-in training provider posted.
+       postedByMe:false marks them as catalog data so the Training Portal's
+       "Courses offered" view (myCourses) can exclude them. */
     let COURSES = [
-      { id: "tc1", provider: "TESDA Online Program", title: "Spoken English & Call Handling Essentials", skill: "communication", level: "Beginner", duration: "4 weeks", price: "Free", enrolled: 0 },
-      { id: "tc2", provider: "Google IT Support (Coursera)", title: "IT Support Professional Certificate", skill: "tech", level: "Beginner", duration: "3 months", price: "₱2,500", enrolled: 0 },
-      { id: "tc3", provider: "Canva Design School", title: "Social Media Graphic Design Fundamentals", skill: "creative", level: "Beginner", duration: "2 weeks", price: "Free", enrolled: 0 },
-      { id: "tc4", provider: "SalesEdge PH", title: "Consultative Selling & Objection Handling", skill: "sales", level: "Intermediate", duration: "3 weeks", price: "₱1,800", enrolled: 0 },
-      { id: "tc5", provider: "TESDA Online Program", title: "Bookkeeping & Excel for Business", skill: "numeracy", level: "Beginner", duration: "5 weeks", price: "Free", enrolled: 0 },
-      { id: "tc6", provider: "Leaders in Training PH", title: "First-Time Team Lead Bootcamp", skill: "leadership", level: "Intermediate", duration: "6 weeks", price: "₱3,200", enrolled: 0 }
+      { id: "tc1", provider: "TESDA Online Program", title: "Spoken English & Call Handling Essentials", skill: "communication", level: "Beginner", duration: "4 weeks", price: "Free", enrolled: 0, postedByMe: false },
+      { id: "tc2", provider: "Google IT Support (Coursera)", title: "IT Support Professional Certificate", skill: "tech", level: "Beginner", duration: "3 months", price: "₱2,500", enrolled: 0, postedByMe: false },
+      { id: "tc3", provider: "Canva Design School", title: "Social Media Graphic Design Fundamentals", skill: "creative", level: "Beginner", duration: "2 weeks", price: "Free", enrolled: 0, postedByMe: false },
+      { id: "tc4", provider: "SalesEdge PH", title: "Consultative Selling & Objection Handling", skill: "sales", level: "Intermediate", duration: "3 weeks", price: "₱1,800", enrolled: 0, postedByMe: false },
+      { id: "tc5", provider: "TESDA Online Program", title: "Bookkeeping & Excel for Business", skill: "numeracy", level: "Beginner", duration: "5 weeks", price: "Free", enrolled: 0, postedByMe: false },
+      { id: "tc6", provider: "Leaders in Training PH", title: "First-Time Team Lead Bootcamp", skill: "leadership", level: "Intermediate", duration: "6 weeks", price: "₱3,200", enrolled: 0, postedByMe: false }
     ];
 
     /* Applications a company receives are pushed here when a jobseeker applies. */
@@ -916,7 +915,7 @@
 
     let state = {
       portal: null, // null | "seeker" | "company" | "training"
-      view: "portal", // portal | home | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyApplications | trainingHome | trainingGaps | trainingOfferCourse
+      view: "portal", // portal | home | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyApplications | trainingHome | trainingGaps | trainingOfferCourse | trainingApplications
       currentQ: 0,
       xp: 0,
       answers: {},
@@ -955,6 +954,7 @@
       courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null },
       courseDraftErrors: {},
       pendingDeleteCourseId: null, // course id whose delete icon is awaiting a confirming second click
+      selectedApplicationsCourseId: null, // course currently drilled into on the Enrollees tab
 
       // --- Cross-portal tracking ---
       enrolledCourseIds: {}
@@ -1046,6 +1046,7 @@
         courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null },
         courseDraftErrors: {},
         pendingDeleteCourseId: null,
+        selectedApplicationsCourseId: null,
         enrolledCourseIds: {}
       };
       render();
@@ -1357,6 +1358,7 @@ ${r.strengths.join(", ")}
 
     function closeJobModal() {
       state.selectedJobModal = null;
+      state.pendingDeleteJobId = null;
       render();
     }
 
@@ -1547,7 +1549,26 @@ ${r.strengths.join(", ")}
       JOBS = JOBS.filter(j => j.id !== jobId);
       APPLICATIONS = APPLICATIONS.filter(a => a.jobId !== jobId);
       if (state.selectedApplicationsJobId === jobId) state.selectedApplicationsJobId = null;
+      if (state.selectedJobModal && state.selectedJobModal.id === jobId) state.selectedJobModal = null;
+      if (state.jobDraft && state.jobDraft.editId === jobId) {
+        state.jobDraft = { company: state.jobDraft.company, title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+        state.jobDraftErrors = {};
+        state.view = "companyHome";
+      }
       state.pendingDeleteJobId = null;
+      render();
+    }
+
+    // Closes (or reopens) a job to new applications, without deleting the post or its
+    // existing applicants. Closed jobs drop out of jobseekers' match results, but stay
+    // visible in the Companies portal and to anyone who already applied.
+    function toggleJobClosed(jobId) {
+      const job = JOBS.find(j => j.id === jobId);
+      if (!job) return;
+      job.closed = !job.closed;
+      if (state.selectedJobModal && state.selectedJobModal.id === jobId) {
+        state.selectedJobModal = job;
+      }
       render();
     }
 
@@ -1594,8 +1615,11 @@ ${r.strengths.join(", ")}
     // Shared sidebar nav for every training-portal screen, mirroring
     // renderCompanyNav so both employer-side portals feel like the same product.
     function renderTrainingNav(activeView) {
+      const myCourseIds = COURSES.filter(c => c.postedByMe).map(c => c.id);
+      const enrolleeCount = ENROLLMENTS.filter(e => myCourseIds.includes(e.courseId)).length;
       const items = [
-        { view: "trainingHome", icon: "", label: "Courses offered", count: COURSES.length },
+        { view: "trainingHome", icon: "", label: "Courses offered", count: COURSES.filter(c => c.postedByMe).length },
+        { view: "trainingApplications", icon: "", label: "Enrollees", count: enrolleeCount },
         { view: "trainingGaps", icon: "", label: "Skill gap insights", count: null }
       ];
       return `
@@ -1604,7 +1628,7 @@ ${r.strengths.join(", ")}
           <div class="company-nav">
             ${items.map(it => `
               <button class="training-nav-btn ${activeView === it.view ? "active" : ""}"
-                onclick="state.view='${it.view}'; render();">
+                onclick="${it.view === 'trainingApplications' ? 'backToTrainingApplicationsOverview(); ' : ''}state.view='${it.view}'; render();">
                 <span class="nav-icon">${it.icon}</span>
                 <span>${it.label}</span>
                 ${it.count !== null ? `<span class="nav-count">${it.count}</span>` : ""}
@@ -1632,7 +1656,7 @@ ${r.strengths.join(", ")}
             </div>
           </div>
           <div class="quick-stats-row">
-            <div class="quick-stat"><div class="quick-stat-num">${COURSES.length}</div><div class="quick-stat-label">Courses offered</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${COURSES.filter(c => c.postedByMe).length}</div><div class="quick-stat-label">Courses offered</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${totalEnrollments}</div><div class="quick-stat-label">Total enrollments</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${CANDIDATE_POOL.length}</div><div class="quick-stat-label">Jobseekers in pool</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${Object.keys(EMPTY_SKILLS).length}</div><div class="quick-stat-label">Skill categories tracked</div></div>
@@ -1675,7 +1699,8 @@ ${r.strengths.join(", ")}
         level: d.level,
         duration: d.duration.trim() || "Self-paced",
         price: d.price.trim() || "Free",
-        enrolled: 0
+        enrolled: 0,
+        postedByMe: true
       });
       state.courseDraft = { provider: d.provider, title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
       state.courseDraftErrors = {};
@@ -1696,6 +1721,38 @@ ${r.strengths.join(", ")}
       delete state.enrolledCourseIds[courseId];
       state.pendingDeleteCourseId = null;
       if (state.selectedCourseModal && state.selectedCourseModal.id === courseId) state.selectedCourseModal = null;
+      if (state.courseDraft && state.courseDraft.editId === courseId) {
+        state.courseDraft = { provider: state.courseDraft.provider, title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+        state.courseDraftErrors = {};
+        state.view = "trainingHome";
+      }
+      render();
+    }
+
+    // Marks a course as no longer being offered (or reopens it), without deleting the
+    // listing or existing enrollments. Closed courses drop out of jobseekers' skill-gap
+    // recommendations, but stay visible in the Training Providers portal and to anyone
+    // already enrolled.
+    function toggleCourseClosed(courseId) {
+      const course = COURSES.find(c => c.id === courseId);
+      if (!course) return;
+      course.closed = !course.closed;
+      if (state.selectedCourseModal && state.selectedCourseModal.id === courseId) {
+        state.selectedCourseModal = course;
+      }
+      render();
+    }
+
+    // Drills into the Enrollees tab to show enrolled learners for one course.
+    function viewEnrolleesForCourse(courseId) {
+      state.selectedApplicationsCourseId = courseId;
+      state.view = "trainingApplications";
+      render();
+    }
+
+    // Clears the drill-down so the Enrollees tab shows the course overview again.
+    function backToTrainingApplicationsOverview() {
+      state.selectedApplicationsCourseId = null;
       render();
     }
 
@@ -1723,7 +1780,7 @@ ${r.strengths.join(", ")}
       // wider two-column sidebar layout, so they get the extra desktop
       // breathing room; every other view keeps the tighter, centered
       // reading width.
-      const WIDE_VIEWS = ["results", "companyHome", "companyPostJob", "companyApplications", "trainingHome", "trainingGaps", "trainingOfferCourse"];
+      const WIDE_VIEWS = ["results", "companyHome", "companyPostJob", "companyApplications", "trainingHome", "trainingGaps", "trainingOfferCourse", "trainingApplications"];
       const containerEl = document.querySelector(".container");
       if (containerEl) containerEl.classList.toggle("wide", WIDE_VIEWS.includes(state.view));
 
@@ -1893,7 +1950,7 @@ ${r.strengths.join(", ")}
               ${
                 state.currentQ === QUESTIONS.length - 1
                   ? (state.answers[state.currentQ] !== undefined
-                      ? `<button class="btn" onclick="submitQuiz()">Submit Quiz ✓</button>`
+                      ? `<button class="btn" onclick="submitQuiz()">Submit Quiz</button>`
                       : `<span class="quiz-hint">Select an option to finish</span>`)
                   : `<span class="quiz-hint">Tap an option to continue</span>`
               }
@@ -1978,10 +2035,10 @@ ${r.strengths.join(", ")}
               <div class="card">
                 <div class="jobs-list-header">
                   <h3>Jobs matched to you</h3>
-                  <span class="section-subtitle" style="margin-bottom:0;">${JOBS.length} open roles, ranked by fit</span>
+                  <span class="section-subtitle" style="margin-bottom:0;">${JOBS.filter(job => !job.closed || getMyApplication(job.id)).length} open roles, ranked by fit</span>
                 </div>
                 <div class="job-cards-grid">
-                  ${JOBS.map(job => {
+                  ${JOBS.filter(job => !job.closed || getMyApplication(job.id)).map(job => {
                     const matchPct = calcJobMatch(job);
                     // Read the applicant's real, current pipeline status for this job — not just
                     // a boolean "applied" flag — so the button/badge never gets stuck showing
@@ -2026,8 +2083,8 @@ ${r.strengths.join(", ")}
                 <p class="section-hint">Courses from training providers on JobStart, matched to your lowest-scoring skills: <strong style="text-transform:capitalize;">${gaps.map(g => SKILL_LABELS[g] || g).join(", ")}</strong>.</p>
                 <div class="courses-grid">
                   ${(() => {
-                    const matches = COURSES.filter(c => gaps.includes(c.skill));
-                    const list = matches.length ? matches : COURSES.slice(0, 3);
+                    const matches = COURSES.filter(c => !c.closed && gaps.includes(c.skill));
+                    const list = matches.length ? matches : COURSES.filter(c => !c.closed).slice(0, 3);
                     return list.map(c => `
                       <div class="list-row" onclick="openCourseModal('${c.id}')" style="cursor:pointer;">
                         <div class="list-row-top">
@@ -2310,13 +2367,16 @@ ${r.strengths.join(", ")}
                 ${myJobs.length ? myJobs.map(job => {
                   const count = APPLICATIONS.filter(a => a.jobId === job.id).length;
                   return `
-                    <div class="list-row" onclick="state.view='companyApplications'; viewApplicationsForJob(${job.id});" style="cursor:pointer;">
+                    <div class="list-row" onclick="openJobModal(${job.id})" style="cursor:pointer;">
                       <div class="list-row-top">
                         <div>
                           <div class="list-row-title">${job.title}</div>
                           <div class="list-row-meta">${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
                         </div>
-                        <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                          ${job.closed ? `<span class="badge badge-red">Closed</span>` : ""}
+                          <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
+                        </div>
                       </div>
                     </div>
                   `;
@@ -2387,6 +2447,13 @@ ${r.strengths.join(", ")}
                 </div>
 
                 <button class="btn company-btn" style="width:100%; margin-top:8px;" onclick="submitJobPost()">${d.editId ? "Save changes" : "Post job"}</button>
+                ${d.editId ? `
+                  <div style="text-align:center; margin-top:14px;">
+                    <span onclick="deleteJob(${d.editId})" style="font-size:0.8rem; font-weight:600; cursor:pointer; color:${state.pendingDeleteJobId === d.editId ? "#c0392b" : "var(--text-muted)"}; text-decoration:underline; text-underline-offset:2px;">
+                      ${state.pendingDeleteJobId === d.editId ? "Click again to confirm delete" : "Delete this job"}
+                    </span>
+                  </div>
+                ` : ""}
               </div>
             </div>
           </div>
@@ -2410,7 +2477,10 @@ ${r.strengths.join(", ")}
                         <div class="list-row-title">${job.title}</div>
                         <div class="list-row-meta">${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
                       </div>
-                      <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
+                      <div style="display:flex; gap:6px; align-items:center;">
+                        ${job.closed ? `<span class="badge badge-red">Closed</span>` : ""}
+                        <span class="badge badge-blue">${count} applicant${count === 1 ? "" : "s"}</span>
+                      </div>
                     </div>
                   </div>
                 `;
@@ -2427,16 +2497,9 @@ ${r.strengths.join(", ")}
               <button class="btn btn-secondary" onclick="backToApplicationsOverview()">← Back to all jobs</button>
             </div>
             <div class="card">
-              <h3 style="margin-bottom: 4px;">Applicants for ${job ? job.title : "this job"}</h3>
-              ${job ? `
-                <div class="row-text-actions">
-                  <button class="row-text-btn" onclick="openPostJobForm(${job.id})">Edit job</button>
-                  ${state.pendingDeleteJobId === job.id
-                    ? `<button class="row-text-btn danger confirming" onclick="deleteJob(${job.id})">Click again to confirm delete</button>`
-                    : `<button class="row-text-btn danger" onclick="deleteJob(${job.id})">Delete job</button>`
-                  }
-                </div>
-              ` : ""}
+              <div style="margin-bottom: 4px;">
+                <h3 style="margin-bottom: 0;">Applicants for ${job ? job.title : "this job"}</h3>
+              </div>
               <p class="section-hint">${apps.length} application${apps.length === 1 ? "" : "s"} received &nbsp;·&nbsp; newest first.</p>
               ${apps.length ? apps.map(a => {
                 const meta = STATUS_META[a.status] || STATUS_META.applied;
@@ -2483,7 +2546,7 @@ ${r.strengths.join(", ")}
 
       // 7. TRAINING PROVIDERS PORTAL — dashboard home ("Courses offered" tab)
       else if (state.view === "trainingHome") {
-        const myCourses = COURSES;
+        const myCourses = COURSES.filter(c => c.postedByMe);
         html = `
           ${renderTrainingHero()}
 
@@ -2507,7 +2570,10 @@ ${r.strengths.join(", ")}
                         <div class="list-row-title">${c.title}</div>
                         <div class="list-row-meta">${c.provider} · ${c.duration} · ${c.price} · ${c.level}</div>
                       </div>
-                      <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
+                      <div style="display:flex; gap:6px; align-items:center;">
+                        ${c.closed ? `<span class="badge badge-red">Not offered</span>` : ""}
+                        <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
+                      </div>
                     </div>
                     <div style="font-size:0.82rem; color: var(--text-muted);">${c.enrolled} enrolled via JobStart</div>
                   </div>
@@ -2518,7 +2584,77 @@ ${r.strengths.join(", ")}
         `;
       }
 
-      // 7b. TRAINING PROVIDERS PORTAL — skill gap insights
+      // 7b. TRAINING PROVIDERS PORTAL — enrollees (enrolled learners) per course
+      else if (state.view === "trainingApplications") {
+        const myCourses = COURSES.filter(c => c.postedByMe);
+        let mainHtml;
+        if (!state.selectedApplicationsCourseId) {
+          mainHtml = `
+            <div class="card">
+              <div class="jobs-list-header">
+                <h3>Enrollees by course</h3>
+                <span class="section-subtitle" style="margin-bottom:0;">${myCourses.length} course${myCourses.length === 1 ? "" : "s"} listed</span>
+              </div>
+              ${myCourses.length ? myCourses.map(c => {
+                const count = ENROLLMENTS.filter(e => e.courseId === c.id).length;
+                return `
+                  <div class="list-row" onclick="viewEnrolleesForCourse('${c.id}')" style="cursor:pointer;">
+                    <div class="list-row-top">
+                      <div>
+                        <div class="list-row-title">${c.title}</div>
+                        <div class="list-row-meta">${c.provider} · ${c.duration} · ${c.price} · ${c.level}</div>
+                      </div>
+                      <span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span>
+                    </div>
+                    <div style="font-size:0.82rem; color: var(--text-muted);">${count} enrollee${count === 1 ? "" : "s"}</div>
+                  </div>
+                `;
+              }).join("") : `<div class="empty-state">Offer a course first to start receiving enrollees.</div>`}
+            </div>
+          `;
+        } else {
+          const course = COURSES.find(c => c.id === state.selectedApplicationsCourseId);
+          // Most recent enrollments first, so new enrollees aren't buried at the bottom.
+          const apps = ENROLLMENTS.filter(e => e.courseId === state.selectedApplicationsCourseId)
+            .sort((a, b) => b.enrolledAt - a.enrolledAt);
+          mainHtml = `
+            <div class="no-print" style="margin-bottom: 16px;">
+              <button class="btn btn-secondary" onclick="backToTrainingApplicationsOverview()">← Back to all courses</button>
+            </div>
+            <div class="card">
+              <div style="margin-bottom: 4px;">
+                <h3 style="margin-bottom: 0;">Enrollees for ${course ? course.title : "this course"}</h3>
+              </div>
+              <p class="section-hint">${apps.length} enrollee${apps.length === 1 ? "" : "s"} &nbsp;·&nbsp; newest first.</p>
+              ${apps.length ? apps.map(a => `
+                <div class="list-row">
+                  <div class="list-row-top">
+                    <div>
+                      <div class="list-row-title">${a.learnerName}</div>
+                      <div class="list-row-meta">Enrolled ${new Date(a.enrolledAt).toLocaleDateString()}</div>
+                    </div>
+                    <span class="badge badge-blue">Enrolled</span>
+                  </div>
+                </div>
+              `).join("") : `<div class="empty-state">No enrollees yet for this course.</div>`}
+            </div>
+          `;
+        }
+        html = `
+          ${renderTrainingHero()}
+
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderTrainingNav("trainingApplications")}
+            </div>
+            <div class="profile-main">
+              ${mainHtml}
+            </div>
+          </div>
+        `;
+      }
+
+      // 7c. TRAINING PROVIDERS PORTAL — skill gap insights
       else if (state.view === "trainingGaps") {
         const gaps = computeSkillGapReport();
         html = `
@@ -2599,15 +2735,53 @@ ${r.strengths.join(", ")}
                 </div>
 
                 <button class="btn training-btn" style="width:100%; margin-top:8px;" onclick="submitCourseOffer()">${d.editId ? "Save changes" : "Publish course"}</button>
+                ${d.editId ? `
+                  <div style="text-align:center; margin-top:14px;">
+                    <span onclick="deleteCourse('${d.editId}')" style="font-size:0.8rem; font-weight:600; cursor:pointer; color:${state.pendingDeleteCourseId === d.editId ? "#c0392b" : "var(--text-muted)"}; text-decoration:underline; text-underline-offset:2px;">
+                      ${state.pendingDeleteCourseId === d.editId ? "Click again to confirm delete" : "Delete this course"}
+                    </span>
+                  </div>
+                ` : ""}
               </div>
             </div>
           </div>
         `;
       }
 
-      // 7b. JOB DETAILS MODAL — jobseeker reviews a role before applying, or manages an existing application
+      // 7b. JOB DETAILS MODAL — jobseeker reviews a role before applying, or manages an existing application;
+      // shows an employer-facing view instead when opened from the Companies portal.
       if (state.selectedJobModal) {
         const job = state.selectedJobModal;
+        const isCompanyView = state.portal === "company";
+
+        if (isCompanyView) {
+          html += `
+            <div class="modal-overlay" onclick="closeJobModal()">
+              <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="close-btn" onclick="closeJobModal()" aria-label="Close">×</button>
+                <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 4px;">${job.title}</h2>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">${job.company}${job.closed ? ` &nbsp;·&nbsp; <span class="badge badge-red">Closed to applicants</span>` : ""}</div>
+
+                <div style="background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;">
+                  <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Location</span><strong>${job.location}</strong></div>
+                  <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Salary</span><strong>${job.salary}</strong></div>
+                  <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Employment type</span><strong>${job.type}</strong></div>
+                  <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Work setup</span><strong>${job.setup}</strong></div>
+                  <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Key skill</span><span class="badge badge-blue">${SKILL_LABELS[job.reqSkill] || job.reqSkill}</span></div>
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button class="btn btn-secondary btn-sm" onclick="closeJobModal(); state.view='companyApplications'; viewApplicationsForJob(${job.id})">View applicants</button>
+                  <button class="btn btn-secondary btn-sm" onclick="closeJobModal(); openPostJobForm(${job.id})">Edit job</button>
+                  ${job.closed
+                    ? `<button class="btn btn-secondary btn-sm" onclick="toggleJobClosed(${job.id})">Reopen job</button>`
+                    : `<button class="btn btn-danger btn-sm" onclick="toggleJobClosed(${job.id})">Close application</button>`
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
         const matchPct = calcJobMatch(job);
         const myApp = getMyApplication(job.id);
         const meta = myApp ? STATUS_META[myApp.status] : null;
@@ -2643,6 +2817,7 @@ ${r.strengths.join(", ")}
             </div>
           </div>
         `;
+        }
       }
 
       // 7c. COURSE DETAILS MODAL — jobseeker reviews a course before enrolling, and can cancel anytime
@@ -2654,17 +2829,8 @@ ${r.strengths.join(", ")}
           <div class="modal-overlay" onclick="closeCourseModal()">
             <div class="modal-content" onclick="event.stopPropagation()">
               <button class="close-btn" onclick="closeCourseModal()" aria-label="Close">×</button>
-              <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 4px; margin-right: 28px;">${c.title}</h2>
-              ${isProviderView ? `
-                <div class="row-text-actions">
-                  <button class="row-text-btn" onclick="closeCourseModal(); openOfferCourseForm('${c.id}')">Edit course</button>
-                  ${state.pendingDeleteCourseId === c.id
-                    ? `<button class="row-text-btn danger confirming" onclick="deleteCourse('${c.id}')">Click again to confirm delete</button>`
-                    : `<button class="row-text-btn danger" onclick="deleteCourse('${c.id}')">Delete course</button>`
-                  }
-                </div>
-              ` : ""}
-              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">${c.provider}</div>
+              <h2 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark); margin-bottom: 4px;">${c.title}</h2>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">${c.provider}${c.closed ? ` &nbsp;·&nbsp; <span class="badge badge-red">Not currently offered</span>` : ""}</div>
 
               <div style="background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;">
                 <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Skill focus</span><span class="badge badge-purple">${SKILL_LABELS[c.skill] || c.skill}</span></div>
@@ -2674,9 +2840,16 @@ ${r.strengths.join(", ")}
                 <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Enrolled via JobStart</span><strong>${c.enrolled || 0}</strong></div>
               </div>
 
-              ${isProviderView
-                ? ""
-                : isEnrolled
+              ${isProviderView ? `
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button class="btn btn-secondary btn-sm" onclick="closeCourseModal(); viewEnrolleesForCourse('${c.id}')">View enrollees</button>
+                  <button class="btn btn-secondary btn-sm" onclick="closeCourseModal(); openOfferCourseForm('${c.id}')">Edit course</button>
+                  ${c.closed
+                    ? `<button class="btn btn-secondary btn-sm" onclick="toggleCourseClosed('${c.id}')">Reopen course</button>`
+                    : `<button class="btn btn-danger btn-sm" onclick="toggleCourseClosed('${c.id}')">Close course</button>`
+                  }
+                </div>
+              ` : isEnrolled
                   ? `<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                        <span class="badge badge-green">✓ You're enrolled</span>
                        <button class="btn btn-secondary" style="flex:1;" onclick="cancelEnrollment('${c.id}')">Cancel enrollment</button>
