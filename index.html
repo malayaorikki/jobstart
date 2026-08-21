@@ -757,7 +757,8 @@
         salary: "₱22,000 - ₱28,000",
         type: "Full-time",
         reqSkill: "communication",
-        setup: "Hybrid"
+        setup: "Hybrid",
+        description: "Handle inbound calls, chats, and emails for a US-based telecom client, resolving billing and account issues while hitting quality and CSAT targets."
       },
       {
         id: 102,
@@ -767,7 +768,8 @@
         salary: "₱25,000 - ₱32,000",
         type: "Full-time",
         reqSkill: "tech",
-        setup: "Onsite"
+        setup: "Onsite",
+        description: "Provide first-line technical support to employees, troubleshoot hardware/software issues, and escalate unresolved tickets to the right IT team."
       },
       {
         id: 103,
@@ -777,7 +779,8 @@
         salary: "₱24,000 - ₱35,000",
         type: "Full-time",
         reqSkill: "creative",
-        setup: "Remote"
+        setup: "Remote",
+        description: "Design social media graphics, marketing collateral, and templates for internal teams and clients, working closely with copywriters and brand leads."
       },
       {
         id: 104,
@@ -787,7 +790,8 @@
         salary: "₱20,000 - ₱30,000 + Comm",
         type: "Full-time",
         reqSkill: "sales",
-        setup: "Onsite"
+        setup: "Onsite",
+        description: "Prospect and qualify leads, run property viewings, and guide buyers from first inquiry to closed sale, with uncapped commission on top of base pay."
       },
       {
         id: 105,
@@ -797,7 +801,8 @@
         salary: "₱18,000 - ₱23,000",
         type: "Full-time",
         reqSkill: "numeracy",
-        setup: "Onsite"
+        setup: "Onsite",
+        description: "Encode and reconcile transaction records, maintain accurate spreadsheets, and support the branch back-office team with day-to-day administrative tasks."
       }
     ];
 
@@ -876,12 +881,12 @@
        postedByMe:false marks them as catalog data so the Training Portal's
        "Courses offered" view (myCourses) can exclude them. */
     let COURSES = [
-      { id: "tc1", provider: "TESDA Online Program", title: "Spoken English & Call Handling Essentials", skill: "communication", level: "Beginner", duration: "4 weeks", price: "Free", enrolled: 0, postedByMe: false },
-      { id: "tc2", provider: "Google IT Support (Coursera)", title: "IT Support Professional Certificate", skill: "tech", level: "Beginner", duration: "3 months", price: "₱2,500", enrolled: 0, postedByMe: false },
-      { id: "tc3", provider: "Canva Design School", title: "Social Media Graphic Design Fundamentals", skill: "creative", level: "Beginner", duration: "2 weeks", price: "Free", enrolled: 0, postedByMe: false },
-      { id: "tc4", provider: "SalesEdge PH", title: "Consultative Selling & Objection Handling", skill: "sales", level: "Intermediate", duration: "3 weeks", price: "₱1,800", enrolled: 0, postedByMe: false },
-      { id: "tc5", provider: "TESDA Online Program", title: "Bookkeeping & Excel for Business", skill: "numeracy", level: "Beginner", duration: "5 weeks", price: "Free", enrolled: 0, postedByMe: false },
-      { id: "tc6", provider: "Leaders in Training PH", title: "First-Time Team Lead Bootcamp", skill: "leadership", level: "Intermediate", duration: "6 weeks", price: "₱3,200", enrolled: 0, postedByMe: false }
+      { id: "tc1", provider: "TESDA Online Program", title: "Spoken English & Call Handling Essentials", skill: "communication", level: "Beginner", duration: "4 weeks", price: "Free", description: "Build confident spoken English and phone etiquette for customer-facing roles, with practice modules on tone, active listening, and handling difficult calls.", enrolled: 0, postedByMe: false },
+      { id: "tc2", provider: "Google IT Support (Coursera)", title: "IT Support Professional Certificate", skill: "tech", level: "Beginner", duration: "3 months", price: "₱2,500", description: "Learn the fundamentals of troubleshooting, networking, operating systems, and customer service needed to land an entry-level IT support role.", enrolled: 0, postedByMe: false },
+      { id: "tc3", provider: "Canva Design School", title: "Social Media Graphic Design Fundamentals", skill: "creative", level: "Beginner", duration: "2 weeks", price: "Free", description: "A hands-on intro to layout, color, and typography for social media graphics — build a starter portfolio using Canva's free design tools.", enrolled: 0, postedByMe: false },
+      { id: "tc4", provider: "SalesEdge PH", title: "Consultative Selling & Objection Handling", skill: "sales", level: "Intermediate", duration: "3 weeks", price: "₱1,800", description: "Move beyond scripted pitches — learn to ask the right discovery questions, handle objections, and close deals through a consultative selling approach.", enrolled: 0, postedByMe: false },
+      { id: "tc5", provider: "TESDA Online Program", title: "Bookkeeping & Excel for Business", skill: "numeracy", level: "Beginner", duration: "5 weeks", price: "Free", description: "Covers basic bookkeeping principles alongside practical Excel skills — formulas, spreadsheets, and reports — for entry-level admin and finance roles.", enrolled: 0, postedByMe: false },
+      { id: "tc6", provider: "Leaders in Training PH", title: "First-Time Team Lead Bootcamp", skill: "leadership", level: "Intermediate", duration: "6 weeks", price: "₱3,200", description: "A practical crash course for newly promoted team leads on delegation, giving feedback, running 1:1s, and managing former peers.", enrolled: 0, postedByMe: false }
     ];
 
     /* Applications a company receives are pushed here when a jobseeker applies. */
@@ -952,13 +957,13 @@
       pendingApplyJobId: null, // job id waiting on a resume edit before submitting
 
       // --- Companies portal ---
-      jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null },
+      jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null },
       jobDraftErrors: {},
       selectedApplicationsJobId: null,
       pendingDeleteJobId: null, // job id whose delete icon is awaiting a confirming second click
 
       // --- Training Providers portal ---
-      courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null },
+      courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null },
       courseDraftErrors: {},
       pendingDeleteCourseId: null, // course id whose delete icon is awaiting a confirming second click
       selectedApplicationsCourseId: null, // course currently drilled into on the Enrollees tab
@@ -1046,11 +1051,11 @@
         resume: null,
         applyReviewJob: null,
         pendingApplyJobId: null,
-        jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null },
+        jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null },
         jobDraftErrors: {},
         selectedApplicationsJobId: null,
         pendingDeleteJobId: null,
-        courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null },
+        courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null },
         courseDraftErrors: {},
         pendingDeleteCourseId: null,
         selectedApplicationsCourseId: null,
@@ -1474,10 +1479,10 @@ ${r.strengths.join(", ")}
       if (jobId) {
         const job = JOBS.find(j => j.id === jobId);
         state.jobDraft = job
-          ? { company: job.company, title: job.title, location: job.location, salary: job.salary, type: job.type, reqSkill: job.reqSkill, setup: job.setup, editId: job.id }
-          : { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+          ? { company: job.company, title: job.title, location: job.location, salary: job.salary, type: job.type, reqSkill: job.reqSkill, setup: job.setup, description: job.description || "", editId: job.id }
+          : { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
       } else {
-        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
       }
       state.view = "companyPostJob";
       render();
@@ -1503,8 +1508,9 @@ ${r.strengths.join(", ")}
           job.type = d.type;
           job.reqSkill = d.reqSkill;
           job.setup = d.setup;
+          job.description = d.description.trim();
         }
-        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
         state.jobDraftErrors = {};
         state.view = "companyHome";
         render();
@@ -1519,6 +1525,7 @@ ${r.strengths.join(", ")}
         type: d.type,
         reqSkill: d.reqSkill,
         setup: d.setup,
+        description: d.description.trim(),
         companyPosted: true
       };
       JOBS.push(newJob);
@@ -1531,7 +1538,7 @@ ${r.strengths.join(", ")}
           link: "https://www.google.com/search?q=" + encodeURIComponent(newJob.company + " Careers")
         };
       }
-      state.jobDraft = { company: d.company, title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+      state.jobDraft = { company: d.company, title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
       state.jobDraftErrors = {};
       state.view = "companyHome";
       render();
@@ -1604,10 +1611,10 @@ ${r.strengths.join(", ")}
       if (courseId) {
         const course = COURSES.find(c => c.id === courseId);
         state.courseDraft = course
-          ? { provider: course.provider, title: course.title, skill: course.skill, level: course.level, duration: course.duration, price: course.price, editId: course.id }
-          : { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+          ? { provider: course.provider, title: course.title, skill: course.skill, level: course.level, duration: course.duration, price: course.price, description: course.description || "", editId: course.id }
+          : { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null };
       } else {
-        state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+        state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null };
       }
       state.view = "trainingOfferCourse";
       render();
@@ -1685,8 +1692,9 @@ ${r.strengths.join(", ")}
           course.level = d.level;
           course.duration = d.duration.trim() || "Self-paced";
           course.price = d.price.trim() || "Free";
+          course.description = d.description.trim();
         }
-        state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+        state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null };
         state.courseDraftErrors = {};
         state.view = "trainingHome";
         render();
@@ -1700,10 +1708,11 @@ ${r.strengths.join(", ")}
         level: d.level,
         duration: d.duration.trim() || "Self-paced",
         price: d.price.trim() || "Free",
+        description: d.description.trim(),
         enrolled: 0,
         postedByMe: true
       });
-      state.courseDraft = { provider: d.provider, title: "", skill: "communication", level: "Beginner", duration: "", price: "", editId: null };
+      state.courseDraft = { provider: d.provider, title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null };
       state.courseDraftErrors = {};
       state.view = "trainingHome";
       render();
@@ -2448,6 +2457,10 @@ ${r.strengths.join(", ")}
                     ${Object.entries(SKILL_LABELS).map(([k,v]) => `<option value="${k}" ${d.reqSkill===k?"selected":""}>${v}</option>`).join("")}
                   </select>
                 </div>
+                <div class="form-group">
+                  <label class="form-label">Short description</label>
+                  <textarea class="form-textarea" placeholder="A couple of sentences on the role, day-to-day responsibilities, or what makes it a good fit." oninput="state.jobDraft.description=this.value">${d.description}</textarea>
+                </div>
 
                 <button class="btn company-btn" style="width:100%; margin-top:8px;" onclick="submitJobPost()">${d.editId ? "Save changes" : "Post job"}</button>
                 ${d.editId ? `
@@ -2736,6 +2749,10 @@ ${r.strengths.join(", ")}
                     </select>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label class="form-label">Short description</label>
+                  <textarea class="form-textarea" placeholder="A couple of sentences on what learners will cover and what they'll walk away with." oninput="state.courseDraft.description=this.value">${d.description}</textarea>
+                </div>
 
                 <button class="btn training-btn" style="width:100%; margin-top:8px;" onclick="submitCourseOffer()">${d.editId ? "Save changes" : "Publish course"}</button>
                 ${d.editId ? `
@@ -2772,6 +2789,7 @@ ${r.strengths.join(", ")}
                   <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Work setup</span><strong>${job.setup}</strong></div>
                   <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Key skill</span><span class="badge badge-blue">${SKILL_LABELS[job.reqSkill] || job.reqSkill}</span></div>
                 </div>
+                ${job.description ? `<p style="font-size:0.88rem; color: var(--text); margin-bottom: 18px;">${job.description}</p>` : ""}
 
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                   <button class="btn btn-secondary btn-sm" onclick="closeJobModal(); state.view='companyApplications'; viewApplicationsForJob(${job.id})">View applicants</button>
@@ -2815,6 +2833,7 @@ ${r.strengths.join(", ")}
                 <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Work setup</span><strong>${job.setup}</strong></div>
                 <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Key skill</span><span class="badge badge-blue">${SKILL_LABELS[job.reqSkill] || job.reqSkill}</span></div>
               </div>
+              ${job.description ? `<p style="font-size:0.88rem; color: var(--text); margin-bottom: 18px;">${job.description}</p>` : ""}
 
               ${modalActionHtml}
             </div>
@@ -2842,6 +2861,7 @@ ${r.strengths.join(", ")}
                 <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Price</span><strong>${c.price}</strong></div>
                 <div style="display:flex; justify-content: space-between; padding: 6px 0; font-size: 0.88rem;"><span style="color:var(--text-muted);">Enrolled via JobStart</span><strong>${c.enrolled || 0}</strong></div>
               </div>
+              ${c.description ? `<p style="font-size:0.88rem; color: var(--text); margin-bottom: 18px;">${c.description}</p>` : ""}
 
               ${isProviderView ? `
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
