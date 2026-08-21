@@ -55,6 +55,8 @@
     .logo { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; font-style: italic; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
     .logo-text .accent-dot { color: var(--accent); }
     .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-top: 6px; }
+    .live-clock { color: var(--text-muted); font-size: 0.78rem; margin-top: 8px; letter-spacing: 0.02em; }
+    .live-clock strong { color: var(--text); font-weight: 700; }
 
     /* Cards */
     .card { background: var(--card-bg); border-radius: var(--radius); padding: 26px; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(28,35,33,0.04), 0 8px 24px -12px rgba(28,35,33,0.08); margin-bottom: 20px; }
@@ -382,6 +384,7 @@
         <span class="logo-text">JobStart</span>
       </a>
       <div class="subtitle" id="appSubtitle">Where job seekers, employers, and training providers meet</div>
+      <div class="live-clock no-print" id="liveClock"></div>
     </header>
 
     <div id="app"></div>
@@ -903,7 +906,11 @@
     const WITHDRAWABLE_STATUSES = ["applied", "under_review", "shortlisted", "interview"];
 
     function getMyApplication(jobId) {
-      return APPLICATIONS.find(a => a.jobId === jobId && a.candidateId === "me") || null;
+      const apps = APPLICATIONS.filter(a => a.jobId === jobId && a.candidateId === "me");
+      if (!apps.length) return null;
+      // Most recent application represents the applicant's current standing on this
+      // job — older withdrawn attempts stay in APPLICATIONS as history for the company.
+      return apps.reduce((latest, a) => (a.appliedAt > latest.appliedAt ? a : latest));
     }
 
     /* Course enrollments, pushed when a jobseeker enrolls from their results page. */
@@ -1297,6 +1304,7 @@ ${r.strengths.join(", ")}
     // Apply-with-resume-review flow
     function startApply(jobId) {
       ensureResumeDefaults();
+      state.selectedJobModal = null;
       state.pendingApplyJobId = jobId;
       state.applyReviewJob = JOBS.find(j => j.id === jobId) || null;
       render();
@@ -1304,6 +1312,7 @@ ${r.strengths.join(", ")}
 
     function editResumeFromReview() {
       state.applyReviewJob = null;
+      state.pendingApplyJobId = null;
       state.view = "resumeBuilder";
       render();
     }
@@ -1320,29 +1329,21 @@ ${r.strengths.join(", ")}
         const job = JOBS.find(j => j.id === state.pendingApplyJobId);
         ensureResumeDefaults();
         upsertMyCandidateProfile();
-        // Re-applying after a withdrawal reactivates the existing application
-        // record (reset to "applied") instead of creating a duplicate row.
-        const existing = getMyApplication(state.pendingApplyJobId);
-        if (existing) {
-          existing.status = "applied";
-          existing.appliedAt = Date.now();
-          existing.candidateName = state.resume.name || "Anonymous Applicant";
-          existing.candidateSkills = { ...state.skills };
-          existing.objective = state.resume.objective;
-        } else {
-          APPLICATIONS.push({
-            id: "app_" + Date.now(),
-            jobId: state.pendingApplyJobId,
-            jobTitle: job ? job.title : "Job",
-            company: job ? job.company : "",
-            candidateId: "me",
-            candidateName: state.resume.name || "Anonymous Applicant",
-            candidateSkills: { ...state.skills },
-            objective: state.resume.objective,
-            status: "applied",
-            appliedAt: Date.now()
-          });
-        }
+        // Always create a fresh application record — including when re-applying after
+        // a withdrawal — so the withdrawn attempt is preserved as its own row in the
+        // company's applicant list instead of being overwritten.
+        APPLICATIONS.push({
+          id: "app_" + Date.now(),
+          jobId: state.pendingApplyJobId,
+          jobTitle: job ? job.title : "Job",
+          company: job ? job.company : "",
+          candidateId: "me",
+          candidateName: state.resume.name || "Anonymous Applicant",
+          candidateSkills: { ...state.skills },
+          objective: state.resume.objective,
+          status: "applied",
+          appliedAt: Date.now()
+        });
       }
       state.applyReviewJob = null;
       state.pendingApplyJobId = null;
@@ -2200,24 +2201,26 @@ ${r.strengths.join(", ")}
             <p class="section-hint">Everything here is editable. Update it any time — before applying, or later.</p>
 
             <h4 class="cv-section-title" style="margin-top:8px;">Name & Contact Information</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Full name</label>
-                <input type="text" class="form-input" placeholder="Juan Dela Cruz" value="${r.name}" oninput="state.resume.name=this.value">
+            <form autocomplete="on" onsubmit="return false;">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full name</label>
+                  <input type="text" id="resumeName" name="fullName" autocomplete="name" class="form-input" placeholder="Juan Dela Cruz" value="${r.name}" oninput="state.resume.name=this.value">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input type="email" id="resumeEmail" name="email" autocomplete="email" class="form-input" placeholder="juan.delacruz@email.com" value="${r.email}" oninput="state.resume.email=this.value">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone</label>
+                  <input type="tel" id="resumePhone" name="phone" autocomplete="tel" class="form-input" placeholder="0917 123 4567" value="${r.phone}" oninput="state.resume.phone=this.value">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Location</label>
+                  <input type="text" id="resumeLocation" name="location" autocomplete="address-level2" class="form-input" placeholder="Taguig City, Philippines" value="${r.location}" oninput="state.resume.location=this.value">
+                </div>
               </div>
-              <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" placeholder="juan.delacruz@email.com" value="${r.email}" oninput="state.resume.email=this.value">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Phone</label>
-                <input type="text" class="form-input" placeholder="0917 123 4567" value="${r.phone}" oninput="state.resume.phone=this.value">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Location</label>
-                <input type="text" class="form-input" placeholder="Taguig City, Philippines" value="${r.location}" oninput="state.resume.location=this.value">
-              </div>
-            </div>
+            </form>
 
             <h4 class="cv-section-title">Career Objective</h4>
             <div class="form-group">
@@ -2508,7 +2511,7 @@ ${r.strengths.join(", ")}
                   <div class="list-row-top">
                     <div>
                       <div class="list-row-title">${a.candidateName}</div>
-                      <div class="list-row-meta">Applied ${new Date(a.appliedAt).toLocaleDateString()}</div>
+                      <div class="list-row-meta">Applied ${new Date(a.appliedAt).toLocaleDateString()} at ${new Date(a.appliedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}</div>
                     </div>
                     <span class="badge ${meta.badge}">${meta.label}</span>
                   </div>
@@ -2631,7 +2634,7 @@ ${r.strengths.join(", ")}
                   <div class="list-row-top">
                     <div>
                       <div class="list-row-title">${a.learnerName}</div>
-                      <div class="list-row-meta">Enrolled ${new Date(a.enrolledAt).toLocaleDateString()}</div>
+                      <div class="list-row-meta">Enrolled ${new Date(a.enrolledAt).toLocaleDateString()} at ${new Date(a.enrolledAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}</div>
                     </div>
                     <span class="badge badge-blue">Enrolled</span>
                   </div>
@@ -2923,6 +2926,19 @@ ${r.strengths.join(", ")}
 
       app.innerHTML = html;
     }
+
+    // Live date/time shown in the header — runs on its own timer, independent
+    // of render(), so it keeps ticking without re-rendering the whole app.
+    function updateLiveClock() {
+      const el = document.getElementById("liveClock");
+      if (!el) return;
+      const now = new Date();
+      const dateStr = now.toLocaleDateString(undefined, { weekday: "short", year: "numeric", month: "short", day: "numeric" });
+      const timeStr = now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      el.innerHTML = `${dateStr} &nbsp;·&nbsp; <strong>${timeStr}</strong>`;
+    }
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
 
     // Initialize App
     render();
