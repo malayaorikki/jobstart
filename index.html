@@ -355,9 +355,19 @@
     .badge-purple { background: #eef2ff; color: #4338ca; }
     .badge-gray { background: #f1efe9; color: var(--text-muted); }
     .badge-red { background: #fee2e2; color: #b91c1c; }
-    .status-select { padding: 8px 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 1rem; font-weight: 600; color: var(--text); background: white; cursor: pointer; }
+    .status-dropdown { position: relative; display: inline-block; }
+    .status-select { padding: 6px 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; color: var(--text); background: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .status-select:not(.status-select-locked):hover { border-color: var(--primary-light); }
     .status-select:focus { outline: none; border-color: var(--primary-light); }
     .company-hero ~ .profile-dashboard .status-select:focus { border-color: var(--accent); }
+    .company-hero ~ .profile-dashboard .status-select:not(.status-select-locked):hover { border-color: var(--accent); }
+    .status-select svg { color: var(--text-muted); }
+    .status-dropdown-list { position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 100%; background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 8px 20px -8px rgba(28,35,33,0.18); padding: 4px; }
+    .status-dropdown-item { padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; color: var(--text); white-space: nowrap; cursor: pointer; }
+    .status-dropdown-item:hover { background: var(--bg); }
+    .status-dropdown-item.is-active { background: var(--primary); color: white; font-weight: 600; }
+    .company-hero ~ .profile-dashboard .status-dropdown-item.is-active { background: var(--accent); }
+    .status-select-locked { cursor: default; color: var(--text-muted); background: var(--bg); border-color: var(--border); }
     .skill-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 
     .empty-state { text-align: center; padding: 30px 18px; color: var(--text-muted); font-size: 0.88rem; }
@@ -383,7 +393,6 @@
       <a href="#" class="logo" onclick="event.preventDefault(); goPortalChooser();">
         <span class="logo-text">JobStart</span>
       </a>
-      <div class="subtitle" id="appSubtitle">Where job seekers, employers, and training providers meet</div>
       <div class="live-clock no-print" id="liveClock"></div>
     </header>
 
@@ -1290,7 +1299,26 @@ ${r.strengths.join(", ")}
       render();
     }
 
+    // Safety net: pull current values straight from the input boxes before
+    // saving/previewing, in case a browser autofill (or anything else) set
+    // the field's text without firing our oninput handler.
+    function syncResumeContactFieldsFromDOM() {
+      const map = [
+        ["resumeName", "name"],
+        ["resumeEmail", "email"],
+        ["resumePhone", "phone"],
+        ["resumeLocation", "location"]
+      ];
+      map.forEach(([id, field]) => {
+        const el = document.getElementById(id);
+        if (el && el.value !== state.resume[field]) {
+          state.resume[field] = el.value;
+        }
+      });
+    }
+
     function finishResumeBuilder(target) {
+      syncResumeContactFieldsFromDOM();
       if (target === "preview") {
         state.view = "visualResume";
         render();
@@ -1599,6 +1627,12 @@ ${r.strengths.join(", ")}
     function updateApplicationStatus(appId, status) {
       const app = APPLICATIONS.find(a => a.id === appId);
       if (app) app.status = status;
+      state.openStatusDropdown = null;
+      render();
+    }
+
+    function toggleStatusDropdown(appId) {
+      state.openStatusDropdown = state.openStatusDropdown === appId ? null : appId;
       render();
     }
 
@@ -2210,23 +2244,23 @@ ${r.strengths.join(", ")}
             <p class="section-hint">Everything here is editable. Update it any time — before applying, or later.</p>
 
             <h4 class="cv-section-title" style="margin-top:8px;">Name & Contact Information</h4>
-            <form autocomplete="on" onsubmit="return false;">
+            <form autocomplete="off" onsubmit="return false;">
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Full name</label>
-                  <input type="text" id="resumeName" name="fullName" autocomplete="name" class="form-input" placeholder="Juan Dela Cruz" value="${r.name}" oninput="state.resume.name=this.value">
+                  <input type="text" id="resumeName" name="resumeName_nofill" autocomplete="off" class="form-input" placeholder="Juan Dela Cruz" value="${r.name}" oninput="state.resume.name=this.value" onchange="state.resume.name=this.value">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Email</label>
-                  <input type="email" id="resumeEmail" name="email" autocomplete="email" class="form-input" placeholder="juan.delacruz@email.com" value="${r.email}" oninput="state.resume.email=this.value">
+                  <input type="email" id="resumeEmail" name="resumeEmail_nofill" autocomplete="off" class="form-input" placeholder="juan.delacruz@email.com" value="${r.email}" oninput="state.resume.email=this.value" onchange="state.resume.email=this.value">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Phone</label>
-                  <input type="tel" id="resumePhone" name="phone" autocomplete="tel" class="form-input" placeholder="0917 123 4567" value="${r.phone}" oninput="state.resume.phone=this.value">
+                  <input type="tel" id="resumePhone" name="resumePhone_nofill" autocomplete="off" class="form-input" placeholder="0917 123 4567" value="${r.phone}" oninput="state.resume.phone=this.value" onchange="state.resume.phone=this.value">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Location</label>
-                  <input type="text" id="resumeLocation" name="location" autocomplete="address-level2" class="form-input" placeholder="Taguig City, Philippines" value="${r.location}" oninput="state.resume.location=this.value">
+                  <input type="text" id="resumeLocation" name="resumeLocation_nofill" autocomplete="off" class="form-input" placeholder="Taguig City, Philippines" value="${r.location}" oninput="state.resume.location=this.value" onchange="state.resume.location=this.value">
                 </div>
               </div>
             </form>
@@ -2533,13 +2567,26 @@ ${r.strengths.join(", ")}
                     ${Object.entries(a.candidateSkills).sort((x,y)=>y[1]-x[1]).slice(0,3).map(([sk,val]) => `<span class="tag-chip" style="cursor:default;">${SKILL_LABELS[sk]||sk} · ${val}/5</span>`).join("")}
                   </div>
                   <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                    <label style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Status:
-                      <select class="status-select" onchange="updateApplicationStatus('${a.id}', this.value)">
-                        ${APPLICATION_STATUSES.filter(s => s !== "withdrawn" || a.status === "withdrawn").map(s =>
-                          `<option value="${s}" ${a.status === s ? "selected" : ""}>${STATUS_META[s].label}</option>`
-                        ).join("")}
-                      </select>
-                    </label>
+                    <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Status:</span>
+                    ${a.status === "withdrawn" ? `
+                      <span class="status-select status-select-locked" title="The applicant withdrew — status can no longer be changed.">
+                        ${meta.label}
+                      </span>
+                    ` : `
+                    <div class="status-dropdown">
+                      <button type="button" class="status-select" onclick="event.stopPropagation(); toggleStatusDropdown('${a.id}')">
+                        ${meta.label}
+                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </button>
+                      ${state.openStatusDropdown === a.id ? `
+                        <div class="status-dropdown-list" onclick="event.stopPropagation();">
+                          ${APPLICATION_STATUSES.filter(s => s !== "withdrawn").map(s => `
+                            <div class="status-dropdown-item ${a.status === s ? 'is-active' : ''}" onclick="updateApplicationStatus('${a.id}', '${s}')">${STATUS_META[s].label}</div>
+                          `).join("")}
+                        </div>
+                      ` : ""}
+                    </div>
+                    `}
                   </div>
                 </div>
               `;}).join("") : `<div class="empty-state">No applications yet for this job.</div>`}
@@ -2959,6 +3006,13 @@ ${r.strengths.join(", ")}
     }
     updateLiveClock();
     setInterval(updateLiveClock, 1000);
+
+    document.addEventListener("click", () => {
+      if (state.openStatusDropdown !== null && state.openStatusDropdown !== undefined) {
+        state.openStatusDropdown = null;
+        render();
+      }
+    });
 
     // Initialize App
     render();
