@@ -12,9 +12,9 @@
       --primary: #0f766e;
       --primary-dark: #0b5c55;
       --primary-light: #2dd4bf;
-      --accent: #fb7a57;
-      --accent-dark: #ea5f3c;
-      --indigo: #4f46a5;
+      --accent: var(--primary);
+      --accent-dark: var(--primary-dark);
+      --indigo: var(--primary);
       --bg: #f8faf8;
       --card-bg: #ffffff;
       --text: #1c2321;
@@ -70,16 +70,16 @@
     .progress-bar-bg { position: relative; width: 100%; height: 10px; background: var(--border); border-radius: 20px; overflow: visible; }
     .progress-bar-fill { position: relative; height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--primary), var(--primary-light)); transition: width 0.35s ease; }
     .progress-bar-fill::after { content: ""; position: absolute; right: -1px; top: 50%; width: 12px; height: 12px; transform: translateY(-50%); background: var(--card-bg); border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-    .xp-badge { background: #fff1ea; color: var(--accent-dark); padding: 3px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.01em; }
+    .xp-badge { background: #effaf9; color: var(--accent-dark); padding: 3px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.01em; }
 
     /* Hero / Home View */
     .hero { position: relative; overflow: hidden; text-align: center; padding: 58px 24px 52px; background: linear-gradient(145deg, #ffffff 0%, #f7fffd 100%); border-color: #dceeea; }
     .hero::before, .hero::after { content: ""; position: absolute; border-radius: 999px; pointer-events: none; }
     .hero::before { width: 220px; height: 220px; background: rgba(45,212,191,.09); top: -125px; left: -90px; }
-    .hero::after { width: 180px; height: 180px; background: rgba(251,122,87,.08); right: -80px; bottom: -105px; }
+    .hero::after { width: 180px; height: 180px; background: rgba(15,118,110,.08); right: -80px; bottom: -105px; }
     .hero > * { position: relative; z-index: 1; }
     .hero-eyebrow { display: inline-flex; align-items: center; gap: 7px; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.075em; text-transform: uppercase; color: var(--primary-dark); margin-bottom: 16px; }
-    .hero-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(251,122,87,.12); }
+    .hero-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(15,118,110,.12); }
     .hero h1 { font-size: clamp(2.15rem, 5vw, 3rem); font-weight: 800; margin-bottom: 15px; line-height: 1.1; letter-spacing: -0.045em; }
     .hero p { color: var(--text-muted); font-size: 1rem; max-width: 590px; margin: 0 auto 30px auto; }
     .hero-meta { display: flex; justify-content: center; gap: 20px; margin-top: 22px; flex-wrap: wrap; font-size: 0.82rem; color: var(--text-muted); }
@@ -135,7 +135,7 @@
     .audience-link { color:var(--text); text-decoration:none; font-weight:700; border-bottom:1px solid transparent; transition:color .15s ease,border-color .15s ease; }
     .audience-link:hover { color:var(--primary-dark); border-color:var(--primary-light); }
     .audience-link.employer-link:hover { color:var(--accent-dark); border-color:var(--accent); }
-    .audience-link.training-link:hover { color:#4f46a5; border-color:#818cf8; }
+    .audience-link.training-link:hover { color:var(--primary-dark); border-color:var(--primary-light); }
     .secondary-audience { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:20px; }
     @media (min-width:700px) { .secondary-audience { grid-template-columns:1fr 1fr; } }
     .secondary-audience-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
@@ -188,15 +188,19 @@
 
     /* Quiz Options */
     .q-category { text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
-    .q-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; line-height: 1.35; }
+    .q-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
+    .q-title-alt { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; }
     .options-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
     .option-btn { width: 100%; text-align: left; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: white; cursor: pointer; transition: all 0.15s ease; font-family: var(--font-body); font-size: 0.94rem; font-weight: 500; color: var(--text); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .option-btn:hover { border-color: var(--primary-light); background: #f6fbfa; }
     .option-btn.selected { border-color: var(--primary); background: #effaf9; box-shadow: inset 0 0 0 1px var(--primary); }
+    .option-btn.multi .option-letter { border-radius: 7px; }
     .option-letter { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--border); color: var(--text-muted); font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s ease; }
     .option-btn.selected .option-letter { background: var(--primary); color: white; }
     .option-btn:hover .option-letter { background: var(--primary-light); color: white; }
+    .option-txt-wrap { flex: 1; display: flex; flex-direction: column; gap: 2px; }
     .option-txt { flex: 1; }
+    .option-alt { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; }
     .option-arrow { color: var(--text-muted); flex-shrink: 0; }
 
     .quiz-footer { margin-top: 22px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -217,7 +221,7 @@
     .career-card > * { position: relative; z-index: 1; }
     .career-top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 22px; flex-wrap: wrap; margin-bottom: 24px; }
     .career-eyebrow { display: inline-flex; align-items: center; gap: 7px; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.075em; text-transform: uppercase; color: var(--primary-dark); margin-bottom: 10px; }
-    .career-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(251,122,87,.12); flex-shrink: 0; }
+    .career-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(15,118,110,.12); flex-shrink: 0; }
     .career-title { font-size: clamp(1.55rem, 3.2vw, 2.05rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.16; margin-bottom: 12px; }
     .career-desc { color: var(--text-muted); font-size: 0.94rem; max-width: 580px; }
     .career-desc strong { color: var(--text); font-weight: 700; }
@@ -251,13 +255,23 @@
     /* Small pill that names the current portal (Company/Training) — the only place
        role color appears in the hero now that the hero itself is neutral/teal. */
     .portal-role-tag { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; vertical-align: middle; }
-    .portal-role-tag.company { background: #fff1ea; color: var(--accent-dark); }
-    .portal-role-tag.training { background: #eef2ff; color: #4338ca; }
+    .portal-role-tag.company { background: #effaf9; color: var(--accent-dark); }
+    .portal-role-tag.training { background: #effaf9; color: var(--primary-dark); }
 
     .sidebar-section-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
     .pref-chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
     .pref-chip { display: inline-flex; align-items: center; gap: 6px; background: #f6fbfa; border: 1px solid var(--border); color: var(--text); padding: 6px 11px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
     .pref-chip .pref-chip-label { color: var(--text-muted); font-weight: 500; }
+
+    /* Pre-quiz preference picker — pill-style single-select groups shown on
+       the "Before you begin" intro panel, ahead of the 30 interest questions. */
+    .pref-picker { text-align: left; margin-bottom: 24px; padding-top: 4px; border-top: 1px solid var(--border); }
+    .pref-picker-intro { font-size: 0.85rem; color: var(--text-muted); margin: 14px 0 18px; }
+    .pref-picker-label { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .pref-picker-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .pref-pick-btn { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 20px; background: white; font-family: var(--font-body); font-size: 0.83rem; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.15s ease; }
+    .pref-pick-btn:hover { border-color: var(--primary-light); background: #f6fbfa; }
+    .pref-pick-btn.selected { border-color: var(--primary); background: var(--primary); color: white; }
 
     .quick-stats-row { display: flex; gap: 14px; flex-wrap: wrap; }
     .quick-stat { flex: 1; min-width: 130px; background: rgba(255,255,255,0.14); border-radius: var(--radius-sm); padding: 12px 14px; }
@@ -277,11 +291,11 @@
     .courses-grid .match-card { margin-bottom: 0; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
     .courses-grid .match-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -12px rgba(28,35,33,0.18); border-color: #a5b4fc; }
     .course-match-card .match-card-title { font-size: 1.02rem; margin-bottom: 4px; }
-    .course-provider-link { color: #4f46a5; font-weight: 600; font-size: 0.86rem; cursor: default; }
-    .course-match-ring { background: #eef2ff !important; }
+    .course-provider-link { color: var(--primary-dark); font-weight: 600; font-size: 0.86rem; cursor: default; }
+    .course-match-ring { background: #effaf9 !important; }
     .course-match-ring span { font-size: 1.1rem; }
     .course-skill-fill { background: linear-gradient(90deg, #6366f1, #a5b4fc) !important; }
-    .course-match-card .match-card-salary { color: #4338ca; }
+    .course-match-card .match-card-salary { color: var(--primary-dark); }
     .job-cards-grid .job-card { margin-bottom: 0; }
 
     /* Skill Meter */
@@ -295,7 +309,7 @@
     .badge { display: inline-block; padding: 4px 11px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; }
     .badge-blue { background: #e6f6f4; color: var(--primary-dark); }
     .badge-green { background: #dcfce7; color: #166534; }
-    .badge-amber { background: #fff1ea; color: var(--accent-dark); }
+    .badge-amber { background: #effaf9; color: var(--accent-dark); }
 
     /* Job Listings */
     .job-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; background: white; transition: transform 0.15s ease, box-shadow 0.15s ease; }
@@ -350,6 +364,7 @@
     .form-input.has-error, .form-textarea.has-error { border-color: #dc2626; }
     .form-input.has-error:focus, .form-textarea.has-error:focus { box-shadow: 0 0 0 3px rgba(220,38,38,0.15); }
     .field-error { color: #dc2626; font-size: 0.78rem; margin-top: 5px; }
+    .field-hint { color: var(--text-muted); font-size: 0.78rem; margin-top: 5px; }
     /* JobStart's teal is the one consistent brand color across every portal — forms,
        badges, chips, and bars all use the default teal styling everywhere. Orange
        (Companies) and indigo (Training) are reserved for small, contained role
@@ -382,7 +397,7 @@
        color as you consider it. Everything else on the card (icon, arrows) is neutral
        teal so the badge and this hover are the only two colored touchpoints in the app. */
     .portal-card.company:hover { border-color: var(--accent); }
-    .portal-card.training:hover { border-color: #4338ca; }
+    .portal-card.training:hover { border-color: var(--primary-dark); }
     .portal-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; background: #effaf9; }
     .portal-title { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; }
     .portal-desc { font-size: 0.85rem; color: var(--text-muted); }
@@ -406,11 +421,13 @@
        Every company sub-view (job posts, applications,
        post-a-job) renders inside this same shell, so switching between them
        is one click from an always-visible menu instead of a "← Back" chain. */
-    .company-hero { background: linear-gradient(160deg, #eafbf7 0%, #f8fffb 55%, #ffffff 100%); border-color: #dceeea; color: var(--text); }
-    .company-hero .profile-avatar { background: white; border: 1px solid var(--border); color: var(--primary-dark); }
-    .company-hero .quick-stat { background: white; border: 1px solid var(--border); }
-    .company-hero .quick-stat-num { color: var(--primary-dark); }
-    .company-hero .quick-stat-label { opacity: 1; }
+    .company-hero { background: linear-gradient(115deg, #0b5c55 0%, #0f766e 45%, #2dd4bf 120%); border: none; color: #ffffff; box-shadow: 0 10px 30px -14px rgba(11,92,85,0.45); }
+    .company-hero .profile-avatar { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.35); color: #ffffff; }
+    .company-hero .portal-role-tag.company { background: rgba(255,255,255,0.2); color: #ffffff; }
+    .company-hero .profile-id-role { color: rgba(255,255,255,0.92); }
+    .company-hero .quick-stat { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); }
+    .company-hero .quick-stat-num { color: #ffffff; }
+    .company-hero .quick-stat-label { opacity: 0.88; color: #ffffff; }
     .company-nav { display: flex; flex-direction: column; gap: 6px; }
     .company-nav-btn {
       display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
@@ -434,11 +451,13 @@
     /* Training Providers Portal — same sidebar-nav shell as the company
        portal, in its own indigo accent so it's visually distinct at a glance
        while still feeling like one consistent app. */
-    .training-hero { background: linear-gradient(160deg, #eafbf7 0%, #f8fffb 55%, #ffffff 100%); border-color: #dceeea; color: var(--text); }
-    .training-hero .profile-avatar { background: white; border: 1px solid var(--border); color: var(--primary-dark); }
-    .training-hero .quick-stat { background: white; border: 1px solid var(--border); }
-    .training-hero .quick-stat-num { color: var(--primary-dark); }
-    .training-hero .quick-stat-label { opacity: 1; }
+    .training-hero { background: linear-gradient(115deg, #0b5c55 0%, #0f766e 45%, #2dd4bf 120%); border: none; color: #ffffff; box-shadow: 0 10px 30px -14px rgba(11,92,85,0.45); }
+    .training-hero .profile-avatar { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.35); color: #ffffff; }
+    .training-hero .portal-role-tag.training { background: rgba(255,255,255,0.2); color: #ffffff; }
+    .training-hero .profile-id-role { color: rgba(255,255,255,0.92); }
+    .training-hero .quick-stat { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); }
+    .training-hero .quick-stat-num { color: #ffffff; }
+    .training-hero .quick-stat-label { opacity: 0.88; color: #ffffff; }
     .training-nav-btn {
       display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
       padding: 11px 14px; border-radius: var(--radius-sm); border: 1.5px solid transparent;
@@ -462,7 +481,7 @@
     .list-row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
     .list-row-title { font-weight: 700; font-size: 0.98rem; }
     .list-row-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
-    .badge-purple { background: #eef2ff; color: #4338ca; }
+    .badge-purple { background: #effaf9; color: var(--primary-dark); }
     .badge-gray { background: #f1efe9; color: var(--text-muted); }
     .badge-red { background: #fee2e2; color: #b91c1c; }
     .status-dropdown { position: relative; display: inline-block; }
@@ -515,358 +534,615 @@
        ========================================================================== */
 
     const QUESTIONS = [
-      // WORK PREFERENCES (1 - 5)
+      // SECTION 1 — YOUR INTERESTS
       {
-        cat: "Preferences",
-        q: "What is your preferred everyday work arrangement?",
+        cat: "Your Interests",
+        type: "multi",
+        q: "Which activities would you genuinely enjoy doing?",
+        qAlt: "Alin sa mga gawaing ito ang talagang gusto mong gawin?",
         opts: [
-          { txt: "100% Onsite (I like physical office work)", pref: { setup: "Onsite" } },
-          { txt: "Hybrid (Mix of office and home)", pref: { setup: "Hybrid" } },
-          { txt: "100% Remote / Work from Home", pref: { setup: "Remote" } },
-          { txt: "Flexible / Open to any arrangement", pref: { setup: "Open" } }
+          { txt: "Building, repairing, or improving things", txtAlt: "Pagbuo, pagkukumpuni, o pagpapahusay ng mga bagay", fields: { engineering: 1 } },
+          { txt: "Analyzing information or finding patterns", txtAlt: "Pagsusuri ng impormasyon o paghahanap ng mga pattern", fields: { science: 1 } },
+          { txt: "Helping someone solve a problem", txtAlt: "Pagtulong sa isang tao na makahanap ng solusyon sa problema", fields: { publicservice: 1, healthcare: 1 } },
+          { txt: "Creating artwork, designs, videos, or other content", txtAlt: "Paglikha ng artwork, disenyo, video, o iba pang content", fields: { arts: 1 } },
+          { txt: "Organizing an event or activity", txtAlt: "Pag-oorganisa ng isang event o gawain", fields: { hospitality: 1 } },
+          { txt: "Leading a group or project", txtAlt: "Pamumuno sa isang grupo o proyekto", fields: { retail: 1, publicservice: 1 } }
         ]
       },
       {
-        cat: "Preferences",
-        q: "Are you open to relocating or traveling for work within the Philippines?",
+        cat: "Your Interests",
+        type: "single",
+        q: "Which activity sounds most satisfying to you?",
+        qAlt: "Aling gawain ang pinakagusto mong gawin?",
         opts: [
-          { txt: "Willing to relocate anywhere in PH", pref: { relocate: "Anywhere" } },
-          { txt: "Only within my region or Metro Manila", pref: { relocate: "Regional" } },
-          { txt: "Strictly near my current location only", pref: { relocate: "Local" } },
-          { txt: "Open to overseas travel / work", pref: { relocate: "Overseas" } }
+          { txt: "Conducting an experiment to discover how something works", txtAlt: "Pagsasagawa ng eksperimento upang malaman kung paano gumagana ang isang bagay", fields: { science: 1 } },
+          { txt: "Designing or building a machine, structure, or product", txtAlt: "Pagdidisenyo o pagbuo ng makina, istruktura, o produkto", fields: { engineering: 1 } },
+          { txt: "Creating a video, artwork, design, or other creative project", txtAlt: "Paglikha ng video, artwork, disenyo, o iba pang creative na proyekto", fields: { arts: 1 } },
+          { txt: "Teaching someone a new skill", txtAlt: "Pagtuturo ng bagong kasanayan sa isang tao", fields: { education: 1 } },
+          { txt: "Convincing people to support an idea or project", txtAlt: "Hikayatin ang ibang tao na suportahan ang isang ideya o proyekto", fields: { retail: 1 } }
         ]
       },
       {
-        cat: "Preferences",
-        q: "What is your target monthly starting salary expectations?",
+        cat: "Your Interests",
+        type: "rating",
+        q: "How interested are you in using computers and digital technology to solve problems?",
+        qAlt: "Gaano ka interesado sa paggamit ng computer at digital technology sa paglutas ng mga problema?",
+        fields: ["it"],
         opts: [
-          { txt: "₱15,000 – ₱18,000 / month", pref: { salary: "₱15k-₱18k" } },
-          { txt: "₱18,000 – ₱25,000 / month", pref: { salary: "₱18k-₱25k" } },
-          { txt: "₱25,000 – ₱35,000 / month", pref: { salary: "₱25k-₱35k" } },
-          { txt: "₱35,000+ / month", pref: { salary: "₱35k+" } }
+          { txt: "1 — Not Interested at All", txtAlt: "Hindi interesado" },
+          { txt: "2 — Slightly Interested", txtAlt: "Bahagyang interesado" },
+          { txt: "3 — Moderately Interested", txtAlt: "Katamtamang interesado" },
+          { txt: "4 — Very Interested", txtAlt: "Lubos na interesado" },
+          { txt: "5 — Extremely Interested", txtAlt: "Talagang lubos na interesado" }
         ]
       },
       {
-        cat: "Preferences",
-        q: "What shift or work schedule do you prefer?",
+        cat: "Your Interests",
+        type: "multi",
+        q: "Which types of problems would you enjoy solving?",
+        qAlt: "Anong mga uri ng problema ang gusto mong lutasin?",
         opts: [
-          { txt: "Regular Day Shift (8 AM – 5 PM)", pref: { shift: "Day" } },
-          { txt: "Night Shift / Graveyard (BPO / Global Support)", pref: { shift: "Night" } },
-          { txt: "Flexible / Shifting Rotations", pref: { shift: "Flexible" } },
-          { txt: "Project-based / Freelance hours", pref: { shift: "Project" } }
+          { txt: "Technical or mechanical problems", txtAlt: "Teknikal o mekanikal na mga problema", fields: { engineering: 1 } },
+          { txt: "Mathematical or analytical problems", txtAlt: "Matematika o analytical na mga problema", fields: { science: 1 } },
+          { txt: "Problems involving people's health or well-being", txtAlt: "Mga problemang may kinalaman sa kalusugan o kapakanan ng mga tao", fields: { healthcare: 1 } },
+          { txt: "Environmental or agricultural problems", txtAlt: "Mga problemang pangkalikasan o pang-agrikultura", fields: { agriculture: 1 } },
+          { txt: "Business or marketing problems", txtAlt: "Mga problemang may kinalaman sa negosyo o marketing", fields: { retail: 1 } },
+          { txt: "Creative or design problems", txtAlt: "Mga problemang nangangailangan ng creativity o disenyo", fields: { arts: 1 } },
+          { txt: "Social or community problems", txtAlt: "Mga problemang panlipunan o pangkomunidad", fields: { publicservice: 1 } },
+          { txt: "Transportation or delivery problems", txtAlt: "Mga problemang may kinalaman sa transportasyon o delivery", fields: { transport: 1 } }
         ]
       },
       {
-        cat: "Preferences",
-        q: "What type of workplace environment energizes you most?",
+        cat: "Your Interests",
+        type: "single",
+        q: "If you could spend an entire day working on one project, which would you choose?",
+        qAlt: "Kung maaari kang gumugol ng isang buong araw sa isang proyekto, alin ang pipiliin mo?",
         opts: [
-          { txt: "Fast-paced, high energy (Call center / Corporate)", scores: { customerService: 1, communication: 1 } },
-          { txt: "Quiet, detail-oriented space (Tech / Tech Support)", scores: { tech: 1, numeracy: 1 } },
-          { txt: "Creative, collaborative team studio", scores: { creative: 1, leadership: 1 } },
-          { txt: "Hands-on, active site or workshop", scores: { trade: 1 } }
-        ]
-      },
-
-      // SKILL PROFILE QUESTIONS (6 - 13)
-      {
-        cat: "Communication",
-        q: "How comfortable are you speaking and writing in English?",
-        opts: [
-          { txt: "Basic understanding; prefer local languages", scores: { communication: 1 } },
-          { txt: "Conversational; can handle routine conversations", scores: { communication: 3 } },
-          { txt: "Fluent; confident in professional speaking & emails", scores: { communication: 4 } },
-          { txt: "Expert; can present to international audiences", scores: { communication: 5 } }
-        ]
-      },
-      {
-        cat: "Technology",
-        q: "How would you rate your proficiency with computers & digital software?",
-        opts: [
-          { txt: "Basic (Social media, browsing, simple phone apps)", scores: { tech: 1 } },
-          { txt: "Intermediate (MS Word, Excel, Google Docs)", scores: { tech: 3 } },
-          { txt: "Advanced (Canva, IT troubleshooting, basic CRM/code)", scores: { tech: 4 } },
-          { txt: "Expert (Software programming, database, system admin)", scores: { tech: 5 } }
-        ]
-      },
-      {
-        cat: "Customer Support",
-        q: "How do you handle difficult or frustrated people in service situations?",
-        opts: [
-          { txt: "I get stressed and prefer not dealing with angry people", scores: { customerService: 1 } },
-          { txt: "I remain polite and pass them to a supervisor", scores: { customerService: 2 } },
-          { txt: "I listen patiently, de-escalate, and offer solutions", scores: { customerService: 4 } },
-          { txt: "I excel under pressure and turn dissatisfied clients into loyal fans", scores: { customerService: 5 } }
-        ]
-      },
-      {
-        cat: "Sales & Persuasion",
-        q: "How do you feel about persuading people or selling products/services?",
-        opts: [
-          { txt: "Uncomfortable with selling or pushing products", scores: { sales: 1 } },
-          { txt: "Okay with answering product inquiries if requested", scores: { sales: 2 } },
-          { txt: "Good at explaining benefits and closing direct deals", scores: { sales: 4 } },
-          { txt: "Thrive on pitch targets, commissions, and negotiation", scores: { sales: 5 } }
-        ]
-      },
-      {
-        cat: "Technical / Skilled Trade",
-        q: "How experienced are you with tools, equipment, or hands-on hardware repairs?",
-        opts: [
-          { txt: "No experience with technical tools", scores: { trade: 1 } },
-          { txt: "Basic household DIY repairs and tool usage", scores: { trade: 2 } },
-          { txt: "Trained in specialized tools, hardware, or electrical work", scores: { trade: 4 } },
-          { txt: "Certified technician / specialized skilled trade pro", scores: { trade: 5 } }
-        ]
-      },
-      {
-        cat: "Creative & Design",
-        q: "What is your experience level with visual design, content creation, or writing?",
-        opts: [
-          { txt: "No creative design background", scores: { creative: 1 } },
-          { txt: "Make quick social media posts using pre-made templates", scores: { creative: 2 } },
-          { txt: "Create custom layouts, edit videos, or draft marketing copy", scores: { creative: 4 } },
-          { txt: "Proficient in Adobe Suite, UI/UX, or professional media", scores: { creative: 5 } }
-        ]
-      },
-      {
-        cat: "Leadership & Teamwork",
-        q: "When working on group projects or tasks, what is your typical role?",
-        opts: [
-          { txt: "Individual contributor; prefer clear assigned tasks", scores: { leadership: 1 } },
-          { txt: "Reliable team player; assist wherever needed", scores: { leadership: 2 } },
-          { txt: "Task coordinator; keep team organized and on track", scores: { leadership: 4 } },
-          { txt: "Natural leader; take initiative, delegate, and guide strategy", scores: { leadership: 5 } }
-        ]
-      },
-      {
-        cat: "Numeracy & Analysis",
-        q: "How comfortable are you handling numbers, calculations, and data analysis?",
-        opts: [
-          { txt: "Prefer avoiding heavy math or calculations", scores: { numeracy: 1 } },
-          { txt: "Can manage basic budgeting and spreadsheets", scores: { numeracy: 3 } },
-          { txt: "Comfortable with formulas, statistics, and financial reports", scores: { numeracy: 4 } },
-          { txt: "Advanced data analysis, financial models, or statistics", scores: { numeracy: 5 } }
+          { txt: "Build or improve a physical device", txtAlt: "Bumuo o magpahusay ng isang physical device", fields: { engineering: 1 } },
+          { txt: "Research and investigate a difficult question", txtAlt: "Magsaliksik at mag-imbestiga ng isang mahirap na tanong", fields: { science: 1 } },
+          { txt: "Create a design, video, artwork, or media project", txtAlt: "Gumawa ng disenyo, video, artwork, o media project", fields: { arts: 1 } },
+          { txt: "Organize an event, activity, or business project", txtAlt: "Mag-organisa ng event, gawain, o business project", fields: { hospitality: 1, retail: 1 } },
+          { txt: "Develop a website, app, or digital solution", txtAlt: "Gumawa ng website, app, o digital solution", fields: { it: 1 } }
         ]
       },
 
-      // SITUATIONAL SCENARIOS (14 - 22)
+      // SECTION 2 — HOW YOU LIKE TO WORK
       {
-        cat: "Scenario",
-        q: "A customer calls complaining about a delayed shipment. What is your first reaction?",
+        cat: "How You Like to Work",
+        type: "multi",
+        q: "Where would you be interested in working or learning?",
+        qAlt: "Saan mo gustong magtrabaho o matuto?",
         opts: [
-          { txt: "Empathize, check shipment status, and offer a clear update", scores: { customerService: 2, communication: 1 } },
-          { txt: "Transfer call immediately to the shipping department", scores: { customerService: 1 } },
-          { txt: "Explain shipping rules and policy strictly", scores: { communication: 1 } },
-          { txt: "Apologize and issue a discount voucher right away", scores: { customerService: 2 } }
+          { txt: "Laboratory", txtAlt: "Laboratoryo", fields: { science: 1 } },
+          { txt: "Hospital or healthcare facility", txtAlt: "Ospital o healthcare facility", fields: { healthcare: 1 } },
+          { txt: "Office or technology workspace", txtAlt: "Opisina o technology workspace", fields: { it: 1 } },
+          { txt: "Construction or industrial site", txtAlt: "Construction site o industrial facility", fields: { engineering: 1 } },
+          { txt: "Classroom or training environment", txtAlt: "Classroom o training environment", fields: { education: 1 } },
+          { txt: "Studio or creative workspace", txtAlt: "Studio o creative workspace", fields: { arts: 1 } },
+          { txt: "Farm or outdoor environment", txtAlt: "Bukid o outdoor environment", fields: { agriculture: 1 } },
+          { txt: "Hotel, restaurant, or tourism environment", txtAlt: "Hotel, restaurant, o tourism environment", fields: { hospitality: 1 } },
+          { txt: "Retail or commercial environment", txtAlt: "Retail o commercial establishment", fields: { retail: 1 } },
+          { txt: "Government or community setting", txtAlt: "Government o community setting", fields: { publicservice: 1 } },
+          { txt: "Transportation or logistics facility", txtAlt: "Transportation o logistics facility", fields: { transport: 1 } }
         ]
       },
       {
-        cat: "Scenario",
-        q: "Your team’s main computer network goes down right before a deadline. What do you do?",
+        cat: "How You Like to Work",
+        type: "single",
+        q: "Which type of work sounds most appealing to you?",
+        qAlt: "Anong uri ng trabaho ang pinakagusto mo?",
         opts: [
-          { txt: "Wait for the IT admin to fix it", scores: { tech: 0 } },
-          { txt: "Troubleshoot router/connections and check diagnostic steps", scores: { tech: 2, trade: 1 } },
-          { txt: "Notify stakeholders and switch team to mobile offline workflow", scores: { leadership: 2 } },
-          { txt: "Use personal data to keep working on urgent items", scores: { leadership: 1 } }
+          { txt: "Working primarily with people", txtAlt: "Pangunahing pakikipagtrabaho sa mga tao", fields: { healthcare: 1, hospitality: 1, publicservice: 1 } },
+          { txt: "Working primarily with technology and systems", txtAlt: "Pangunahing pagtatrabaho gamit ang technology at systems", fields: { it: 1 } },
+          { txt: "Working primarily with physical materials and equipment", txtAlt: "Pangunahing pagtatrabaho gamit ang materials at equipment", fields: { engineering: 1 } },
+          { txt: "Working primarily with information and data", txtAlt: "Pangunahing pagtatrabaho gamit ang information at data", fields: { science: 1 } },
+          { txt: "Working primarily with creative ideas and concepts", txtAlt: "Pangunahing pagtatrabaho gamit ang creative ideas at concepts", fields: { arts: 1 } }
         ]
       },
       {
-        cat: "Scenario",
-        q: "You notice a small error in a financial report or inventory log. What is your action?",
+        cat: "How You Like to Work",
+        type: "rating",
+        q: "How interested are you in working with machines, equipment, tools, or physical systems?",
+        qAlt: "Gaano ka interesado sa pagtatrabaho gamit ang mga makina, kagamitan, tools, o physical systems?",
+        fields: ["engineering", "transport"],
         opts: [
-          { txt: "Ignore it if it seems tiny", scores: {} },
-          { txt: "Correct it quietly if within my access", scores: { numeracy: 1 } },
-          { txt: "Flag the discrepancy to supervisors and recalculate full sheet", scores: { numeracy: 2, leadership: 1 } },
-          { txt: "Create a revised log with audit notes", scores: { numeracy: 2, tech: 1 } }
+          { txt: "1 — Not Interested at All", txtAlt: "Hindi interesado" },
+          { txt: "2 — Slightly Interested", txtAlt: "Bahagyang interesado" },
+          { txt: "3 — Moderately Interested", txtAlt: "Katamtamang interesado" },
+          { txt: "4 — Very Interested", txtAlt: "Lubos na interesado" },
+          { txt: "5 — Extremely Interested", txtAlt: "Talagang lubos na interesado" }
         ]
       },
       {
-        cat: "Scenario",
-        q: "You are asked to design a quick banner for a store promo. How do you start?",
+        cat: "How You Like to Work",
+        type: "multi",
+        q: "Which situations would you find motivating?",
+        qAlt: "Alin sa mga sitwasyong ito ang nagbibigay sa iyo ng motibasyon?",
         opts: [
-          { txt: "Use Canva or Photoshop to build an eye-catching visual", scores: { creative: 2 } },
-          { txt: "Search Google for text ideas and copy a basic template", scores: { creative: 1 } },
-          { txt: "Ask someone else who is better at drawing", scores: {} },
-          { txt: "Focus on writing strong clear discount headline text", scores: { communication: 1, creative: 1 } }
+          { txt: "Solving a difficult technical problem", txtAlt: "Paglutas ng mahirap na technical problem", fields: { it: 1, engineering: 1 } },
+          { txt: "Helping someone improve their situation", txtAlt: "Pagtulong sa isang tao na mapabuti ang kanilang sitwasyon", fields: { publicservice: 1, healthcare: 1 } },
+          { txt: "Discovering something new", txtAlt: "Pagtuklas ng bagong bagay", fields: { science: 1 } },
+          { txt: "Creating something original", txtAlt: "Paglikha ng isang bagong ideya o bagay", fields: { arts: 1 } },
+          { txt: "Leading a group", txtAlt: "Pamumuno sa isang grupo", fields: { retail: 1 } },
+          { txt: "Helping a business grow", txtAlt: "Pagtulong sa paglago ng isang negosyo", fields: { retail: 1 } },
+          { txt: "Protecting the environment", txtAlt: "Pagprotekta sa kalikasan", fields: { agriculture: 1 } },
+          { txt: "Organizing complex activities", txtAlt: "Pag-oorganisa ng kumplikadong mga gawain", fields: { transport: 1 } },
+          { txt: "Performing or entertaining others", txtAlt: "Pagpe-perform o pag-e-entertain ng ibang tao", fields: { sports: 1, arts: 1 } }
         ]
       },
       {
-        cat: "Scenario",
-        q: "A prospective client says your price is too high compared to competitors.",
+        cat: "How You Like to Work",
+        type: "single",
+        q: "Which workday sounds most appealing to you?",
+        qAlt: "Aling uri ng workday ang pinakagusto mo?",
         opts: [
-          { txt: "Offer an immediate lower price", scores: { sales: 1 } },
-          { txt: "Highlight unique value, quality, and flexible options", scores: { sales: 2, communication: 1 } },
-          { txt: "Thank them and end the conversation", scores: {} },
-          { txt: "Ask what competitor features they prefer to negotiate", scores: { sales: 2 } }
-        ]
-      },
-      {
-        cat: "Scenario",
-        q: "A physical office device (printer, POS terminal, wiring) malfunctions during operations.",
-        opts: [
-          { txt: "Inspect cables, test power supply, or clear paper jam", scores: { trade: 2, tech: 1 } },
-          { txt: "Put an 'Out of Order' sign and report to maintenance", scores: { customerService: 1 } },
-          { txt: "Look up technical manual or YouTube troubleshooting steps", scores: { tech: 1, trade: 1 } },
-          { txt: "Ask a co-worker to take over", scores: {} }
-        ]
-      },
-      {
-        cat: "Scenario",
-        q: "You have 5 urgent tasks due at the end of the day. How do you handle them?",
-        opts: [
-          { txt: "Work on the easiest tasks first to get momentum", scores: { leadership: 1 } },
-          { txt: "Prioritize by urgency/impact and execute step by step", scores: { leadership: 2, numeracy: 1 } },
-          { txt: "Try to multitask all 5 at the same time", scores: {} },
-          { txt: "Delegate 2 tasks to available teammates", scores: { leadership: 2 } }
-        ]
-      },
-      {
-        cat: "Scenario",
-        q: "You are assigned to explain a complex tool process to a new team member.",
-        opts: [
-          { txt: "Write a clear, step-by-step visual guide or standard document", scores: { communication: 2, creative: 1 } },
-          { txt: "Give a quick verbal explanation and let them try", scores: { communication: 1 } },
-          { txt: "Do the task for them while they watch", scores: { customerService: 1 } },
-          { txt: "Send them online manual links to read independently", scores: { tech: 1 } }
-        ]
-      },
-      {
-        cat: "Scenario",
-        q: "Your manager requests a weekly summary of project milestones.",
-        opts: [
-          { txt: "Send a quick bulleted email message", scores: { communication: 1 } },
-          { txt: "Build a visual presentation deck with charts and timeline", scores: { creative: 2, numeracy: 1 } },
-          { txt: "Create a clean spreadsheet tracker with completion percentages", scores: { tech: 1, numeracy: 2 } },
-          { txt: "Schedule a brief 5-minute verbal check-in call", scores: { communication: 1 } }
+          { txt: "Analyzing information and solving problems", txtAlt: "Pagsusuri ng impormasyon at paglutas ng problema", fields: { science: 1 } },
+          { txt: "Working directly with customers or clients", txtAlt: "Direktang pagtatrabaho kasama ang customers o clients", fields: { retail: 1, hospitality: 1 } },
+          { txt: "Working hands-on with equipment or materials", txtAlt: "Hands-on na pagtatrabaho gamit ang equipment o materials", fields: { engineering: 1 } },
+          { txt: "Creating designs, content, or performances", txtAlt: "Paglikha ng designs, content, o performances", fields: { arts: 1 } },
+          { txt: "Teaching, guiding, or mentoring people", txtAlt: "Pagtuturo, paggabay, o pagme-mentor sa mga tao", fields: { education: 1 } }
         ]
       },
 
-      // BACKGROUND & GOALS (23 - 30)
+      // SECTION 3 — PROBLEM-SOLVING & SKILLS
       {
-        cat: "Background",
-        q: "What is your highest level of completed education / training?",
+        cat: "Problem-Solving & Skills",
+        type: "multi",
+        q: "Which skills would you like to use in your future career?",
+        qAlt: "Anong mga kasanayan ang gusto mong gamitin sa iyong magiging trabaho?",
         opts: [
-          { txt: "High School / K-12 Graduate", pref: { edu: "High School" } },
-          { txt: "TESDA NC II / Technical Vocational Diploma", pref: { edu: "TESDA/Vocational" } },
-          { txt: "College Graduate / Bachelor's Degree", pref: { edu: "College Degree" } },
-          { txt: "Undergraduate / Career Shifter", pref: { edu: "Undergraduate" } }
+          { txt: "Mathematics and quantitative analysis", txtAlt: "Matematika at quantitative analysis", fields: { science: 1 } },
+          { txt: "Scientific investigation", txtAlt: "Scientific investigation", fields: { science: 1 } },
+          { txt: "Programming and technology", txtAlt: "Programming at technology", fields: { it: 1 } },
+          { txt: "Mechanical or technical skills", txtAlt: "Mekanikal o teknikal na kasanayan", fields: { engineering: 1 } },
+          { txt: "Communication and public speaking", txtAlt: "Pakikipagkomunikasyon at public speaking", fields: { law: 1, education: 1 } },
+          { txt: "Teaching and mentoring", txtAlt: "Pagtuturo at mentoring", fields: { education: 1 } },
+          { txt: "Creativity and design", txtAlt: "Creativity at design", fields: { arts: 1 } },
+          { txt: "Leadership and management", txtAlt: "Leadership at management", fields: { retail: 1 } },
+          { txt: "Sales and persuasion", txtAlt: "Sales at panghihikayat", fields: { retail: 1 } },
+          { txt: "Organization and planning", txtAlt: "Pag-oorganisa at pagpaplano", fields: { transport: 1 } },
+          { txt: "Physical performance", txtAlt: "Physical performance", fields: { sports: 1 } },
+          { txt: "Research and information analysis", txtAlt: "Research at pagsusuri ng impormasyon", fields: { science: 1 } }
         ]
       },
       {
-        cat: "Tools",
-        q: "Which digital platform or tool are you most comfortable using daily?",
+        cat: "Problem-Solving & Skills",
+        type: "single",
+        q: "Imagine a machine suddenly stops working. What would you most want to do?",
+        qAlt: "Isipin na biglang tumigil sa paggana ang isang makina. Ano ang pinakagusto mong gawin?",
         opts: [
-          { txt: "Google Workspace / MS Office Apps", scores: { tech: 1 } },
-          { txt: "Graphic design / Video tools (Canva, CapCut, Adobe)", scores: { creative: 2 } },
-          { txt: "Customer ticketing or CRM software (Zendesk, Salesforce)", scores: { customerService: 2 } },
-          { txt: "Hardware tools, POS systems, or machinery", scores: { trade: 2 } }
+          { txt: "Investigate what caused the technical problem", txtAlt: "Alamin kung ano ang naging sanhi ng problema", fields: { engineering: 1 } },
+          { txt: "Analyze information or data to identify the problem", txtAlt: "Suriin ang impormasyon o data upang matukoy ang problema", fields: { science: 1 } },
+          { txt: "Talk to the people who were using it", txtAlt: "Makipag-usap sa mga taong gumagamit nito", fields: { hospitality: 1, publicservice: 1 } },
+          { txt: "Think of a new and better design", txtAlt: "Mag-isip ng bago at mas magandang disenyo", fields: { arts: 1, engineering: 1 } },
+          { txt: "Coordinate people and resources to fix it", txtAlt: "I-coordinate ang mga tao at resources upang maayos ito", fields: { transport: 1 } }
         ]
       },
       {
-        cat: "Fluency",
-        q: "What language style are you most effective at using at work?",
+        cat: "Problem-Solving & Skills",
+        type: "rating",
+        q: "How interested are you in conducting experiments or investigating how things work?",
+        qAlt: "Gaano ka interesado sa pagsasagawa ng eksperimento o pag-alam kung paano gumagana ang mga bagay?",
+        fields: ["science"],
         opts: [
-          { txt: "Casual / Conversational tone (Great for local retail/admin)", scores: { communication: 1 } },
-          { txt: "Clear Business English (Great for BPO / Corporate)", scores: { communication: 2 } },
-          { txt: "Multilingual / Regional languages", scores: { communication: 1, customerService: 1 } },
-          { txt: "Technical & Code syntax / Technical documentation", scores: { tech: 2 } }
+          { txt: "1 — Not Interested at All", txtAlt: "Hindi interesado" },
+          { txt: "2 — Slightly Interested", txtAlt: "Bahagyang interesado" },
+          { txt: "3 — Moderately Interested", txtAlt: "Katamtamang interesado" },
+          { txt: "4 — Very Interested", txtAlt: "Lubos na interesado" },
+          { txt: "5 — Extremely Interested", txtAlt: "Talagang lubos na interesado" }
         ]
       },
       {
-        cat: "Focus",
-        q: "Which fast-learning skill course would you prioritize taking today?",
+        cat: "Problem-Solving & Skills",
+        type: "multi",
+        q: "Which activities sound interesting to you?",
+        qAlt: "Alin sa mga gawaing ito ang interesado kang gawin?",
         opts: [
-          { txt: "English Pronunciation & Spoken Accent Training", scores: { communication: 2 } },
-          { txt: "Web Development / Software Testing / Coding Basics", scores: { tech: 2 } },
-          { txt: "Social Media Marketing & Content Creation", scores: { creative: 2 } },
-          { txt: "Bookkeeping, Excel Formulas & Data Analytics", scores: { numeracy: 2 } }
+          { txt: "Creating computer programs", txtAlt: "Paglikha ng computer programs", fields: { it: 1 } },
+          { txt: "Designing a product", txtAlt: "Pagdidisenyo ng produkto", fields: { engineering: 1 } },
+          { txt: "Conducting experiments", txtAlt: "Pagsasagawa ng mga eksperimento", fields: { science: 1 } },
+          { txt: "Caring for or assisting people", txtAlt: "Pag-aalaga o pagtulong sa mga tao", fields: { healthcare: 1 } },
+          { txt: "Teaching or training others", txtAlt: "Pagtuturo o pagte-train sa iba", fields: { education: 1 } },
+          { txt: "Managing a project", txtAlt: "Pamamahala ng proyekto", fields: { retail: 1 } },
+          { txt: "Selling or promoting a product", txtAlt: "Pagbebenta o pagpo-promote ng products", fields: { retail: 1 } },
+          { txt: "Planning transportation or deliveries", txtAlt: "Pagpaplano ng transportasyon o deliveries", fields: { transport: 1 } },
+          { txt: "Growing, producing, or managing natural resources", txtAlt: "Pagtatanim, produksyon, o pamamahala ng natural resources", fields: { agriculture: 1 } },
+          { txt: "Creating fashion, beauty, or lifestyle concepts", txtAlt: "Paglikha ng fashion, beauty, o lifestyle concepts", fields: { fashion: 1 } }
         ]
       },
       {
-        cat: "Strengths",
-        q: "What do co-workers or classmates compliment you for most?",
+        cat: "Problem-Solving & Skills",
+        type: "single",
+        q: "When you encounter a difficult problem, which approach sounds most like you?",
+        qAlt: "Kapag nahaharap ka sa isang mahirap na problema, alin ang pinakakatulad sa paraan mo?",
         opts: [
-          { txt: "Friendly, helpful attitude & empathy", scores: { customerService: 2 } },
-          { txt: "Fast worker who solves computer or equipment issues", scores: { tech: 1, trade: 1 } },
-          { txt: "Creative ideas and stylish visual designs", scores: { creative: 2 } },
-          { txt: "Organized, good with figures, and detail-oriented", scores: { numeracy: 2 } }
+          { txt: "Research the problem and examine the evidence", txtAlt: "Magsaliksik at suriin ang ebidensya", fields: { science: 1 } },
+          { txt: "Try different solutions until something works", txtAlt: "Sumubok ng iba't ibang solusyon hanggang may gumana", fields: { engineering: 1 } },
+          { txt: "Ask people for their perspectives", txtAlt: "Humingi ng pananaw o opinyon ng ibang tao", fields: { publicservice: 1, hospitality: 1 } },
+          { txt: "Think of an unusual or creative solution", txtAlt: "Mag-isip ng kakaiba o creative na solusyon", fields: { arts: 1 } },
+          { txt: "Organize people and resources to address the problem", txtAlt: "Ayusin ang mga tao at resources upang malutas ang problema", fields: { transport: 1 } }
+        ]
+      },
+
+      // SECTION 4 — WHAT MATTERS TO YOU
+      {
+        cat: "What Matters to You",
+        type: "multi",
+        q: "What would make a future career meaningful to you?",
+        qAlt: "Ano ang magiging makabuluhan para sa iyo sa isang trabaho?",
+        opts: [
+          { txt: "Improving people's health", txtAlt: "Pagpapabuti ng kalusugan ng mga tao", fields: { healthcare: 1 } },
+          { txt: "Helping others learn and develop", txtAlt: "Pagtulong sa iba na matuto at umunlad", fields: { education: 1 } },
+          { txt: "Creating new technology", txtAlt: "Paglikha ng bagong technology", fields: { it: 1 } },
+          { txt: "Building or improving infrastructure", txtAlt: "Pagbuo o pagpapahusay ng infrastructure", fields: { engineering: 1 } },
+          { txt: "Expressing creativity", txtAlt: "Pagpapakita ng creativity", fields: { arts: 1 } },
+          { txt: "Protecting people's rights", txtAlt: "Pagprotekta sa karapatan ng mga tao", fields: { law: 1 } },
+          { txt: "Discovering new knowledge", txtAlt: "Pagtuklas ng bagong kaalaman", fields: { science: 1 } },
+          { txt: "Protecting the environment", txtAlt: "Pagprotekta sa kalikasan", fields: { agriculture: 1 } },
+          { txt: "Providing good experiences for customers", txtAlt: "Pagbibigay ng magandang experience sa customers", fields: { hospitality: 1 } },
+          { txt: "Helping organizations operate effectively", txtAlt: "Pagtulong sa mga organization na maging mas maayos ang operasyon", fields: { retail: 1 } },
+          { txt: "Helping communities", txtAlt: "Pagtulong sa mga komunidad", fields: { publicservice: 1 } },
+          { txt: "Promoting health and physical well-being", txtAlt: "Pagsusulong ng kalusugan at physical well-being", fields: { sports: 1, healthcare: 1 } },
+          { txt: "Building a business", txtAlt: "Pagbuo ng negosyo", fields: { retail: 1 } },
+          { txt: "Helping people feel confident through fashion or beauty", txtAlt: "Pagtulong sa mga tao na magkaroon ng confidence sa pamamagitan ng fashion o beauty", fields: { fashion: 1 } }
         ]
       },
       {
-        cat: "Work Motivation",
-        q: "What factor matters most to you in choosing your next job?",
+        cat: "What Matters to You",
+        type: "rating",
+        q: "How interested are you in a career where you regularly help other people directly?",
+        qAlt: "Gaano ka interesado sa trabahong direktang tumutulong sa ibang tao?",
+        fields: ["healthcare", "publicservice", "education"],
         opts: [
-          { txt: "High salary & performance incentives", pref: { factor: "Salary" } },
-          { txt: "Career growth, promotions & mentorship", pref: { factor: "Growth" } },
-          { txt: "Work-life balance & convenient location/setup", pref: { factor: "Balance" } },
-          { txt: "Job stability & company benefits (HMO, allowance)", pref: { factor: "Benefits" } }
+          { txt: "1 — Not Interested at All", txtAlt: "Hindi interesado" },
+          { txt: "2 — Slightly Interested", txtAlt: "Bahagyang interesado" },
+          { txt: "3 — Moderately Interested", txtAlt: "Katamtamang interesado" },
+          { txt: "4 — Very Interested", txtAlt: "Lubos na interesado" },
+          { txt: "5 — Extremely Interested", txtAlt: "Talagang lubos na interesado" }
         ]
       },
       {
-        cat: "Team Size",
-        q: "What team environment size do you thrive in best?",
+        cat: "What Matters to You",
+        type: "single",
+        q: "Which accomplishment would make you feel most proud?",
+        qAlt: "Aling achievement ang magiging pinakapinagmamalaki mo?",
         opts: [
-          { txt: "Large team / BPO account floor (50+ people)", scores: { customerService: 1 } },
-          { txt: "Small tightly-knit office or tech squad (5–15 people)", scores: { tech: 1, leadership: 1 } },
-          { txt: "1-on-1 direct support to business owner / client", scores: { communication: 1 } },
-          { txt: "Solo independent worker / self-managed tasks", scores: { trade: 1 } }
+          { txt: "Discovering something new", txtAlt: "Pagtuklas ng bagong bagay", fields: { science: 1 } },
+          { txt: "Creating something innovative", txtAlt: "Paglikha ng isang makabagong bagay o ideya", fields: { it: 1, arts: 1 } },
+          { txt: "Helping someone achieve their goals", txtAlt: "Pagtulong sa isang tao na makamit ang kanilang mga layunin", fields: { education: 1, publicservice: 1 } },
+          { txt: "Successfully leading a major project", txtAlt: "Matagumpay na pamumuno sa isang malaking proyekto", fields: { engineering: 1, transport: 1 } },
+          { txt: "Creating something people enjoy or appreciate", txtAlt: "Paglikha ng bagay na magugustuhan o pahahalagahan ng ibang tao", fields: { arts: 1, fashion: 1 } }
         ]
       },
       {
-        cat: "Ambition",
-        q: "Where do you see yourself in 3 years of career progress?",
+        cat: "What Matters to You",
+        type: "multi",
+        q: "Which characteristics would you like your future career to have?",
+        qAlt: "Anong mga katangian ang gusto mong mayroon ang iyong magiging trabaho?",
         opts: [
-          { txt: "Team Lead, Supervisor, or People Manager", scores: { leadership: 2 } },
-          { txt: "Senior Specialist or Technical Expert", scores: { tech: 1, trade: 1 } },
-          { txt: "Freelancer / Business Owner", scores: { sales: 1, creative: 1 } },
-          { txt: "Stable corporate career with steady growth", scores: { customerService: 1, numeracy: 1 } }
+          { txt: "Opportunities to innovate", txtAlt: "Pagkakataong gumawa ng mga bagong ideya o solusyon", fields: { it: 1 } },
+          { txt: "Opportunities to be creative", txtAlt: "Pagkakataong maging creative", fields: { arts: 1 } },
+          { txt: "Opportunities to lead", txtAlt: "Pagkakataong mamuno", fields: { retail: 1 } },
+          { txt: "Opportunities to help people", txtAlt: "Pagkakataong tumulong sa mga tao", fields: { publicservice: 1, healthcare: 1 } },
+          { txt: "Opportunities to work with technology", txtAlt: "Pagkakataong gumamit ng technology", fields: { it: 1 } },
+          { txt: "Opportunities to travel", txtAlt: "Pagkakataong bumiyahe", fields: { transport: 1, hospitality: 1 } },
+          { txt: "Opportunities to work outdoors", txtAlt: "Pagkakataong magtrabaho sa labas", fields: { agriculture: 1 } },
+          { txt: "Opportunities to work independently", txtAlt: "Pagkakataong magtrabaho nang mag-isa", fields: {} },
+          { txt: "Opportunities to interact with many people", txtAlt: "Pagkakataong makipag-interact sa maraming tao", fields: { hospitality: 1, publicservice: 1 } },
+          { txt: "Opportunities to stay physically active", txtAlt: "Pagkakataong maging physically active", fields: { sports: 1 } },
+          { txt: "Opportunities to build or operate things", txtAlt: "Pagkakataong bumuo o mag-operate ng mga bagay", fields: { engineering: 1, transport: 1 } },
+          { txt: "Job stability", txtAlt: "Matatag na trabaho", fields: {} }
+        ]
+      },
+      {
+        cat: "What Matters to You",
+        type: "single",
+        q: "Which statement best describes what you currently want from a career?",
+        qAlt: "Aling pahayag ang pinakanaaangkop sa gusto mo sa isang career?",
+        opts: [
+          { txt: "I want to solve complex problems.", txtAlt: "Gusto kong lumutas ng mahihirap na problema.", fields: { science: 1, it: 1 } },
+          { txt: "I want to make a difference in people's lives.", txtAlt: "Gusto kong magkaroon ng magandang epekto sa buhay ng ibang tao.", fields: { healthcare: 1, publicservice: 1, education: 1 } },
+          { txt: "I want to create and express new ideas.", txtAlt: "Gusto kong lumikha at magpahayag ng mga bagong ideya.", fields: { arts: 1 } },
+          { txt: "I want to lead, influence, or build something.", txtAlt: "Gusto kong mamuno, manghikayat, o bumuo ng isang bagay.", fields: { retail: 1, engineering: 1 } },
+          { txt: "I want to work with technology, systems, or information.", txtAlt: "Gusto kong magtrabaho gamit ang technology, systems, o information.", fields: { it: 1, science: 1 } }
+        ]
+      },
+
+      // SECTION 5 — CAREER EXPLORATION
+      {
+        cat: "Career Exploration",
+        type: "multi",
+        q: "Which projects would you be interested in exploring?",
+        qAlt: "Aling mga proyekto ang gusto mong subukan o tuklasin?",
+        opts: [
+          { txt: "Developing a healthcare device", txtAlt: "Pagbuo ng healthcare device", fields: { healthcare: 1 } },
+          { txt: "Creating an educational program", txtAlt: "Paglikha ng educational program", fields: { education: 1 } },
+          { txt: "Developing an app or website", txtAlt: "Pagbuo ng app o website", fields: { it: 1 } },
+          { txt: "Designing a building, product, or industrial system", txtAlt: "Pagdidisenyo ng gusali, produkto, o industrial system", fields: { engineering: 1 } },
+          { txt: "Producing a film, video, or digital media project", txtAlt: "Paglikha ng pelikula, video, o digital media project", fields: { arts: 1 } },
+          { txt: "Researching a legal or social issue", txtAlt: "Pagsasaliksik tungkol sa legal o social issue", fields: { law: 1 } },
+          { txt: "Conducting scientific research", txtAlt: "Pagsasagawa ng scientific research", fields: { science: 1 } },
+          { txt: "Developing sustainable agricultural practices", txtAlt: "Pagbuo ng sustainable agricultural practices", fields: { agriculture: 1 } },
+          { txt: "Planning a tourism or hospitality event", txtAlt: "Pagpaplano ng tourism o hospitality event", fields: { hospitality: 1 } },
+          { txt: "Improving a delivery or transportation system", txtAlt: "Pagpapahusay ng delivery o transportation system", fields: { transport: 1 } },
+          { txt: "Organizing a community program", txtAlt: "Pag-oorganisa ng community program", fields: { publicservice: 1 } },
+          { txt: "Developing a sports or fitness program", txtAlt: "Pagbuo ng sports o fitness program", fields: { sports: 1 } },
+          { txt: "Launching a marketing campaign", txtAlt: "Pagbuo ng marketing campaign", fields: { retail: 1 } },
+          { txt: "Creating a fashion or beauty brand", txtAlt: "Paglikha ng fashion o beauty brand", fields: { fashion: 1 } }
+        ]
+      },
+      {
+        cat: "Career Exploration",
+        type: "single",
+        q: "Which project would you most likely volunteer to work on?",
+        qAlt: "Sa alin sa mga proyektong ito ang pinakamalamang na magboluntaryo kang tumulong?",
+        opts: [
+          { txt: "Developing a healthcare or wellness solution", txtAlt: "Pagbuo ng healthcare o wellness solution", fields: { healthcare: 1 } },
+          { txt: "Building a software or technology project", txtAlt: "Pagbuo ng software o technology project", fields: { it: 1 } },
+          { txt: "Conducting research on an environmental or scientific problem", txtAlt: "Pagsasaliksik tungkol sa environmental o scientific problem", fields: { science: 1, agriculture: 1 } },
+          { txt: "Organizing a community or educational program", txtAlt: "Pag-oorganisa ng community o educational program", fields: { publicservice: 1, education: 1 } },
+          { txt: "Developing a business or marketing project", txtAlt: "Pagbuo ng business o marketing project", fields: { retail: 1 } }
+        ]
+      },
+      {
+        cat: "Career Exploration",
+        type: "rating",
+        q: "How interested are you in projects that combine technology, engineering, and innovation?",
+        qAlt: "Gaano ka interesado sa mga proyektong pinagsasama ang technology, engineering, at innovation?",
+        fields: ["it", "engineering"],
+        opts: [
+          { txt: "1 — Not Interested at All", txtAlt: "Hindi interesado" },
+          { txt: "2 — Slightly Interested", txtAlt: "Bahagyang interesado" },
+          { txt: "3 — Moderately Interested", txtAlt: "Katamtamang interesado" },
+          { txt: "4 — Very Interested", txtAlt: "Lubos na interesado" },
+          { txt: "5 — Extremely Interested", txtAlt: "Talagang lubos na interesado" }
+        ]
+      },
+      {
+        cat: "Career Exploration",
+        type: "multi",
+        q: "Which subjects or areas would you be interested in learning more about?",
+        qAlt: "Anong mga subject o larangan ang gusto mong mas matutunan?",
+        opts: [
+          { txt: "Human biology and health", txtAlt: "Human biology at kalusugan", fields: { healthcare: 1 } },
+          { txt: "Teaching and learning", txtAlt: "Pagtuturo at pagkatuto", fields: { education: 1 } },
+          { txt: "Computer science and programming", txtAlt: "Computer science at programming", fields: { it: 1 } },
+          { txt: "Engineering and technology", txtAlt: "Engineering at technology", fields: { engineering: 1 } },
+          { txt: "Art, design, and media", txtAlt: "Art, design, at media", fields: { arts: 1 } },
+          { txt: "Law and justice", txtAlt: "Batas at justice", fields: { law: 1 } },
+          { txt: "Natural and physical sciences", txtAlt: "Natural at physical sciences", fields: { science: 1 } },
+          { txt: "Agriculture and environmental sustainability", txtAlt: "Agriculture at environmental sustainability", fields: { agriculture: 1 } },
+          { txt: "Tourism and hospitality", txtAlt: "Tourism at hospitality", fields: { hospitality: 1 } },
+          { txt: "Transportation and logistics", txtAlt: "Transportation at logistics", fields: { transport: 1 } },
+          { txt: "Society and community development", txtAlt: "Society at community development", fields: { publicservice: 1 } },
+          { txt: "Sports and physical performance", txtAlt: "Sports at physical performance", fields: { sports: 1 } },
+          { txt: "Business, marketing, and sales", txtAlt: "Business, marketing, at sales", fields: { retail: 1 } },
+          { txt: "Fashion, beauty, and personal care", txtAlt: "Fashion, beauty, at personal care", fields: { fashion: 1 } }
+        ]
+      },
+      {
+        cat: "Career Exploration",
+        type: "single",
+        q: "If you could spend one day learning from a professional, which would you choose?",
+        qAlt: "Kung maaari kang gumugol ng isang araw kasama ang isang professional upang matuto, sino ang pipiliin mo?",
+        opts: [
+          { txt: "Doctor, nurse, therapist, or healthcare professional", txtAlt: "Doctor, nurse, therapist, o healthcare professional", fields: { healthcare: 1 } },
+          { txt: "Engineer, architect, or construction professional", txtAlt: "Engineer, architect, o construction professional", fields: { engineering: 1 } },
+          { txt: "Software developer, data professional, or IT specialist", txtAlt: "Software developer, data professional, o IT specialist", fields: { it: 1 } },
+          { txt: "Scientist or researcher", txtAlt: "Scientist o researcher", fields: { science: 1 } },
+          { txt: "Designer, artist, or media professional", txtAlt: "Designer, artist, o media professional", fields: { arts: 1 } }
+        ]
+      },
+
+      // SECTION 6 — FUTURE DIRECTION
+      {
+        cat: "Future Direction",
+        type: "multi",
+        q: "Which responsibilities would you enjoy having in a future job?",
+        qAlt: "Anong mga responsibilidad ang gusto mong magkaroon sa iyong magiging trabaho?",
+        opts: [
+          { txt: "Designing solutions", txtAlt: "Pagdidisenyo ng mga solusyon", fields: { engineering: 1, arts: 1 } },
+          { txt: "Managing people", txtAlt: "Pamamahala ng mga tao", fields: { retail: 1 } },
+          { txt: "Caring for others", txtAlt: "Pag-aalaga sa iba", fields: { healthcare: 1 } },
+          { txt: "Teaching or mentoring", txtAlt: "Pagtuturo o mentoring", fields: { education: 1 } },
+          { txt: "Conducting research", txtAlt: "Pagsasagawa ng research", fields: { science: 1 } },
+          { txt: "Operating technology or equipment", txtAlt: "Pagpapatakbo ng technology o equipment", fields: { it: 1, engineering: 1 } },
+          { txt: "Creating content", txtAlt: "Paglikha ng content", fields: { arts: 1 } },
+          { txt: "Managing business activities", txtAlt: "Pamamahala ng business activities", fields: { retail: 1 } },
+          { txt: "Planning schedules and logistics", txtAlt: "Pagpaplano ng schedules at logistics", fields: { transport: 1 } },
+          { txt: "Representing or advocating for others", txtAlt: "Pagre-represent o pagtatanggol sa kapakanan ng iba", fields: { law: 1 } },
+          { txt: "Working with natural resources", txtAlt: "Pagtatrabaho gamit ang natural resources", fields: { agriculture: 1 } },
+          { txt: "Training or coaching people", txtAlt: "Pagte-train o pagco-coach ng mga tao", fields: { sports: 1, education: 1 } },
+          { txt: "Selling or promoting products", txtAlt: "Pagbebenta o pagpo-promote ng products", fields: { retail: 1 } },
+          { txt: "Developing fashion, beauty, or personal-care products", txtAlt: "Pagbuo ng fashion, beauty, o personal-care products", fields: { fashion: 1 } }
+        ]
+      },
+      {
+        cat: "Future Direction",
+        type: "single",
+        q: "Imagine you received funding to start one project. Which would you choose?",
+        qAlt: "Isipin na nakatanggap ka ng pondo para magsimula ng isang proyekto. Alin ang pipiliin mo?",
+        opts: [
+          { txt: "A technology startup", txtAlt: "Technology startup", fields: { it: 1 } },
+          { txt: "A healthcare or wellness initiative", txtAlt: "Healthcare o wellness initiative", fields: { healthcare: 1 } },
+          { txt: "A creative studio or media company", txtAlt: "Creative studio o media company", fields: { arts: 1 } },
+          { txt: "An educational or community organization", txtAlt: "Educational o community organization", fields: { education: 1, publicservice: 1 } },
+          { txt: "An engineering, manufacturing, or construction project", txtAlt: "Engineering, manufacturing, o construction project", fields: { engineering: 1 } }
+        ]
+      },
+      {
+        cat: "Future Direction",
+        type: "rating",
+        q: "How interested are you in careers where you regularly communicate, interact, or negotiate with different people?",
+        qAlt: "Gaano ka interesado sa mga trabahong madalas kang makipag-usap, makipag-interact, o makipag-negotiate sa iba't ibang tao?",
+        fields: ["retail", "law", "hospitality"],
+        opts: [
+          { txt: "1 — Not Interested at All", txtAlt: "Hindi interesado" },
+          { txt: "2 — Slightly Interested", txtAlt: "Bahagyang interesado" },
+          { txt: "3 — Moderately Interested", txtAlt: "Katamtamang interesado" },
+          { txt: "4 — Very Interested", txtAlt: "Lubos na interesado" },
+          { txt: "5 — Extremely Interested", txtAlt: "Talagang lubos na interesado" }
+        ]
+      },
+      {
+        cat: "Future Direction",
+        type: "multi",
+        q: "Which statements sound most like you?",
+        qAlt: "Alin sa mga pahayag na ito ang pinakanaaangkop sa iyo?",
+        opts: [
+          { txt: "I enjoy figuring out how things work.", txtAlt: "Gusto kong alamin kung paano gumagana ang mga bagay.", fields: { engineering: 1, science: 1 } },
+          { txt: "I enjoy working with people.", txtAlt: "Gusto kong makipagtrabaho sa ibang tao.", fields: { hospitality: 1, publicservice: 1 } },
+          { txt: "I enjoy creating new things.", txtAlt: "Gusto kong lumikha ng mga bagong bagay.", fields: { arts: 1 } },
+          { txt: "I enjoy organizing complicated tasks.", txtAlt: "Gusto kong mag-organisa ng mahihirap o komplikadong gawain.", fields: { transport: 1 } },
+          { txt: "I enjoy leading others.", txtAlt: "Gusto kong mamuno sa iba.", fields: { retail: 1 } },
+          { txt: "I enjoy researching questions.", txtAlt: "Gusto kong magsaliksik.", fields: { science: 1 } },
+          { txt: "I enjoy working with technology.", txtAlt: "Gusto kong magtrabaho gamit ang technology.", fields: { it: 1 } },
+          { txt: "I enjoy working with my hands.", txtAlt: "Gusto kong gumawa ng mga bagay gamit ang aking mga kamay.", fields: { engineering: 1, agriculture: 1 } },
+          { txt: "I enjoy performing or entertaining.", txtAlt: "Gusto kong mag-perform o mag-entertain ng iba.", fields: { sports: 1, arts: 1 } },
+          { txt: "I enjoy helping communities.", txtAlt: "Gusto kong tumulong sa mga komunidad.", fields: { publicservice: 1 } },
+          { txt: "I enjoy persuading or influencing people.", txtAlt: "Gusto kong manghikayat o mang-impluwensya sa ibang tao.", fields: { retail: 1, law: 1 } },
+          { txt: "I enjoy being physically active.", txtAlt: "Gusto kong maging physically active.", fields: { sports: 1 } }
+        ]
+      },
+      {
+        cat: "Future Direction",
+        type: "single",
+        q: "If you had to choose one broad direction to explore right now, which would be most appealing?",
+        qAlt: "Kung pipili ka ng isang malawak na larangan na gusto mong tuklasin ngayon, alin ang pinakainteresado ka?",
+        opts: [
+          { txt: "People & Well-being", txtAlt: "Mga Tao at Kapakanan", fields: { healthcare: 1, education: 1, publicservice: 1, hospitality: 1 } },
+          { txt: "Technology & Innovation", txtAlt: "Technology at Innovation", fields: { it: 1, engineering: 1 } },
+          { txt: "Science & Discovery", txtAlt: "Science at Pagtuklas", fields: { science: 1, agriculture: 1 } },
+          { txt: "Business, Leadership & Enterprise", txtAlt: "Business, Leadership at Enterprise", fields: { retail: 1, transport: 1, law: 1 } },
+          { txt: "Creativity, Media & Lifestyle", txtAlt: "Creativity, Media at Lifestyle", fields: { arts: 1, fashion: 1, sports: 1 } }
         ]
       }
     ];
 
     const CAREER_PROFILES = [
       {
-        id: "bpo",
-        title: "BPO & Customer Experience Specialist",
-        salary: "₱18,000 – ₱32,000 / month",
-        nextStep: "Practice mock call spoken English scripts and improve typing speed to 45+ WPM.",
-        weights: { customerService: 0.4, communication: 0.4, tech: 0.2 },
-        companies: ["Concentrix", "Teleperformance", "Alorica"]
+        id: "healthcare",
+        title: "Healthcare & Medical Professions",
+        salary: "₱18,000 – ₱40,000 / month",
+        nextStep: "Pursue a caregiving, nursing assistant, or allied health NC II certificate and log clinical hours.",
+        weights: { customerService: 0.4, communication: 0.3, numeracy: 0.2, trade: 0.1 },
+        companies: ["St. Luke's Medical Center", "Makati Medical Center", "The Medical City"]
       },
       {
-        id: "tech",
-        title: "IT Support & Junior Web Developer",
+        id: "education",
+        title: "Education & Training",
+        salary: "₱16,000 – ₱30,000 / month",
+        nextStep: "Build a sample lesson plan and gain tutoring or classroom-assistant experience.",
+        weights: { communication: 0.5, leadership: 0.3, customerService: 0.2 },
+        companies: ["DepEd", "British Council Philippines", "Ateneo de Manila University"]
+      },
+      {
+        id: "it",
+        title: "Information Technology & Computer Science",
         salary: "₱22,000 – ₱45,000 / month",
-        nextStep: "Complete freeCodeCamp HTML/CSS/JS or Google IT Support Professional certificate.",
-        weights: { tech: 0.5, numeracy: 0.3, creative: 0.2 },
+        nextStep: "Complete freeCodeCamp HTML/CSS/JS or the Google IT Support Professional certificate.",
+        weights: { tech: 0.6, numeracy: 0.3, creative: 0.1 },
         companies: ["Globe Telecom", "Accenture", "Canva Philippines"]
       },
       {
-        id: "sales",
-        title: "Sales & Business Development Representative",
+        id: "engineering",
+        title: "Engineering & Construction",
+        salary: "₱20,000 – ₱42,000 / month",
+        nextStep: "Earn a TESDA trade certificate (electrical, welding, or civil works) and build a hands-on portfolio.",
+        weights: { trade: 0.5, numeracy: 0.3, tech: 0.2 },
+        companies: ["DMCI Holdings", "EEI Corporation", "Meralco"]
+      },
+      {
+        id: "arts",
+        title: "Arts, Design & Media",
+        salary: "₱18,000 – ₱35,000 / month",
+        nextStep: "Build a 5-item digital portfolio on Behance or Canva featuring your best creative work.",
+        weights: { creative: 0.6, communication: 0.2, tech: 0.2 },
+        companies: ["Canva Philippines", "ABS-CBN", "GMA Network"]
+      },
+      {
+        id: "law",
+        title: "Law & Legal Services",
+        salary: "₱20,000 – ₱38,000 / month",
+        nextStep: "Gain experience as a paralegal or legal assistant and sharpen research and writing skills.",
+        weights: { communication: 0.5, leadership: 0.3, numeracy: 0.2 },
+        companies: ["SyCip Salazar Hernandez & Gatmaitan", "Angara Abello Concepcion", "Integrated Bar of the Philippines"]
+      },
+      {
+        id: "science",
+        title: "Science & Research",
+        salary: "₱20,000 – ₱38,000 / month",
+        nextStep: "Practice data analysis in Excel or Google Sheets and look for lab-assistant or research internships.",
+        weights: { numeracy: 0.5, tech: 0.3, communication: 0.2 },
+        companies: ["DOST", "University of the Philippines", "San Miguel Corporation R&D"]
+      },
+      {
+        id: "agriculture",
+        title: "Agriculture, Food & Natural Resources",
+        salary: "₱16,000 – ₱30,000 / month",
+        nextStep: "Take a TESDA agri-processing or food safety course to move into supervisory roles.",
+        weights: { trade: 0.5, numeracy: 0.2, customerService: 0.2, leadership: 0.1 },
+        companies: ["San Miguel Foods", "Universal Robina Corporation", "Department of Agriculture"]
+      },
+      {
+        id: "hospitality",
+        title: "Hospitality, Tourism & Service Industry",
+        salary: "₱18,000 – ₱32,000 / month",
+        nextStep: "Practice mock guest-service scripts and improve spoken English fluency for front-desk or F&B roles.",
+        weights: { customerService: 0.5, communication: 0.3, sales: 0.2 },
+        companies: ["Ayala Land Hotels & Resorts", "Jollibee Foods Corp", "Philippine Airlines"]
+      },
+      {
+        id: "transport",
+        title: "Transport & Logistics",
+        salary: "₱18,000 – ₱32,000 / month",
+        nextStep: "Get familiar with warehouse or fleet-tracking software and basic inventory management.",
+        weights: { trade: 0.4, numeracy: 0.3, leadership: 0.3 },
+        companies: ["LBC Express", "2GO Group", "Lalamove Philippines"]
+      },
+      {
+        id: "publicservice",
+        title: "Public Service & Social Work",
+        salary: "₱16,000 – ₱30,000 / month",
+        nextStep: "Volunteer with a local government unit or NGO to build case-management and community experience.",
+        weights: { customerService: 0.4, communication: 0.3, leadership: 0.3 },
+        companies: ["DSWD", "Local Government Unit Offices", "Philippine Red Cross"]
+      },
+      {
+        id: "sports",
+        title: "Sports, Fitness & Entertainment",
+        salary: "₱16,000 – ₱30,000 / month",
+        nextStep: "Earn a fitness-coaching or events certificate and start assisting at local gyms or events.",
+        weights: { leadership: 0.3, communication: 0.3, creative: 0.2, customerService: 0.2 },
+        companies: ["Anytime Fitness PH", "SM Tickets / Events", "Philippine Sports Commission"]
+      },
+      {
+        id: "retail",
+        title: "Retail, Marketing & Sales",
         salary: "₱20,000 – ₱40,000 / month + Commissions",
         nextStep: "Study client objection handling techniques and basic CRM software usage.",
-        weights: { sales: 0.5, communication: 0.3, customerService: 0.2 },
-        companies: ["SM Investments", "Ayala Land", "GCash / Mynt"]
+        weights: { sales: 0.5, communication: 0.3, creative: 0.2 },
+        companies: ["SM Investments", "GCash / Mynt", "Unilever Philippines"]
       },
       {
-        id: "creative",
-        title: "Digital Media & Creative Design Associate",
-        salary: "₱18,000 – ₱35,000 / month",
-        nextStep: "Build a 5-item digital portfolio on Behance or Canva featuring social media designs.",
-        weights: { creative: 0.6, communication: 0.2, tech: 0.2 },
-        companies: ["Canva Philippines", "Abs-Cbn", "GMA Network"]
-      },
-      {
-        id: "admin",
-        title: "Administrative & Virtual Operations Assistant",
-        salary: "₱18,000 – ₱30,000 / month",
-        nextStep: "Master Google Sheets formulas, calendar management, and professional email writing.",
-        weights: { numeracy: 0.3, communication: 0.3, tech: 0.2, customerService: 0.2 },
-        companies: ["SM Investments", "Jollibee Foods Corp", "BDO Unibank"]
+        id: "fashion",
+        title: "Fashion, Beauty & Personal Care",
+        salary: "₱16,000 – ₱30,000 / month",
+        nextStep: "Build a portfolio of styling, makeup, or salon work and get certified in your specialty.",
+        weights: { creative: 0.5, customerService: 0.3, sales: 0.2 },
+        companies: ["Bench / Suyen Corporation", "The Face Shop PH", "David's Salon"]
       }
     ];
 
+    // NOTE: careerPath ties each listing to a CAREER_PROFILES.id so the results
+    // view can show only the jobs that belong to the jobseeker's matched career
+    // path (see the "Jobs matched to you" section below).
+    //
+    // Coverage is intentionally uneven for demo purposes: healthcare, education,
+    // it, engineering, arts, science, agriculture, hospitality, retail, and
+    // publicservice each have at least one listing below, while law, transport,
+    // sports, and fashion have none — so the "no open jobs in this path" empty
+    // state has real paths to show up on.
     let JOBS = [
       {
         id: 101,
@@ -875,7 +1151,8 @@
         location: "Quezon City / Hybrid",
         salary: "₱22,000 - ₱28,000",
         type: "Full-time",
-        reqSkill: "communication",
+        reqSkills: ["communication", "customerService"],
+        careerPath: "hospitality",
         setup: "Hybrid",
         description: "Handle inbound calls, chats, and emails for a US-based telecom client, resolving billing and account issues while hitting quality and CSAT targets."
       },
@@ -886,7 +1163,8 @@
         location: "Taguig City / Onsite",
         salary: "₱25,000 - ₱32,000",
         type: "Full-time",
-        reqSkill: "tech",
+        reqSkills: ["tech", "customerService"],
+        careerPath: "it",
         setup: "Onsite",
         description: "Provide first-line technical support to employees, troubleshoot hardware/software issues, and escalate unresolved tickets to the right IT team."
       },
@@ -897,7 +1175,8 @@
         location: "Makati / Remote",
         salary: "₱24,000 - ₱35,000",
         type: "Full-time",
-        reqSkill: "creative",
+        reqSkills: ["creative", "tech"],
+        careerPath: "arts",
         setup: "Remote",
         description: "Design social media graphics, marketing collateral, and templates for internal teams and clients, working closely with copywriters and brand leads."
       },
@@ -908,7 +1187,8 @@
         location: "Mandaluyong / Onsite",
         salary: "₱20,000 - ₱30,000 + Comm",
         type: "Full-time",
-        reqSkill: "sales",
+        reqSkills: ["sales", "communication"],
+        careerPath: "retail",
         setup: "Onsite",
         description: "Prospect and qualify leads, run property viewings, and guide buyers from first inquiry to closed sale, with uncapped commission on top of base pay."
       },
@@ -919,9 +1199,143 @@
         location: "Pasig City / Onsite",
         salary: "₱18,000 - ₱23,000",
         type: "Full-time",
-        reqSkill: "numeracy",
+        reqSkills: ["numeracy", "tech"],
+        careerPath: "science",
         setup: "Onsite",
         description: "Encode and reconcile transaction records, maintain accurate spreadsheets, and support the branch back-office team with day-to-day administrative tasks."
+      },
+      {
+        id: 106,
+        title: "Caregiver / Nursing Aide",
+        company: "St. Luke's Medical Center",
+        location: "Taguig City / Onsite",
+        salary: "₱18,000 - ₱24,000",
+        type: "Full-time",
+        reqSkills: ["customerService", "communication"],
+        careerPath: "healthcare",
+        setup: "Onsite",
+        description: "Assist nurses with day-to-day patient care and vitals monitoring, and provide compassionate support to patients and their families on the ward."
+      },
+      {
+        id: 107,
+        title: "Teaching Assistant / Tutor",
+        company: "DepEd",
+        location: "Manila / Onsite",
+        salary: "₱16,000 - ₱22,000",
+        type: "Full-time",
+        reqSkills: ["communication", "leadership"],
+        careerPath: "education",
+        setup: "Onsite",
+        description: "Support classroom teachers with lesson delivery and checking student work, and run small-group tutoring sessions for learners who need extra help."
+      },
+      {
+        id: 108,
+        title: "Junior Site Engineer",
+        company: "DMCI Holdings",
+        location: "Quezon City / Onsite",
+        salary: "₱24,000 - ₱34,000",
+        type: "Full-time",
+        reqSkills: ["trade", "numeracy"],
+        careerPath: "engineering",
+        setup: "Onsite",
+        description: "Assist project engineers with site inspections, quality checks, and basic technical drawings on active residential and commercial construction projects."
+      },
+      {
+        id: 109,
+        title: "Food Safety & QA Assistant",
+        company: "San Miguel Foods",
+        location: "Bulacan / Onsite",
+        salary: "₱18,000 - ₱26,000",
+        type: "Full-time",
+        reqSkills: ["trade", "numeracy"],
+        careerPath: "agriculture",
+        setup: "Onsite",
+        description: "Conduct routine quality and hygiene checks on the production line, log inspection results, and help enforce food-safety standards across the plant."
+      },
+      {
+        id: 110,
+        title: "Community Development Officer",
+        company: "DSWD",
+        location: "Pasay City / Onsite",
+        salary: "₱20,000 - ₱28,000",
+        type: "Full-time",
+        reqSkills: ["customerService", "communication"],
+        careerPath: "publicservice",
+        setup: "Onsite",
+        description: "Coordinate with local barangays to process social welfare applications, conduct home visits, and connect families with government assistance programs."
+      },
+      // --- Extra listings so IT, Science, and Healthcare each demo 3+ open jobs ---
+      {
+        id: 111,
+        title: "Junior Software Developer",
+        company: "Accenture",
+        location: "Taguig City / Hybrid",
+        salary: "₱28,000 - ₱40,000",
+        type: "Full-time",
+        reqSkills: ["tech", "numeracy"],
+        careerPath: "it",
+        setup: "Hybrid",
+        description: "Build and maintain internal web tools under a senior developer's guidance, write unit tests, and join code reviews as part of an agile delivery team."
+      },
+      {
+        id: 112,
+        title: "Web Support & QA Assistant",
+        company: "Canva Philippines",
+        location: "Makati / Remote",
+        salary: "₱23,000 - ₱30,000",
+        type: "Full-time",
+        reqSkills: ["tech", "communication"],
+        careerPath: "it",
+        setup: "Remote",
+        description: "Test new features before release, log bugs with clear reproduction steps, and help troubleshoot user-reported issues alongside the engineering team."
+      },
+      {
+        id: 113,
+        title: "Research Assistant",
+        company: "DOST",
+        location: "Taguig City / Onsite",
+        salary: "₱20,000 - ₱28,000",
+        type: "Full-time",
+        reqSkills: ["numeracy", "tech"],
+        careerPath: "science",
+        setup: "Onsite",
+        description: "Support ongoing research projects by gathering and organizing data, running basic statistical analysis, and helping prepare reports for senior researchers."
+      },
+      {
+        id: 114,
+        title: "Laboratory Technician",
+        company: "University of the Philippines",
+        location: "Quezon City / Onsite",
+        salary: "₱19,000 - ₱26,000",
+        type: "Full-time",
+        reqSkills: ["tech", "numeracy"],
+        careerPath: "science",
+        setup: "Onsite",
+        description: "Prepare samples, operate and maintain lab equipment, and record experiment results accurately for faculty-led research studies."
+      },
+      {
+        id: 115,
+        title: "Medical Records Clerk",
+        company: "Makati Medical Center",
+        location: "Makati / Onsite",
+        salary: "₱17,000 - ₱22,000",
+        type: "Full-time",
+        reqSkills: ["numeracy", "tech"],
+        careerPath: "healthcare",
+        setup: "Onsite",
+        description: "Maintain accurate patient records, encode admission and discharge data, and ensure documentation complies with hospital and privacy standards."
+      },
+      {
+        id: 116,
+        title: "Patient Care Coordinator",
+        company: "The Medical City",
+        location: "Pasig City / Onsite",
+        salary: "₱19,000 - ₱25,000",
+        type: "Full-time",
+        reqSkills: ["communication", "customerService"],
+        careerPath: "healthcare",
+        setup: "Onsite",
+        description: "Schedule appointments, guide patients and families through admission steps, and act as the main point of contact between patients and clinical staff."
       }
     ];
 
@@ -960,6 +1374,76 @@
         benefits: ["Low-interest Employee Loans", "HMO Healthcare", "Retirement Plan", "13th Month + Mid-year Bonuses"],
         description: "BDO Unibank is the largest bank in the Philippines providing full banking services.",
         link: "https://www.google.com/search?q=BDO+Unibank+Careers"
+      },
+      "St. Luke's Medical Center": {
+        industry: "Healthcare & Hospitals",
+        size: "6,000+ employees",
+        benefits: ["HMO + Dependents Coverage", "Continuing Education Support", "Night Differential Pay", "13th Month Pay"],
+        description: "St. Luke's Medical Center is one of the leading tertiary hospitals in the Philippines.",
+        link: "https://www.google.com/search?q=St.+Luke%27s+Medical+Center+Careers"
+      },
+      "DepEd": {
+        industry: "Public Education",
+        size: "800,000+ employees nationwide",
+        benefits: ["Government Employee Benefits (GSIS)", "PhilHealth & Pag-IBIG", "13th Month Pay", "Paid Leave Credits"],
+        description: "The Department of Education oversees the Philippine basic education system.",
+        link: "https://www.google.com/search?q=DepEd+Careers"
+      },
+      "DMCI Holdings": {
+        industry: "Construction & Real Estate",
+        size: "10,000+ employees",
+        benefits: ["HMO + Dependents", "Site/Field Allowance", "13th Month Pay", "SSS, PhilHealth, Pag-IBIG"],
+        description: "DMCI Holdings is a diversified Filipino conglomerate with major construction and property arms.",
+        link: "https://www.google.com/search?q=DMCI+Holdings+Careers"
+      },
+      "San Miguel Foods": {
+        industry: "Food Manufacturing & Agribusiness",
+        size: "15,000+ employees",
+        benefits: ["HMO Coverage", "Rice & Meal Subsidy", "13th Month Pay", "Retirement Plan"],
+        description: "San Miguel Foods is one of the largest integrated food companies in the Philippines.",
+        link: "https://www.google.com/search?q=San+Miguel+Foods+Careers"
+      },
+      "DSWD": {
+        industry: "Public Social Welfare Services",
+        size: "20,000+ employees nationwide",
+        benefits: ["Government Employee Benefits (GSIS)", "PhilHealth & Pag-IBIG", "13th Month Pay", "Field/Hazard Allowance"],
+        description: "The Department of Social Welfare and Development leads the country's social protection programs.",
+        link: "https://www.google.com/search?q=DSWD+Careers"
+      },
+      "Accenture": {
+        industry: "IT Services & Consulting",
+        size: "60,000+ employees in PH",
+        benefits: ["HMO + Dependents Coverage", "Learning & Certification Support", "13th Month Pay & Bonuses", "Hybrid Work Options"],
+        description: "Accenture is a global professional services company providing technology, consulting, and outsourcing solutions.",
+        link: "https://www.google.com/search?q=Accenture+Philippines+Careers"
+      },
+      "DOST": {
+        industry: "Science & Technology (Government)",
+        size: "5,000+ employees nationwide",
+        benefits: ["Government Employee Benefits (GSIS)", "PhilHealth & Pag-IBIG", "13th Month Pay", "Research Grants & Scholarships"],
+        description: "The Department of Science and Technology leads the country's science, technology, and innovation programs.",
+        link: "https://www.google.com/search?q=DOST+Careers"
+      },
+      "University of the Philippines": {
+        industry: "Higher Education & Research",
+        size: "10,000+ employees across campuses",
+        benefits: ["Government Employee Benefits (GSIS)", "PhilHealth & Pag-IBIG", "13th Month Pay", "Access to Research Facilities"],
+        description: "The University of the Philippines is the country's national university and a leading research institution.",
+        link: "https://www.google.com/search?q=University+of+the+Philippines+Careers"
+      },
+      "Makati Medical Center": {
+        industry: "Healthcare & Hospitals",
+        size: "4,000+ employees",
+        benefits: ["HMO + Dependents Coverage", "Night Differential Pay", "13th Month Pay", "Continuing Education Support"],
+        description: "Makati Medical Center is a leading private tertiary hospital in Metro Manila.",
+        link: "https://www.google.com/search?q=Makati+Medical+Center+Careers"
+      },
+      "The Medical City": {
+        industry: "Healthcare & Hospitals",
+        size: "5,000+ employees",
+        benefits: ["HMO + Dependents Coverage", "Night Differential Pay", "13th Month Pay", "Continuing Education Support"],
+        description: "The Medical City is a major private hospital network known for specialized tertiary care.",
+        link: "https://www.google.com/search?q=The+Medical+City+Careers"
       }
     };
 
@@ -977,19 +1461,19 @@
     let CANDIDATE_POOL = [
       { id: "c1", name: "Mika Santos", bestFitTitle: "BPO & Customer Experience Specialist",
         skills: { ...EMPTY_SKILLS, communication: 5, customerService: 5, tech: 2 },
-        preferences: { setup: "Hybrid", relocate: "Regional", salary: "₱18k-₱25k", edu: "College Degree" } },
+        preferences: { setup: "Hybrid", relocate: "Regional", edu: "College Degree" } },
       { id: "c2", name: "Carlo Reyes", bestFitTitle: "IT Support & Junior Web Developer",
         skills: { ...EMPTY_SKILLS, tech: 5, numeracy: 4, creative: 2 },
-        preferences: { setup: "Remote", relocate: "Anywhere", salary: "₱25k-₱35k", edu: "TESDA/Vocational" } },
+        preferences: { setup: "Remote", relocate: "Anywhere", edu: "TESDA/Vocational" } },
       { id: "c3", name: "Angel Cruz", bestFitTitle: "Digital Media & Creative Design Associate",
         skills: { ...EMPTY_SKILLS, creative: 5, communication: 3, tech: 2 },
-        preferences: { setup: "Remote", relocate: "Local", salary: "₱18k-₱25k", edu: "College Degree" } },
+        preferences: { setup: "Remote", relocate: "Local", edu: "College Degree" } },
       { id: "c4", name: "Paolo Villanueva", bestFitTitle: "Sales & Business Development Representative",
         skills: { ...EMPTY_SKILLS, sales: 5, communication: 4, leadership: 3 },
-        preferences: { setup: "Onsite", relocate: "Anywhere", salary: "₱25k-₱35k", edu: "College Degree" } },
+        preferences: { setup: "Onsite", relocate: "Anywhere", edu: "College Degree" } },
       { id: "c5", name: "Jhoanna Dizon", bestFitTitle: "Administrative & Virtual Operations Assistant",
         skills: { ...EMPTY_SKILLS, numeracy: 5, tech: 3, communication: 3 },
-        preferences: { setup: "Hybrid", relocate: "Regional", salary: "₱18k-₱25k", edu: "Undergraduate" } }
+        preferences: { setup: "Hybrid", relocate: "Regional", edu: "Undergraduate" } }
     ];
 
     /* Mock courses offered by training providers — seeded, plus whatever new
@@ -1047,9 +1531,10 @@
     let state = {
       portal: null, // null | "seeker" | "company" | "training"
       view: "home", // home | portal | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyApplications | trainingHome | trainingGaps | trainingOfferCourse | trainingApplications
-      currentQ: 0,
+      currentQ: 0, // question index; quiz starts directly at Q1
       xp: 0,
-      answers: {},
+      answers: {}, // per-question: number (single/rating) or array of numbers (multi)
+      interests: makeEmptyInterests(), // raw interest score per career field, derived from answers
       skills: {
         communication: 1,
         tech: 1,
@@ -1063,8 +1548,7 @@
       preferences: {
         setup: "Open",
         relocate: "Regional",
-        salary: "₱18k-₱25k",
-        shift: "Day",
+        shift: "Flexible",
         edu: "College Degree"
       },
       appliedJobs: {},
@@ -1077,7 +1561,7 @@
       openFieldDropdown: null, // id of the currently open custom-select dropdown (job/course form fields)
 
       // --- Companies portal ---
-      jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null },
+      jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkills: ["communication"], careerPath: "", setup: "Onsite", description: "", editId: null },
       jobDraftErrors: {},
       selectedApplicationsJobId: null,
       pendingDeleteJobId: null, // job id whose delete icon is awaiting a confirming second click
@@ -1096,29 +1580,121 @@
        CORE CALCULATIONS & UTILITIES
        ========================================================================== */
 
-    function answerQuestion(optIndex) {
-      const q = QUESTIONS[state.currentQ];
-      const opt = q.opts[optIndex];
+    // How strongly each question type's selection counts toward a tagged
+    // career field. A forced single choice says more than one checkbox among
+    // many, and a rating's own 1-5 value stands in for its weight.
+    const MULTI_FIELD_WEIGHT = 2;
+    const SINGLE_FIELD_WEIGHT = 4;
 
+    function makeEmptyInterests() {
+      const obj = {};
+      CAREER_PROFILES.forEach(p => { obj[p.id] = 0; });
+      return obj;
+    }
+
+    // Starts (or restarts) the interest assessment from the intro panel.
+    function startAssessment() {
+      state.currentQ = 0;
+      render();
+    }
+
+    // Sets one preference (setup/salary/shift/edu) from the pill picker on
+    // the intro panel. Doesn't touch interest scores — these are separate
+    // from the 30-question assessment and just seed state.preferences,
+    // which the results sidebar and "Your Preferences" card already read.
+    function setPreference(key, value) {
+      state.preferences[key] = value;
+      render();
+    }
+
+    // Records a single-select or rating answer, then auto-advances to the
+    // next question (or stays put on the last question so Submit can show).
+    function answerQuestion(optIndex) {
       state.answers[state.currentQ] = optIndex;
       state.xp += 10;
-
-      // Apply Skill Scores
-      if (opt.scores) {
-        for (let sk in opt.scores) {
-          state.skills[sk] = Math.min(5, state.skills[sk] + opt.scores[sk]);
-        }
-      }
-
-      // Apply Preferences
-      if (opt.pref) {
-        state.preferences = { ...state.preferences, ...opt.pref };
-      }
+      recomputeScores();
 
       if (state.currentQ < QUESTIONS.length - 1) {
         state.currentQ++;
       }
       render();
+    }
+
+    // Toggles one checkbox on a "select all that apply" question. Doesn't
+    // auto-advance — the person can pick more than one before continuing.
+    function toggleMultiAnswer(optIndex) {
+      const current = Array.isArray(state.answers[state.currentQ]) ? state.answers[state.currentQ] : [];
+      const idx = current.indexOf(optIndex);
+      const next = idx >= 0 ? current.filter(i => i !== optIndex) : [...current, optIndex];
+      state.answers[state.currentQ] = next;
+      state.xp = next.length && idx < 0 ? state.xp + 10 : state.xp;
+      recomputeScores();
+      render();
+    }
+
+    // Moves forward from a multi-select question once at least one box is
+    // checked (called by the "Continue" button in the quiz footer).
+    function advanceQuiz() {
+      if (state.currentQ < QUESTIONS.length - 1) {
+        state.currentQ++;
+        render();
+      }
+    }
+
+    // Recomputes state.interests (raw score per career field) from scratch
+    // based on every answer currently stored, then derives state.skills from
+    // those interests so the rest of the app (job/course matching, the
+    // sidebar skill profile) keeps working off the same 8 skill dimensions
+    // it always has. Recomputing from scratch (rather than incrementing on
+    // each click) means going back and changing an answer, or unchecking a
+    // box, is always reflected correctly with no double-counting.
+    function recomputeScores() {
+      const interests = makeEmptyInterests();
+
+      QUESTIONS.forEach((q, i) => {
+        const ans = state.answers[i];
+        if (ans === undefined) return;
+
+        if (q.type === "rating") {
+          const opt = q.opts[ans];
+          if (!opt) return;
+          const value = ans + 1; // option index 0-4 -> rating 1-5
+          (q.fields || []).forEach(f => { interests[f] = (interests[f] || 0) + value; });
+        } else if (q.type === "multi") {
+          (Array.isArray(ans) ? ans : []).forEach(optIdx => {
+            const opt = q.opts[optIdx];
+            if (!opt || !opt.fields) return;
+            for (const f in opt.fields) {
+              interests[f] = (interests[f] || 0) + MULTI_FIELD_WEIGHT * opt.fields[f];
+            }
+          });
+        } else { // single
+          const opt = q.opts[ans];
+          if (!opt || !opt.fields) return;
+          for (const f in opt.fields) {
+            interests[f] = (interests[f] || 0) + SINGLE_FIELD_WEIGHT * opt.fields[f];
+          }
+        }
+      });
+
+      state.interests = interests;
+
+      // Derive the 8 legacy skill dimensions from field interest, using each
+      // career profile's own skill weighting so job/course matching and the
+      // "Your Skill Profile" sidebar stay meaningful without a separate quiz.
+      const skillRaw = { communication: 0, tech: 0, customerService: 0, sales: 0, trade: 0, creative: 0, leadership: 0, numeracy: 0 };
+      CAREER_PROFILES.forEach(prof => {
+        const val = interests[prof.id] || 0;
+        for (const sk in prof.weights) {
+          skillRaw[sk] = (skillRaw[sk] || 0) + val * prof.weights[sk];
+        }
+      });
+      const maxRaw = Math.max(1, ...Object.values(skillRaw));
+      const skills = {};
+      Object.keys(skillRaw).forEach(sk => {
+        skills[sk] = Math.max(1, Math.min(5, Math.round(1 + 4 * (skillRaw[sk] / maxRaw))));
+      });
+      state.skills = skills;
     }
 
     // Called from the "Submit Quiz" button that appears once the final
@@ -1145,18 +1721,63 @@
     }
 
     // TEMP: dev-only shortcut that answers any unanswered questions with their
-    // first option and jumps straight to the results/profile view, skipping
-    // the rest of the quiz. Delete this function along with its button in the
-    // quiz view (search "TEMP") when you're done testing.
+    // first option (or, for multi-select, just the first checkbox) and jumps
+    // straight to the results/profile view, skipping the rest of the quiz.
+    // Delete this function along with its button in the quiz view (search
+    // "TEMP") when you're done testing.
     function skipQuizToProfile() {
       QUESTIONS.forEach((q, i) => {
-        if (state.answers[i] === undefined) state.answers[i] = 0;
+        if (state.answers[i] === undefined) {
+          state.answers[i] = q.type === "multi" ? [0] : 0;
+        }
       });
+      recomputeScores();
+      submitQuiz();
+    }
+
+    // TEMP: dev-only shortcut that skips the quiz entirely and jumps straight
+    // to the results/profile view for a SPECIFIC career path, rather than
+    // whatever the (dummy) answers would compute. Builds a synthetic interests
+    // object that heavily favors the chosen path, then reuses the same skill-
+    // derivation math as a normal quiz submission so skills/job-matches still
+    // look consistent. Delete alongside skipQuizToProfile() (search "TEMP")
+    // when you're done testing.
+    function skipQuizToPath(pathId) {
+      const profile = CAREER_PROFILES.find(p => p.id === pathId);
+      if (!profile) return;
+
+      const interests = makeEmptyInterests();
+      CAREER_PROFILES.forEach(p => { interests[p.id] = (p.id === pathId) ? 100 : 0; });
+      state.interests = interests;
+
+      const skillRaw = { communication: 0, tech: 0, customerService: 0, sales: 0, trade: 0, creative: 0, leadership: 0, numeracy: 0 };
+      CAREER_PROFILES.forEach(p => {
+        const val = interests[p.id] || 0;
+        for (const sk in p.weights) {
+          skillRaw[sk] = (skillRaw[sk] || 0) + val * p.weights[sk];
+        }
+      });
+      const maxRaw = Math.max(1, ...Object.values(skillRaw));
+      const skills = {};
+      Object.keys(skillRaw).forEach(sk => {
+        skills[sk] = Math.max(1, Math.min(5, Math.round(1 + 4 * (skillRaw[sk] / maxRaw))));
+      });
+      state.skills = skills;
+
+      // Mark every question as "answered" so re-entering the quiz later
+      // (Back button, retake, etc.) doesn't behave oddly with a half-empty
+      // answers array.
+      QUESTIONS.forEach((q, i) => {
+        if (state.answers[i] === undefined) {
+          state.answers[i] = q.type === "multi" ? [0] : 0;
+        }
+      });
+
       submitQuiz();
     }
 
     function prevQuestion() {
-      if (state.currentQ > 0) {
+      if (state.currentQ > -1) {
         state.currentQ--;
         render();
       }
@@ -1173,8 +1794,9 @@
         currentQ: 0,
         xp: 0,
         answers: {},
+        interests: makeEmptyInterests(),
         skills: { communication: 1, tech: 1, customerService: 1, sales: 1, trade: 1, creative: 1, leadership: 1, numeracy: 1 },
-        preferences: { setup: "Open", relocate: "Regional", salary: "₱18k-₱25k", shift: "Day", edu: "College Degree" },
+        preferences: { setup: "Open", relocate: "Regional", shift: "Flexible", edu: "College Degree" },
         appliedJobs: {},
         selectedCompanyModal: null,
         selectedCourseModal: null,
@@ -1183,7 +1805,7 @@
         applyReviewJob: null,
         pendingApplyJobId: null,
         openFieldDropdown: null,
-        jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null },
+        jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkills: ["communication"], careerPath: "", setup: "Onsite", description: "", editId: null },
         jobDraftErrors: {},
         selectedApplicationsJobId: null,
         pendingDeleteJobId: null,
@@ -1229,15 +1851,15 @@
       render();
     }
 
+    // The career field with the highest accumulated interest score wins —
+    // each CAREER_PROFILES entry's id matches a field id directly, so no
+    // weighting step is needed here (that only happens for deriving skills).
     function calculateTopFit() {
       let bestProfile = CAREER_PROFILES[0];
-      let highestScore = 0;
+      let highestScore = -1;
 
       CAREER_PROFILES.forEach(prof => {
-        let score = 0;
-        for (let sk in prof.weights) {
-          score += (state.skills[sk] || 1) * prof.weights[sk];
-        }
+        const score = state.interests[prof.id] || 0;
         if (score > highestScore) {
           highestScore = score;
           bestProfile = prof;
@@ -1248,28 +1870,21 @@
     }
 
     // Match percentage for the top-fit career path, shown in the ring on the
-    // "Your Career Path" profile card — the person's weighted score against
-    // that profile, expressed as a share of the max possible weighted score.
+    // "Your Career Path" profile card — the winning field's share of the
+    // total interest points earned across all 14 fields.
     function getTopFitPercentage() {
       const best = calculateTopFit();
-      let score = 0;
-      let maxScore = 0;
-      for (let sk in best.weights) {
-        score += (state.skills[sk] || 1) * best.weights[sk];
-        maxScore += 5 * best.weights[sk];
-      }
-      if (maxScore <= 0) return 0;
-      return Math.max(1, Math.min(99, Math.round((score / maxScore) * 100)));
+      const total = Object.values(state.interests).reduce((a, b) => a + b, 0);
+      if (total <= 0) return 0;
+      return Math.max(1, Math.min(99, Math.round(((state.interests[best.id] || 0) / total) * 100)));
     }
 
     function getTopCareerMatches(n) {
-      return CAREER_PROFILES.map(prof => {
-        let score = 0;
-        for (let sk in prof.weights) {
-          score += (state.skills[sk] || 1) * prof.weights[sk];
-        }
-        return { profile: prof, score };
-      }).sort((a, b) => b.score - a.score).slice(0, n).map(item => item.profile);
+      return CAREER_PROFILES
+        .map(prof => ({ profile: prof, score: state.interests[prof.id] || 0 }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, n)
+        .map(item => item.profile);
     }
 
     function getSkillLevel(score) {
@@ -1287,9 +1902,27 @@
       return { strengths, gaps };
     }
 
+    // Derives a salary range purely from real, currently-open postings in a
+    // career path (min of all posted lows, max of all posted highs). Returns
+    // null when there's no open posting to derive it from — no guessing off
+    // the static per-profile estimate.
+    function getEstimatedSalaryRange(pathId) {
+      const openJobs = JOBS.filter(job => job.careerPath === pathId && !job.closed);
+      let lo = Infinity, hi = -Infinity;
+      openJobs.forEach(job => {
+        const nums = (job.salary.match(/[\d,]+/g) || []).map(n => parseInt(n.replace(/,/g, ""), 10));
+        if (!nums.length) return;
+        lo = Math.min(lo, Math.min(...nums));
+        hi = Math.max(hi, Math.max(...nums));
+      });
+      if (!isFinite(lo) || !isFinite(hi)) return null;
+      return `₱${lo.toLocaleString()} – ₱${hi.toLocaleString()} / month`;
+    }
+
     function calcJobMatch(job) {
-      const reqVal = state.skills[job.reqSkill] || 1;
-      let match = Math.round((reqVal / 5) * 100);
+      const reqSkills = job.reqSkills && job.reqSkills.length ? job.reqSkills : ["communication"];
+      const avgVal = reqSkills.reduce((sum, s) => sum + (state.skills[s] || 1), 0) / reqSkills.length;
+      let match = Math.round((avgVal / 5) * 100);
       if (job.setup === state.preferences.setup) match += 10;
       return Math.min(98, Math.max(55, match));
     }
@@ -1373,22 +2006,23 @@ ${r.strengths.join(", ")}
       const topSkills = Object.entries(state.skills)
         .filter(([, val]) => val >= 3)
         .sort((a, b) => b[1] - a[1])
-        .map(([key]) => key.charAt(0).toUpperCase() + key.slice(1));
+        .map(([key]) => SKILL_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1));
       const roles = getTopCareerMatches(3).map(p => p.title);
+      const strengthLabels = strengths.map(s => SKILL_LABELS[s] || s.charAt(0).toUpperCase() + s.slice(1));
 
       return {
         name: "",
         email: "",
         phone: "",
         location: "",
-        objective: `Entry-level jobseeker pursuing a career in ${best.title}, bringing strengths in ${strengths.join(", ")}. Seeking a ${state.preferences.setup.toLowerCase()} role around ${state.preferences.salary} where I can grow professionally.`,
+        objective: `Entry-level jobseeker pursuing a career in ${best.title}, bringing strengths in ${strengthLabels.join(", ")}. Seeking a ${state.preferences.setup.toLowerCase()} role where I can grow professionally.`,
         skills: topSkills.length ? topSkills : ["Communication"],
         education: state.preferences.edu,
         experience: [],
         certifications: [],
         projects: [],
         recommendedRoles: roles,
-        strengths: strengths.map(s => s.charAt(0).toUpperCase() + s.slice(1))
+        strengths: strengthLabels
       };
     }
 
@@ -1637,7 +2271,7 @@ ${r.strengths.join(", ")}
             <div class="profile-avatar">${initials || ""}</div>
             <div>
               <div class="profile-id-name">${companyName}</div>
-              <div class="profile-id-role"><span class="portal-role-tag company">Company Portal</span>Hiring dashboard</div>
+              <div class="profile-id-role"><span class="portal-role-tag company">Company Dashboard</span></div>
             </div>
           </div>
           <div class="quick-stats-row">
@@ -1650,15 +2284,54 @@ ${r.strengths.join(", ")}
       `;
     }
 
+    // Turns a plain company-entered range like "15000-17000" or "15000 - 17000"
+    // into a formatted "₱15,000 - ₱17,000" string. Returns null if the input
+    // doesn't parse as two numbers, so the caller can show a validation error
+    // instead of silently saving something malformed.
+    function formatSalaryRange(raw) {
+      const cleaned = (raw || "").trim();
+      if (!cleaned) return { value: null, error: null }; // empty is allowed (falls back to "Negotiable")
+      const m = cleaned.match(/^(\d[\d,]*)\s*-\s*(\d[\d,]*)$/);
+      if (!m) return { value: null, error: "Enter a plain number range, e.g. 15000-17000." };
+      const lo = parseInt(m[1].replace(/,/g, ""), 10);
+      const hi = parseInt(m[2].replace(/,/g, ""), 10);
+      if (hi < lo) return { value: null, error: "The second number should be higher than the first." };
+      return { value: `₱${lo.toLocaleString()} - ₱${hi.toLocaleString()}`, error: null };
+    }
+
+    // Same idea as formatSalaryRange but for a single fixed course price
+    // (not a range): plain number in, "₱2,500" out. "Free" (any casing) is
+    // accepted as-is, and entering 0 is treated as "Free" too since a ₱0
+    // course is a free course.
+    function formatCoursePrice(raw) {
+      const cleaned = (raw || "").trim();
+      if (!cleaned) return { value: null, error: null }; // empty is allowed (falls back to "Free")
+      if (/^free$/i.test(cleaned)) return { value: "Free", error: null };
+      const m = cleaned.match(/^\d[\d,]*$/);
+      if (!m) return { value: null, error: "Enter a plain number, e.g. 1500, or \"Free\"." };
+      const amount = parseInt(cleaned.replace(/,/g, ""), 10);
+      if (amount === 0) return { value: "Free", error: null };
+      return { value: `₱${amount.toLocaleString()}`, error: null };
+    }
+
+    // Reverses formatSalaryRange for editing: turns a stored "₱22,000 - ₱28,000"
+    // back into plain "22000-28000" so the edit form always shows/accepts the
+    // same plain-number format, even for older postings or "Negotiable".
+    function toPlainSalaryInput(salaryStr) {
+      const nums = (salaryStr || "").match(/[\d,]+/g);
+      if (!nums || nums.length < 2) return "";
+      return `${nums[0].replace(/,/g, "")}-${nums[1].replace(/,/g, "")}`;
+    }
+
     function openPostJobForm(jobId) {
       state.jobDraftErrors = {};
       if (jobId) {
         const job = JOBS.find(j => j.id === jobId);
         state.jobDraft = job
-          ? { company: job.company, title: job.title, location: job.location, salary: job.salary, type: job.type, reqSkill: job.reqSkill, setup: job.setup, description: job.description || "", editId: job.id }
-          : { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
+          ? { company: job.company, title: job.title, location: job.location, salary: toPlainSalaryInput(job.salary), type: job.type, reqSkills: [...job.reqSkills], careerPath: job.careerPath || "", setup: job.setup, description: job.description || "", editId: job.id }
+          : { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkills: ["communication"], careerPath: "", setup: "Onsite", description: "", editId: null };
       } else {
-        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
+        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkills: ["communication"], careerPath: "", setup: "Onsite", description: "", editId: null };
       }
       state.view = "companyPostJob";
       render();
@@ -1669,6 +2342,10 @@ ${r.strengths.join(", ")}
       const errors = {};
       if (!d.company.trim()) errors.company = "Company name is required.";
       if (!d.title.trim()) errors.title = "Job title is required.";
+      if (!d.reqSkills || !d.reqSkills.length) errors.reqSkills = "Select at least one required skill.";
+      if (!d.careerPath) errors.careerPath = "Select the career path this job belongs to.";
+      const salaryResult = formatSalaryRange(d.salary);
+      if (salaryResult.error) errors.salary = salaryResult.error;
       state.jobDraftErrors = errors;
       if (Object.keys(errors).length) {
         render();
@@ -1680,13 +2357,26 @@ ${r.strengths.join(", ")}
           job.title = d.title.trim();
           job.company = d.company.trim();
           job.location = d.location.trim() || "Philippines";
-          job.salary = d.salary.trim() || "Negotiable";
+          job.salary = salaryResult.value || "Negotiable";
           job.type = d.type;
-          job.reqSkill = d.reqSkill;
+          job.reqSkills = [...d.reqSkills];
+          job.careerPath = d.careerPath;
           job.setup = d.setup;
           job.description = d.description.trim();
+          // Editing can rename the company (or the job's original company may
+          // never have gotten an entry). Make sure a COMPANIES record exists
+          // so "View company" keeps working after an edit, same as on create.
+          if (!COMPANIES[job.company]) {
+            COMPANIES[job.company] = {
+              industry: "Employer on JobStart",
+              size: "Growing team",
+              benefits: ["Details shared during interview"],
+              description: `${job.company} is hiring through JobStart.`,
+              link: "https://www.google.com/search?q=" + encodeURIComponent(job.company + " Careers")
+            };
+          }
         }
-        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
+        state.jobDraft = { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkills: ["communication"], careerPath: "", setup: "Onsite", description: "", editId: null };
         state.jobDraftErrors = {};
         state.view = "companyHome";
         render();
@@ -1697,9 +2387,10 @@ ${r.strengths.join(", ")}
         title: d.title.trim(),
         company: d.company.trim(),
         location: d.location.trim() || "Philippines",
-        salary: d.salary.trim() || "Negotiable",
+        salary: salaryResult.value || "Negotiable",
         type: d.type,
-        reqSkill: d.reqSkill,
+        reqSkills: [...d.reqSkills],
+        careerPath: d.careerPath,
         setup: d.setup,
         description: d.description.trim(),
         companyPosted: true
@@ -1714,7 +2405,7 @@ ${r.strengths.join(", ")}
           link: "https://www.google.com/search?q=" + encodeURIComponent(newJob.company + " Careers")
         };
       }
-      state.jobDraft = { company: d.company, title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", description: "", editId: null };
+      state.jobDraft = { company: d.company, title: "", location: "", salary: "", type: "Full-time", reqSkills: ["communication"], careerPath: "", setup: "Onsite", description: "", editId: null };
       state.jobDraftErrors = {};
       state.view = "companyHome";
       render();
@@ -1735,7 +2426,7 @@ ${r.strengths.join(", ")}
       if (state.selectedApplicationsJobId === jobId) state.selectedApplicationsJobId = null;
       if (state.selectedJobModal && state.selectedJobModal.id === jobId) state.selectedJobModal = null;
       if (state.jobDraft && state.jobDraft.editId === jobId) {
-        state.jobDraft = { company: state.jobDraft.company, title: "", location: "", salary: "", type: "Full-time", reqSkill: "communication", setup: "Onsite", editId: null };
+        state.jobDraft = { company: state.jobDraft.company, title: "", location: "", salary: "", type: "Full-time", reqSkills: ["communication"], careerPath: "", setup: "Onsite", editId: null };
         state.jobDraftErrors = {};
         state.view = "companyHome";
       }
@@ -1815,6 +2506,23 @@ ${r.strengths.join(", ")}
       render();
     }
 
+    // Toggles a skill on/off in the job posting draft's list of required skills.
+    // A job can need more than one skill (e.g. a helpdesk role needs both "tech"
+    // and "customerService"), so this is a multi-select rather than the old
+    // single-skill dropdown.
+    function toggleJobDraftSkill(skillKey) {
+      const d = state.jobDraft;
+      if (!d.reqSkills) d.reqSkills = [];
+      const idx = d.reqSkills.indexOf(skillKey);
+      if (idx === -1) {
+        d.reqSkills.push(skillKey);
+      } else {
+        d.reqSkills.splice(idx, 1);
+      }
+      if (state.jobDraftErrors) delete state.jobDraftErrors.reqSkills;
+      render();
+    }
+
     /* ==========================================================================
        TRAINING PROVIDERS PORTAL — offer courses, close skill gaps, track learners
        ========================================================================== */
@@ -1824,7 +2532,7 @@ ${r.strengths.join(", ")}
       if (courseId) {
         const course = COURSES.find(c => c.id === courseId);
         state.courseDraft = course
-          ? { provider: course.provider, title: course.title, skill: course.skill, level: course.level, duration: course.duration, price: course.price, description: course.description || "", editId: course.id }
+          ? { provider: course.provider, title: course.title, skill: course.skill, level: course.level, duration: course.duration, price: toPlainPriceInput(course.price), description: course.description || "", editId: course.id }
           : { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null };
       } else {
         state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null };
@@ -1876,7 +2584,7 @@ ${r.strengths.join(", ")}
             <div class="profile-avatar">${initials || ""}</div>
             <div>
               <div class="profile-id-name">${providerName}</div>
-              <div class="profile-id-role"><span class="portal-role-tag training">Training Portal</span>Training dashboard</div>
+              <div class="profile-id-role"><span class="portal-role-tag training">Training Dashboard</span></div>
             </div>
           </div>
           <div class="quick-stats-row">
@@ -1889,11 +2597,23 @@ ${r.strengths.join(", ")}
       `;
     }
 
+    // Reverses formatCoursePrice for editing: turns a stored "₱2,500" back
+    // into plain "2500" (or leaves "Free" as-is) so the edit form always
+    // shows/accepts the same plain-number format.
+    function toPlainPriceInput(priceStr) {
+      const cleaned = (priceStr || "").trim();
+      if (!cleaned || /^free$/i.test(cleaned)) return cleaned && /^free$/i.test(cleaned) ? "Free" : "";
+      const num = cleaned.match(/[\d,]+/);
+      return num ? num[0].replace(/,/g, "") : "";
+    }
+
     function submitCourseOffer() {
       const d = state.courseDraft;
       const errors = {};
       if (!d.provider.trim()) errors.provider = "Provider name is required.";
       if (!d.title.trim()) errors.title = "Course title is required.";
+      const priceResult = formatCoursePrice(d.price);
+      if (priceResult.error) errors.price = priceResult.error;
       state.courseDraftErrors = errors;
       if (Object.keys(errors).length) {
         render();
@@ -1907,7 +2627,7 @@ ${r.strengths.join(", ")}
           course.skill = d.skill;
           course.level = d.level;
           course.duration = d.duration.trim() || "Self-paced";
-          course.price = d.price.trim() || "Free";
+          course.price = priceResult.value || "Free";
           course.description = d.description.trim();
         }
         state.courseDraft = { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null };
@@ -1923,7 +2643,7 @@ ${r.strengths.join(", ")}
         skill: d.skill,
         level: d.level,
         duration: d.duration.trim() || "Self-paced",
-        price: d.price.trim() || "Free",
+        price: priceResult.value || "Free",
         description: d.description.trim(),
         enrolled: 0,
         postedByMe: true
@@ -2053,21 +2773,20 @@ ${r.strengths.join(", ")}
             <div class="hero-eyebrow">Your career starts here</div>
             <h1>Find the career that fits <span style="color:var(--primary);">you.</span></h1>
             <p>Answer 30 quick questions about your strengths, preferences, and goals. We'll turn your answers into a career match, practical next steps, and job opportunities in the Philippines.</p>
-            <button class="btn" onclick="startQuizOrGoToDashboard();">Discover my career fit <span aria-hidden="true">→</span></button>
+            <button class="btn" onclick="startQuizOrGoToDashboard();">Take the quiz</button>
           </div>
 
           <div class="card preview-section">
             <div class="preview-copy">
               <div class="preview-eyebrow">Your future career could look like this</div>
               <h2>See what JobStart can tell you about your career fit.</h2>
-              <p>Your assessment turns everyday preferences and strengths into a practical career direction — including roles to explore, salary expectations, and skills you can build next.</p>
+              <p>Your assessment turns everyday preferences and strengths into a practical career direction — including roles to explore and skills you can build next.</p>
               <div class="preview-pills">
-                <span class="preview-pill">Career match</span>
-                <span class="preview-pill">Salary range</span>
-                <span class="preview-pill">Skill profile</span>
-                <span class="preview-pill">Job recommendations</span>
+                <span class="preview-pill">Career Match</span>
+                <span class="preview-pill">Skill Profile</span>
+                <span class="preview-pill">Job Recommendations</span>
               </div>
-              <a href="#" class="preview-link" onclick="event.preventDefault(); startQuizOrGoToDashboard();">See how your result is built <span aria-hidden="true">→</span></a>
+              <a href="#" class="preview-link" onclick="event.preventDefault(); startQuizOrGoToDashboard();">See how your result is built</a>
             </div>
 
             <div class="match-card">
@@ -2129,8 +2848,15 @@ ${r.strengths.join(", ")}
 
       // 2. QUIZ VIEW
       else if (state.view === "quiz") {
+
+        // QUESTION PANEL
         const q = QUESTIONS[state.currentQ];
         const progressPct = Math.round(((state.currentQ + 1) / QUESTIONS.length) * 100);
+        const ans = state.answers[state.currentQ];
+        const isMulti = q.type === "multi";
+        const isRating = q.type === "rating";
+        const isLast = state.currentQ === QUESTIONS.length - 1;
+        const hasAnswer = isMulti ? (Array.isArray(ans) && ans.length > 0) : (ans !== undefined);
 
         html = `
           <div class="progress-container">
@@ -2143,34 +2869,53 @@ ${r.strengths.join(", ")}
           </div>
 
           <div class="card">
-            <div class="q-category">${q.cat}</div>
+            <div class="q-category">${q.cat}${isMulti ? ' · Select all that apply' : ''}${isRating ? ' · Rate your interest' : ''}</div>
             <div class="q-title">${q.q}</div>
+            <div class="q-title-alt">${q.qAlt || ''}</div>
 
             <div class="options-grid">
-              ${q.opts.map((opt, idx) => `
-                <button class="option-btn ${state.answers[state.currentQ] === idx ? 'selected' : ''}" onclick="answerQuestion(${idx})">
-                  <span class="option-letter">${String.fromCharCode(65 + idx)}</span>
-                  <span class="option-txt">${opt.txt}</span>
-                  <span class="option-arrow">➔</span>
-                </button>
-              `).join("")}
+              ${q.opts.map((opt, idx) => {
+                const selected = isMulti ? (Array.isArray(ans) && ans.includes(idx)) : (ans === idx);
+                const handler = isMulti ? `toggleMultiAnswer(${idx})` : `answerQuestion(${idx})`;
+                const badge = isRating ? (idx + 1) : String.fromCharCode(65 + idx);
+                return `
+                  <button class="option-btn ${isMulti ? 'multi' : ''} ${selected ? 'selected' : ''}" onclick="${handler}">
+                    <span class="option-letter">${selected && isMulti ? '✓' : badge}</span>
+                    <span class="option-txt-wrap">
+                      <span class="option-txt">${opt.txt}</span>
+                      ${opt.txtAlt ? `<span class="option-alt">${opt.txtAlt}</span>` : ''}
+                    </span>
+                    ${isMulti ? '' : '<span class="option-arrow">➔</span>'}
+                  </button>
+                `;
+              }).join("")}
             </div>
 
             <div class="quiz-footer">
-              <button class="btn btn-secondary" onclick="prevQuestion()" ${state.currentQ === 0 ? 'disabled' : ''}>← Back</button>
+              <button class="btn btn-secondary" onclick="prevQuestion()">← Back</button>
               ${
-                state.currentQ === QUESTIONS.length - 1
-                  ? (state.answers[state.currentQ] !== undefined
-                      ? `<button class="btn" onclick="submitQuiz()">Submit Quiz</button>`
-                      : `<span class="quiz-hint">Select an option to finish</span>`)
-                  : `<span class="quiz-hint">Tap an option to continue</span>`
+                isMulti
+                  ? (hasAnswer
+                      ? `<button class="btn" onclick="${isLast ? 'submitQuiz()' : 'advanceQuiz()'}">${isLast ? 'Submit Quiz' : 'Continue'}</button>`
+                      : `<span class="quiz-hint">Select at least one option to continue</span>`)
+                  : (isLast
+                      ? (hasAnswer
+                          ? `<button class="btn" onclick="submitQuiz()">Submit Quiz</button>`
+                          : `<span class="quiz-hint">Select an option to finish</span>`)
+                      : `<span class="quiz-hint">Tap an option to continue</span>`)
               }
             </div>
           </div>
 
-          <!-- TEMP: dev shortcut, delete this block (and skipQuizToProfile()) when done testing -->
-          <div style="text-align:center; margin-top:14px;">
+          <!-- TEMP: dev shortcut, delete this block (and skipQuizToProfile() /
+               skipQuizToPath()) when done testing -->
+          <div style="text-align:center; margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;">
             <button class="btn btn-secondary btn-sm" onclick="skipQuizToProfile()">Skip quiz to profile (temp)</button>
+            <span style="color:var(--text-muted); font-size:0.82rem;">or skip to a specific path:</span>
+            <select id="skipPathSelect" class="btn-secondary btn-sm" style="border:1.5px solid var(--border); cursor:pointer;">
+              ${CAREER_PROFILES.map(p => `<option value="${p.id}">${p.title}</option>`).join("")}
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="skipQuizToPath(document.getElementById('skipPathSelect').value)">Go (temp)</button>
           </div>
           <!-- END TEMP -->
         `;
@@ -2184,7 +2929,15 @@ ${r.strengths.join(", ")}
         const initials = myName ? myName.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join("") : "";
         const myApps = APPLICATIONS.filter(a => a.candidateId === "me");
         const activeAppsCount = myApps.filter(a => WITHDRAWABLE_STATUSES.includes(a.status)).length;
-        const strongMatchCount = JOBS.filter(job => calcJobMatch(job) >= 75).length;
+        // Only jobs that belong to the jobseeker's matched career path (best.id)
+        // are ever shown/counted here — see the "Jobs matched to you" card below.
+        const pathJobs = JOBS.filter(job => job.careerPath === best.id && (!job.closed || getMyApplication(job.id)));
+        const strongMatchCount = pathJobs.filter(job => calcJobMatch(job) >= 75).length;
+        // "Hiring now at" should reflect real, currently-open postings for this
+        // career path — not the static example-companies list on the profile —
+        // so it stays honest as jobs get closed/added on the Companies side.
+        const hiringNowCompanies = [...new Set(JOBS.filter(job => job.careerPath === best.id && !job.closed).map(job => job.company))];
+        const estimatedSalary = getEstimatedSalaryRange(best.id);
         const enrolledCount = Object.keys(state.enrolledCourseIds).length;
         const fitPct = getTopFitPercentage();
         const topStrengthLabels = strengths.map(s => SKILL_LABELS[s] || s);
@@ -2203,11 +2956,11 @@ ${r.strengths.join(", ")}
             <div class="career-meta-row">
               <div>
                 <div class="career-meta-label">Estimated salary</div>
-                <div class="career-meta-value">${best.salary}</div>
+                <div class="career-meta-value">${estimatedSalary || "No open roles to estimate from yet"}</div>
               </div>
               <div>
                 <div class="career-meta-label">Hiring now at</div>
-                <div class="career-meta-value">${best.companies.join(", ")}</div>
+                <div class="career-meta-value">${hiringNowCompanies.length ? hiringNowCompanies.join(", ") : "No open roles in this path right now — check back soon"}</div>
               </div>
             </div>
 
@@ -2237,27 +2990,7 @@ ${r.strengths.join(", ")}
                 `).join("")}
                 <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border);" />
                 <p style="font-size: 0.85rem; margin-bottom: 6px;">Overall Level: <span class="badge badge-blue">${getSkillLevel(Object.values(state.skills).reduce((a,b)=>a+b,0)/8)}</span></p>
-                <p style="font-size: 0.85rem;">Top Strengths: <strong style="text-transform: capitalize;">${strengths.join(", ")}</strong></p>
-              </div>
-
-              <div class="card">
-                <div class="sidebar-section-title">Your Preferences</div>
-                <div class="pref-chip-list">
-                  <span class="pref-chip"><span class="pref-chip-label">Setup:</span> ${state.preferences.setup}</span>
-                  <span class="pref-chip"><span class="pref-chip-label">Relocate:</span> ${state.preferences.relocate}</span>
-                  <span class="pref-chip"><span class="pref-chip-label">Salary:</span> ${state.preferences.salary}</span>
-                  <span class="pref-chip"><span class="pref-chip-label">Shift:</span> ${state.preferences.shift}</span>
-                  <span class="pref-chip"><span class="pref-chip-label">Education:</span> ${state.preferences.edu}</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="sidebar-section-title">Your Resume</div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Editable and ready to attach when you apply.</p>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                  <button class="btn" style="width:100%;" onclick="openResumeBuilder()">Build / edit my resume</button>
-                  <button class="btn btn-secondary" style="width:100%;" onclick="ensureResumeDefaults(); state.view='visualResume'; render();">Preview &amp; print</button>
-                </div>
+                <p style="font-size: 0.85rem;">Top Strengths: <strong>${strengths.map(s => SKILL_LABELS[s] || s).join(", ")}</strong></p>
               </div>
             </div>
 
@@ -2299,10 +3032,16 @@ ${r.strengths.join(", ")}
               <div class="card" id="jobsMatchedSection">
                 <div class="jobs-list-header">
                   <h3>Jobs matched to you</h3>
-                  <span class="section-subtitle" style="margin-bottom:0;">${JOBS.filter(job => !job.closed || getMyApplication(job.id)).length} open roles, ranked by fit</span>
+                  <span class="section-subtitle" style="margin-bottom:0;">${pathJobs.length} open role${pathJobs.length === 1 ? "" : "s"} in ${best.title}, ranked by fit</span>
                 </div>
+                ${pathJobs.length === 0 ? `
+                  <div class="empty-state" style="text-align:center; padding: 28px 16px; color: var(--text-muted);">
+                    <p style="font-weight:600; color: var(--text); margin-bottom: 6px;">No open jobs right now in ${best.title}.</p>
+                    <p style="font-size:0.88rem;">We don't have current listings under this career path — check back soon, as new roles are added regularly.</p>
+                  </div>
+                ` : `
                 <div class="job-cards-grid">
-                  ${JOBS.filter(job => !job.closed || getMyApplication(job.id)).map(job => {
+                  ${pathJobs.map(job => {
                     const matchPct = calcJobMatch(job);
                     // Read the applicant's real, current pipeline status for this job — not just
                     // a boolean "applied" flag — so the button/badge never gets stuck showing
@@ -2317,7 +3056,6 @@ ${r.strengths.join(", ")}
                       // job details modal (click into the card), not from this matches grid.
                       actionHtml = `<span class="badge ${meta.badge}" style="display:inline-flex; align-items:center; justify-content:center; text-align:center; flex:0 0 120px; height:30px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-sizing:border-box; font-size:0.85rem;">${meta.label}</span>`;
                     }
-                    const skillPct = Math.round(((state.skills[job.reqSkill] || 1) / 5) * 100);
                     return `
                       <div class="match-card job-match-card" onclick="openJobModal(${job.id})">
                         <div class="match-card-eyebrow">${job.type} &middot; ${job.setup}</div>
@@ -2329,11 +3067,17 @@ ${r.strengths.join(", ")}
                           <div class="match-ring" style="background: conic-gradient(var(--primary) 0% ${matchPct}%, #e6f6f4 ${matchPct}% 100%);"><span>${matchPct}%</span></div>
                         </div>
                         <div class="match-card-salary">${job.salary}</div>
-                        <div class="match-skill-row" style="margin-bottom:0;">
-                          <span class="match-skill-name">${SKILL_LABELS[job.reqSkill] || job.reqSkill}</span>
-                          <div class="match-skill-track"><div class="match-skill-fill" style="width:${skillPct}%"></div></div>
-                          <span class="match-skill-val">${skillPct}</span>
-                        </div>
+                        ${job.reqSkills.map((sk, i) => {
+                          const pct = Math.round(((state.skills[sk] || 1) / 5) * 100);
+                          const isLast = i === job.reqSkills.length - 1;
+                          return `
+                            <div class="match-skill-row" style="${isLast ? "margin-bottom:0;" : ""}">
+                              <span class="match-skill-name">${SKILL_LABELS[sk] || sk}</span>
+                              <div class="match-skill-track"><div class="match-skill-fill" style="width:${pct}%"></div></div>
+                              <span class="match-skill-val">${pct}</span>
+                            </div>
+                          `;
+                        }).join("")}
                         <div class="match-card-note" style="display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:30px;">
                           <span style="flex:1 1 auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;">${job.location.split('/')[0].trim()}</span>
                           ${actionHtml || `<span class="preview-link" style="font-size:0.82rem; flex:0 0 auto; white-space:nowrap; display:inline-flex; align-items:center; height:30px;">View &amp; apply <span aria-hidden="true">→</span></span>`}
@@ -2342,18 +3086,49 @@ ${r.strengths.join(", ")}
                     `;
                   }).join("")}
                 </div>
+                `}
               </div>
 
-              <!-- Courses to close skill gaps -->
+              <!-- Courses to close skill gaps — driven by what the JOBS in this career
+                   path actually require, not just the user's weakest skills overall.
+                   Skills below a "credible" threshold (4/5) are framed as gaps to close;
+                   skills already at/above that threshold are still shown, framed as
+                   further improvement, so the section never comes up empty. -->
+              ${(() => {
+                const jobReqSkills = [...new Set(pathJobs.flatMap(j => j.reqSkills))];
+                const bySkillLevelAsc = (a, b) => (state.skills[a] || 1) - (state.skills[b] || 1);
+                const weakJobSkills = jobReqSkills.filter(s => (state.skills[s] || 1) < 4).sort(bySkillLevelAsc);
+                const strongJobSkills = jobReqSkills.filter(s => (state.skills[s] || 1) >= 4).sort(bySkillLevelAsc);
+
+                let title, headerHtml, targetSkills;
+
+                if (pathJobs.length === 0) {
+                  // No open jobs in this path to draw required skills from — fall back
+                  // to the jobseeker's overall weakest skills so the section still helps.
+                  title = "Close your skill gaps";
+                  targetSkills = gaps;
+                  headerHtml = `<p class="section-hint">No open jobs in ${best.title} to base this on yet, so here are courses for your lowest-scoring skills overall: <strong style="text-transform:capitalize;">${gaps.map(g => SKILL_LABELS[g] || g).join(", ")}</strong>.</p>`;
+                } else if (weakJobSkills.length > 0) {
+                  title = "Close your skill gaps";
+                  targetSkills = [...weakJobSkills, ...strongJobSkills];
+                  headerHtml = `<p class="section-hint">Courses from training providers on JobStart, matched to the skills jobs in ${best.title} require and where your score is still low: <strong style="text-transform:capitalize;">${weakJobSkills.map(g => SKILL_LABELS[g] || g).join(", ")}</strong>.</p>`;
+                } else {
+                  title = "Keep building your skills";
+                  targetSkills = strongJobSkills;
+                  headerHtml = `<p class="section-hint">You already meet the skill level jobs in ${best.title} look for. Try these to strengthen <strong style="text-transform:capitalize;">${strongJobSkills.map(g => SKILL_LABELS[g] || g).join(", ")}</strong> even further and stay competitive.</p>`;
+                }
+
+                const matches = COURSES.filter(c => !c.closed && targetSkills.includes(c.skill))
+                  .sort((a, b) => targetSkills.indexOf(a.skill) - targetSkills.indexOf(b.skill));
+                const bodyHtml = matches.length ? matches : COURSES.filter(c => !c.closed).slice(0, 3);
+
+                const LEVEL_PCT = { "Beginner": 34, "Intermediate": 67, "Advanced": 100 };
+                return `
               <div class="card">
-                <h3 style="margin-bottom: 4px;">Close your skill gaps</h3>
-                <p class="section-hint">Courses from training providers on JobStart, matched to your lowest-scoring skills: <strong style="text-transform:capitalize;">${gaps.map(g => SKILL_LABELS[g] || g).join(", ")}</strong>.</p>
+                <h3 style="margin-bottom: 4px;">${title}</h3>
+                ${headerHtml}
                 <div class="courses-grid">
-                  ${(() => {
-                    const matches = COURSES.filter(c => !c.closed && gaps.includes(c.skill));
-                    const list = matches.length ? matches : COURSES.filter(c => !c.closed).slice(0, 3);
-                    const LEVEL_PCT = { "Beginner": 34, "Intermediate": 67, "Advanced": 100 };
-                    return list.map(c => {
+                  ${bodyHtml.map(c => {
                       const levelPct = LEVEL_PCT[c.level] || 50;
                       const enrolled = !!state.enrolledCourseIds[c.id];
                       return `
@@ -2381,10 +3156,11 @@ ${r.strengths.join(", ")}
                         </div>
                       </div>
                     `;
-                    }).join("");
-                  })()}
+                    }).join("")}
                 </div>
               </div>
+                `;
+              })()}
             </div>
           </div>
         `;
@@ -2706,7 +3482,8 @@ ${r.strengths.join(", ")}
                   </div>
                   <div class="form-group">
                     <label class="form-label">Salary range</label>
-                    <input type="text" class="form-input" placeholder="e.g. ₱22,000 - ₱28,000" value="${d.salary}" oninput="state.jobDraft.salary=this.value">
+                    <input type="text" class="form-input ${errs.salary ? 'has-error' : ''}" placeholder="e.g. 15000-17000" value="${d.salary}" oninput="state.jobDraft.salary=this.value; if(state.jobDraftErrors) delete state.jobDraftErrors.salary;">
+                    ${errs.salary ? `<div class="field-error">${errs.salary}</div>` : `<div class="field-hint">Plain numbers only — we'll add the ₱ and formatting.</div>`}
                   </div>
                 </div>
                 <div class="form-row">
@@ -2730,13 +3507,30 @@ ${r.strengths.join(", ")}
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Primary skill required</label>
+                  <label class="form-label">Career path *</label>
+                  <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">This determines which jobseekers see this role in their "Jobs matched to you" results.</div>
                   ${renderFieldDropdown(
-                    "jobReqSkill",
-                    SKILL_LABELS[d.reqSkill] || d.reqSkill,
-                    Object.entries(SKILL_LABELS),
-                    "state.jobDraft.reqSkill='%VALUE%'"
+                    "jobCareerPath",
+                    d.careerPath ? (CAREER_PROFILES.find(p => p.id === d.careerPath) || {}).title || d.careerPath : "Select a career path",
+                    CAREER_PROFILES.map(p => [p.id, p.title]),
+                    "state.jobDraft.careerPath='%VALUE%'; if(state.jobDraftErrors) delete state.jobDraftErrors.careerPath;"
                   )}
+                  ${errs.careerPath ? `<div class="field-error">${errs.careerPath}</div>` : ""}
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Skills required</label>
+                  <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Select every skill this role actually needs — most jobs need more than one.</div>
+                  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    ${Object.entries(SKILL_LABELS).map(([key, label]) => {
+                      const isSelected = (d.reqSkills || []).includes(key);
+                      return `
+                        <button type="button" onclick="toggleJobDraftSkill('${key}')" style="border:1.5px solid ${isSelected ? "var(--primary)" : "var(--border)"}; background:${isSelected ? "#effaf9" : "white"}; color:${isSelected ? "var(--primary-dark)" : "var(--text)"}; padding:7px 14px; border-radius:999px; font-size:0.83rem; font-weight:700; cursor:pointer; transition: all 0.15s ease;">
+                          ${isSelected ? "✓ " : ""}${label}
+                        </button>
+                      `;
+                    }).join("")}
+                  </div>
+                  ${errs.reqSkills ? `<div class="field-error">${errs.reqSkills}</div>` : ""}
                 </div>
                 <div class="form-group">
                   <label class="form-label">Short description</label>
@@ -3026,7 +3820,8 @@ ${r.strengths.join(", ")}
                   </div>
                   <div class="form-group">
                     <label class="form-label">Price</label>
-                    <input type="text" class="form-input" placeholder="e.g. Free or ₱1,500" value="${d.price}" oninput="state.courseDraft.price=this.value">
+                    <input type="text" class="form-input ${errs.price ? 'has-error' : ''}" placeholder="e.g. 1500 or Free" value="${d.price}" oninput="state.courseDraft.price=this.value; if(state.courseDraftErrors) delete state.courseDraftErrors.price;">
+                    ${errs.price ? `<div class="field-error">${errs.price}</div>` : `<div class="field-hint">Plain number only — we'll add the ₱. Use 0 or "Free" for no cost.</div>`}
                   </div>
                 </div>
                 <div class="form-row">
@@ -3085,9 +3880,10 @@ ${r.strengths.join(", ")}
                 <div class="detail-panel">
                   <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">${job.location}</span></div>
                   <div class="detail-row"><span class="detail-label">Salary</span><span class="detail-value">${job.salary}</span></div>
+                  <div class="detail-row"><span class="detail-label">Career path</span><span class="detail-value">${(CAREER_PROFILES.find(p => p.id === job.careerPath) || {}).title || "—"}</span></div>
                   <div class="detail-row"><span class="detail-label">Employment type</span><span class="detail-value">${job.type}</span></div>
                   <div class="detail-row"><span class="detail-label">Work setup</span><span class="detail-value">${job.setup}</span></div>
-                  <div class="detail-row"><span class="detail-label">Key skill</span><span class="badge badge-blue">${SKILL_LABELS[job.reqSkill] || job.reqSkill}</span></div>
+                  <div class="detail-row"><span class="detail-label">Key skills</span><span style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">${job.reqSkills.map(sk => `<span class="badge badge-blue">${SKILL_LABELS[sk] || sk}</span>`).join("")}</span></div>
                 </div>
                 ${job.description ? `<p style="font-size:0.89rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">${job.description}</p>` : ""}
 
@@ -3133,7 +3929,7 @@ ${r.strengths.join(", ")}
                 <div class="detail-row"><span class="detail-label">Salary</span><span class="detail-value">${job.salary}</span></div>
                 <div class="detail-row"><span class="detail-label">Employment type</span><span class="detail-value">${job.type}</span></div>
                 <div class="detail-row"><span class="detail-label">Work setup</span><span class="detail-value">${job.setup}</span></div>
-                <div class="detail-row"><span class="detail-label">Key skill</span><span class="badge badge-blue">${SKILL_LABELS[job.reqSkill] || job.reqSkill}</span></div>
+                <div class="detail-row"><span class="detail-label">Key skills</span><span style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">${job.reqSkills.map(sk => `<span class="badge badge-blue">${SKILL_LABELS[sk] || sk}</span>`).join("")}</span></div>
               </div>
               ${job.description ? `<p style="font-size:0.89rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">${job.description}</p>` : ""}
 
