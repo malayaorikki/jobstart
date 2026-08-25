@@ -3539,9 +3539,8 @@ ${r.strengths.join(", ")}
                         </div>
                         <div class="match-card-salary">${job.salary}</div>
                         ${job.reqSkills.map((r, i) => {
-                          const userLevel = state.skills[r.skill] || 1;
                           const required = r.level || 1;
-                          const pct = Math.min(100, Math.round((userLevel / required) * 100));
+                          const pct = required * 20;
                           const isLast = i === job.reqSkills.length - 1;
                           return `
                             <div class="match-skill-row" style="${isLast ? "margin-bottom:0;" : ""}">
