@@ -3681,11 +3681,6 @@ ${r.recommendedRoles.join(", ")}
                     <div style="color:var(--text-muted);">${[c.issuer, c.year].filter(Boolean).join(" · ")}</div>
                   </div>
                 `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">None added yet</p>`}
-
-                <h4 class="cv-section-title">Recommended Job Roles</h4>
-                <div class="tag-list">
-                  ${r.recommendedRoles.map(role => `<span class="tag-chip" style="cursor:default;">${role}</span>`).join("") || `<span style="font-size:0.85rem; color:var(--text-muted);">None added yet</span>`}
-                </div>
               </div>
 
               <div>
@@ -3859,13 +3854,9 @@ ${r.recommendedRoles.join(", ")}
 
           <div class="card">
             <h4 class="cv-section-title" style="margin-top:0;">Recommended Job Roles</h4>
-            <p class="section-hint">Suggested from your assessment — add or remove as you like.</p>
+            <p class="section-hint">These come from the results of your assessment.</p>
             <div class="tag-list">
-              ${r.recommendedRoles.map((role, idx) => `<span class="tag-chip">${role}<button onclick="removeTag('recommendedRoles', ${idx})" aria-label="Remove ${role}">×</button></span>`).join("")}
-            </div>
-            <div class="tag-input-row">
-              <input type="text" id="newRoleInput" class="form-input" placeholder="Add a job role" onkeydown="if(event.key==='Enter'){event.preventDefault(); addTag('recommendedRoles','newRoleInput');}">
-              <button class="btn btn-secondary" onclick="addTag('recommendedRoles','newRoleInput')">+ Add</button>
+              ${r.recommendedRoles.map(role => `<span class="tag-chip" style="cursor:default;">${role}</span>`).join("")}
             </div>
           </div>
 
