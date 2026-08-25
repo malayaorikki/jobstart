@@ -1725,7 +1725,7 @@
 
     // IDs handled by an explicit unlockAchievement() call at the moment of the
     // relevant action, rather than by the generic state-test loop below:
-    //  - "started": fires when the quiz is actually opened (Take Assessment),
+    //  - "started": fires when the quiz is actually opened (Take the Quiz),
     //    not merely once state.answers has an entry.
     //  - "explorer": fires when Submit Quiz is clicked, not the instant the
     //    last question's answer is recorded (which happens before Submit).
@@ -3195,7 +3195,7 @@ ${r.recommendedRoles.join(", ")}
             <div class="hero-eyebrow">Your career starts here</div>
             <h1>Find the career that fits <span style="color:var(--primary);">you.</span></h1>
             <p>Answer 30 quick questions about your strengths, preferences, and goals. We'll turn your answers into a career match, practical next steps, and job opportunities in the Philippines.</p>
-            <button class="btn" onclick="startQuizOrGoToDashboard();">Take the quiz</button>
+            <button class="btn" onclick="startQuizOrGoToDashboard();">Take Assessment</button>
           </div>
 
           <div class="card preview-section">
@@ -3243,7 +3243,7 @@ ${r.recommendedRoles.join(", ")}
             <div class="steps-grid">
               <div class="step-card">
                 <div class="step-num">1</div>
-                <div class="step-title">Take the quiz</div>
+                <div class="step-title">Take the assessment</div>
                 <div class="step-desc">Tap through 30 multiple-choice questions about your preferences, skills, and how you'd handle real work situations.</div>
               </div>
               <div class="step-card">
