@@ -2193,9 +2193,7 @@
         const required = r.level || 1;
         return sum + Math.min(1, userLevel / required);
       }, 0) / reqSkills.length;
-      let match = Math.round(avgFit * 100);
-      if (job.setup === state.preferences.setup) match += 10;
-      return Math.min(98, Math.max(55, match));
+      return Math.min(98, Math.round(avgFit * 100));
     }
 
     // Withdraw an in-progress application. Only allowed while the application
