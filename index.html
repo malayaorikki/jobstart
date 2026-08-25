@@ -493,6 +493,7 @@
     .status-select:focus { outline: none; border-color: var(--primary-light); }
     .status-select svg { color: var(--text-muted); }
     .status-dropdown-list { position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 100%; background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 8px 20px -8px rgba(28,35,33,0.18); padding: 4px; }
+    .status-dropdown-list-up { top: auto; bottom: calc(100% + 6px); box-shadow: 0 -8px 20px -8px rgba(28,35,33,0.18); }
     .status-dropdown-item { padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; color: var(--text); white-space: nowrap; cursor: pointer; }
     .status-dropdown-item:hover { background: var(--bg); }
     .status-dropdown-item.is-active { background: var(--primary); color: white; font-weight: 600; }
@@ -1569,7 +1570,7 @@
 
     let state = {
       portal: null, // null | "seeker" | "company" | "training"
-      view: "home", // home | portal | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyApplications | trainingHome | trainingGaps | trainingOfferCourse | trainingApplications
+      view: "home", // home | portal | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyApplications | companyCompanies | trainingHome | trainingGaps | trainingOfferCourse | trainingApplications | trainingProviders
       currentQ: 0, // question index; quiz starts directly at Q1
       xp: 0,
       badges: [], // ids of earned achievements, see ACHIEVEMENTS
@@ -1602,18 +1603,23 @@
       applyReviewJob: null,   // job currently being reviewed for application
       pendingApplyJobId: null, // job id waiting on a resume edit before submitting
       openFieldDropdown: null, // id of the currently open custom-select dropdown (job/course form fields)
+      skipPathId: CAREER_PROFILES[0].id, // TEMP: selected value for the dev-only "skip quiz to path" dropdown
 
       // --- Companies portal ---
       jobDraft: { company: "", title: "", location: "", salary: "", type: "Full-time", reqSkills: [{ skill: "communication", level: 3 }], careerPath: "", setup: "Onsite", description: "", editId: null },
       jobDraftErrors: {},
       selectedApplicationsJobId: null,
       pendingDeleteJobId: null, // job id whose delete icon is awaiting a confirming second click
+      companyJobSearch: "", // free-text filter over the full job list (title/company) on the Job posts tab
+      pendingDeleteCompanyName: null, // company name whose delete action is awaiting a confirming second click
 
       // --- Training Providers portal ---
       courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null },
       courseDraftErrors: {},
       pendingDeleteCourseId: null, // course id whose delete icon is awaiting a confirming second click
       selectedApplicationsCourseId: null, // course currently drilled into on the Enrollees tab
+      trainingCourseSearch: "", // free-text filter over the full course list (title/provider) on the Courses offered tab
+      pendingDeleteProviderName: null, // provider name whose delete action is awaiting a confirming second click
 
       // --- Cross-portal tracking ---
       enrolledCourseIds: {}
@@ -1930,59 +1936,98 @@
       if (idx >= 0) CANDIDATE_POOL[idx] = mine; else CANDIDATE_POOL.push(mine);
     }
 
-    // TEMP: dev-only shortcut that answers any unanswered questions with their
-    // first option (or, for multi-select, just the first checkbox) and jumps
-    // straight to the results/profile view, skipping the rest of the quiz.
-    // Delete this function along with its button in the quiz view (search
-    // "TEMP") when you're done testing.
-    function skipQuizToProfile() {
-      QUESTIONS.forEach((q, i) => {
-        if (state.answers[i] === undefined) {
-          state.answers[i] = q.type === "multi" ? [0] : 0;
-        }
-      });
-      recomputeScores();
-      submitQuiz();
-    }
-
     // TEMP: dev-only shortcut that skips the quiz entirely and jumps straight
-    // to the results/profile view for a SPECIFIC career path, rather than
-    // whatever the (dummy) answers would compute. Builds a synthetic interests
-    // object that heavily favors the chosen path, then reuses the same skill-
-    // derivation math as a normal quiz submission so skills/job-matches still
-    // look consistent. Delete alongside skipQuizToProfile() (search "TEMP")
-    // when you're done testing.
+    // to the results/profile view for a SPECIFIC career path. Rather than
+    // faking the final interests/skills numbers directly, this picks the
+    // most on-path answer for every question — the option (or, for ratings,
+    // the top score) that most favors pathId, same as a real quiz-taker
+    // aiming for that path would answer — then runs those answers through
+    // the exact same recomputeScores() pipeline as a normal quiz submission.
+    // That keeps results, state.answers, and going back into the quiz all
+    // consistent with a real playthrough. Delete this function along with
+    // its button/dropdown in the quiz view (search "TEMP") when you're done
+    // testing.
     function skipQuizToPath(pathId) {
       const profile = CAREER_PROFILES.find(p => p.id === pathId);
       if (!profile) return;
 
-      const interests = makeEmptyInterests();
-      CAREER_PROFILES.forEach(p => { interests[p.id] = (p.id === pathId) ? 100 : 0; });
-      state.interests = interests;
-
-      const skillRaw = { communication: 0, tech: 0, customerService: 0, sales: 0, trade: 0, creative: 0, leadership: 0, numeracy: 0 };
-      CAREER_PROFILES.forEach(p => {
-        const val = interests[p.id] || 0;
-        for (const sk in p.weights) {
-          skillRaw[sk] = (skillRaw[sk] || 0) + val * p.weights[sk];
-        }
-      });
-      const maxRaw = Math.max(1, ...Object.values(skillRaw));
-      const skills = {};
-      Object.keys(skillRaw).forEach(sk => {
-        skills[sk] = Math.max(1, Math.min(5, Math.round(1 + 4 * (skillRaw[sk] / maxRaw))));
-      });
-      state.skills = skills;
-
-      // Mark every question as "answered" so re-entering the quiz later
-      // (Back button, retake, etc.) doesn't behave oddly with a half-empty
-      // answers array.
       QUESTIONS.forEach((q, i) => {
-        if (state.answers[i] === undefined) {
-          state.answers[i] = q.type === "multi" ? [0] : 0;
+        if (q.type === "rating") {
+          // Question-level fields array — answer at max (5) if it scores
+          // toward this path, otherwise leave it at minimum (1) so it
+          // doesn't accidentally boost some other field.
+          const relevant = (q.fields || []).includes(pathId);
+          state.answers[i] = relevant ? q.opts.length - 1 : 0;
+        } else if (q.type === "multi") {
+          // Check every box that scores any weight toward this path. If
+          // none do, fall back to the single lowest-weight box rather than
+          // always box 0 — same reasoning as the "single" branch below:
+          // always defaulting to index 0 was quietly stacking weight onto
+          // whatever field that box happens to favor.
+          const matchIdxs = q.opts
+            .map((o, idx) => (o.fields && o.fields[pathId]) ? idx : -1)
+            .filter(idx => idx >= 0);
+          if (matchIdxs.length) {
+            state.answers[i] = matchIdxs;
+          } else {
+            let minIdx = 0, minWeight = Infinity;
+            q.opts.forEach((o, idx) => {
+              const total = o.fields ? Object.values(o.fields).reduce((a, b) => a + b, 0) : 0;
+              if (total < minWeight) { minWeight = total; minIdx = idx; }
+            });
+            state.answers[i] = [minIdx];
+          }
+        } else { // single
+          // Pick whichever option weights this path highest. If no option
+          // mentions this path at all, don't default to index 0 — that
+          // silently dumps full weight onto whatever field option 0
+          // happens to favor (frequently science/engineering/it), which
+          // was quietly out-scoring paths like law, agriculture, sports,
+          // and fashion that show up in fewer questions. Instead fall
+          // back to whichever option carries the least total weight
+          // toward OTHER fields, to do the least collateral damage.
+          let bestIdx = -1, bestVal = 0;
+          q.opts.forEach((o, idx) => {
+            const val = (o.fields && o.fields[pathId]) || 0;
+            if (val > bestVal) { bestVal = val; bestIdx = idx; }
+          });
+          if (bestIdx === -1) {
+            let minWeight = Infinity;
+            q.opts.forEach((o, idx) => {
+              const total = o.fields ? Object.values(o.fields).reduce((a, b) => a + b, 0) : 0;
+              if (total < minWeight) { minWeight = total; bestIdx = idx; }
+            });
+          }
+          state.answers[i] = bestIdx;
+        }
+        // Award the same per-question XP a real quiz-taker would get from
+        // answerQuestion()/toggleMultiAnswer() — the direct state.answers
+        // assignment above bypasses those handlers, so without this the
+        // skip shortcut under-awards XP versus manually answering.
+        if (!state.xpAwardedQ[i]) {
+          state.xp += QUESTION_XP;
+          state.xpAwardedQ[i] = true;
         }
       });
 
+      recomputeScores();
+
+      // The quiz content itself doesn't weight every field evenly — a
+      // field like "fashion" only appears in a handful of question
+      // options, while others (science, arts, engineering...) show up
+      // across many more, so even the most on-path set of answers can
+      // still be edged out by incidental collateral weight elsewhere.
+      // Since this is a dev-only shortcut meant to jump straight to a
+      // specific path for testing, guarantee the requested path actually
+      // comes out on top — without touching QUESTIONS itself — by
+      // nudging its interest score just above the next-highest one.
+      const otherScores = CAREER_PROFILES
+        .filter(p => p.id !== pathId)
+        .map(p => state.interests[p.id] || 0);
+      const maxOther = otherScores.length ? Math.max(...otherScores) : 0;
+      state.interests[pathId] = Math.max(state.interests[pathId] || 0, maxOther + 1);
+
+      checkAchievements();
       submitQuiz();
     }
 
@@ -2023,10 +2068,14 @@
         jobDraftErrors: {},
         selectedApplicationsJobId: null,
         pendingDeleteJobId: null,
+        companyJobSearch: "",
+        pendingDeleteCompanyName: null,
         courseDraft: { provider: "", title: "", skill: "communication", level: "Beginner", duration: "", price: "", description: "", editId: null },
         courseDraftErrors: {},
         pendingDeleteCourseId: null,
         selectedApplicationsCourseId: null,
+        trainingCourseSearch: "",
+        pendingDeleteProviderName: null,
         enrolledCourseIds: {}
       };
       render();
@@ -2479,7 +2528,8 @@ ${r.strengths.join(", ")}
       const appCount = APPLICATIONS.filter(a => myJobIds.includes(a.jobId)).length;
       const items = [
         { view: "companyHome", icon: "", label: "Job posts", count: myJobs.length },
-        { view: "companyApplications", icon: "", label: "Applications", count: appCount }
+        { view: "companyApplications", icon: "", label: "Applications", count: appCount },
+        { view: "companyCompanies", icon: "", label: "Companies", count: getAllCompanyNames().length }
       ];
       return `
         <div class="card no-print">
@@ -2507,19 +2557,19 @@ ${r.strengths.join(", ")}
       const myJobs = getCompanyPostedJobs();
       const myJobIds = myJobs.map(j => j.id);
       const myApps = APPLICATIONS.filter(a => myJobIds.includes(a.jobId));
-      const companyName = myJobs.length ? myJobs[myJobs.length - 1].company : "Your Company";
-      const initials = companyName.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join("");
+      const companyCount = getAllCompanyNames().length;
       return `
         <div class="card company-hero">
           <div class="profile-id-card" style="margin-bottom: 20px;">
-            <div class="profile-avatar">${initials || ""}</div>
+            <div class="profile-avatar">JS</div>
             <div>
-              <div class="profile-id-name">${companyName}</div>
+              <div class="profile-id-name">All Companies</div>
               <div class="profile-id-role"><span class="portal-role-tag company">Company Dashboard</span></div>
             </div>
           </div>
           <div class="quick-stats-row">
             <div class="quick-stat"><div class="quick-stat-num">${myJobs.length}</div><div class="quick-stat-label">Jobs posted</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${companyCount}</div><div class="quick-stat-label">Companies</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${myApps.length}</div><div class="quick-stat-label">Applications received</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${myApps.filter(a => a.status === 'hired').length}</div><div class="quick-stat-label">Hired</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${CANDIDATE_POOL.length}</div><div class="quick-stat-label">Jobseekers in pool</div></div>
@@ -2691,8 +2741,56 @@ ${r.strengths.join(", ")}
       render();
     }
 
+    // The Companies portal manages every job on JobStart — the ones seeded into
+    // the catalog as well as anything posted through this portal — not just a
+    // single employer's own postings. (Name kept as-is since it's used all over
+    // the Companies portal; it now means "jobs the Companies portal can manage.")
     function getCompanyPostedJobs() {
-      return JOBS.filter(j => j.companyPosted);
+      return JOBS;
+    }
+
+    // Same list, filtered by the free-text search on the Job posts tab (matches
+    // against job title or company name, case-insensitive). Empty search = all jobs.
+    function getFilteredCompanyJobs() {
+      const q = (state.companyJobSearch || "").trim().toLowerCase();
+      const jobs = getCompanyPostedJobs();
+      if (!q) return jobs;
+      return jobs.filter(j => j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q));
+    }
+
+    // Every company that has ever appeared on JobStart: the seeded COMPANIES
+    // catalog plus any company name referenced by a job (in case a job's
+    // company was renamed/edited and doesn't yet have a COMPANIES entry).
+    function getAllCompanyNames() {
+      const names = new Set(Object.keys(COMPANIES));
+      JOBS.forEach(j => names.add(j.company));
+      return [...names].sort((a, b) => a.localeCompare(b));
+    }
+
+    // Removes a company from the catalog along with every job it posted (and
+    // any applications against those jobs) — mirrors deleteJob's two-click
+    // confirm pattern so a stray click can't wipe out a company by accident.
+    function deleteCompany(companyName) {
+      if (state.pendingDeleteCompanyName !== companyName) {
+        state.pendingDeleteCompanyName = companyName;
+        render();
+        return;
+      }
+      const deadJobIds = JOBS.filter(j => j.company === companyName).map(j => j.id);
+      JOBS = JOBS.filter(j => j.company !== companyName);
+      APPLICATIONS = APPLICATIONS.filter(a => !deadJobIds.includes(a.jobId));
+      delete COMPANIES[companyName];
+      if (state.selectedApplicationsJobId && deadJobIds.includes(state.selectedApplicationsJobId)) {
+        state.selectedApplicationsJobId = null;
+      }
+      if (state.selectedJobModal && deadJobIds.includes(state.selectedJobModal.id)) {
+        state.selectedJobModal = null;
+      }
+      if (state.selectedCompanyModal && state.selectedCompanyModal.name === companyName) {
+        state.selectedCompanyModal = null;
+      }
+      state.pendingDeleteCompanyName = null;
+      render();
     }
 
     function viewApplicationsForJob(jobId) {
@@ -2725,8 +2823,9 @@ ${r.strengths.join(", ")}
        id: unique string key for open/close state.
        currentLabel: label text shown on the closed button.
        options: array of [value, label] pairs.
-       onSelect: JS expression string, evaluated with the chosen value substituted for %VALUE%. */
-    function renderFieldDropdown(id, currentLabel, options, onSelect) {
+       onSelect: JS expression string, evaluated with the chosen value substituted for %VALUE%.
+       openUp: optional — pass true to open the list above the button instead of below. */
+    function renderFieldDropdown(id, currentLabel, options, onSelect, openUp) {
       const isOpen = state.openFieldDropdown === id;
       return `
         <div class="status-dropdown">
@@ -2735,7 +2834,7 @@ ${r.strengths.join(", ")}
             <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           ${isOpen ? `
-            <div class="status-dropdown-list" onclick="event.stopPropagation();">
+            <div class="status-dropdown-list${openUp ? " status-dropdown-list-up" : ""}" onclick="event.stopPropagation();">
               ${options.map(([val, label]) => `
                 <div class="status-dropdown-item ${currentLabel === label ? "is-active" : ""}" onclick="${onSelect.replace(/%VALUE%/g, val)}; state.openFieldDropdown=null; render();">${label}</div>
               `).join("")}
@@ -2799,14 +2898,62 @@ ${r.strengths.join(", ")}
       render();
     }
 
+    // The Training Providers portal manages every course on JobStart — the
+    // seeded catalog as well as anything offered through this portal — not
+    // just one provider's own listings. (Name kept for consistency with
+    // getCompanyPostedJobs; it now means "courses the portal can manage.")
+    function getProviderOfferedCourses() {
+      return COURSES;
+    }
+
+    // Same list, filtered by the free-text search on the Courses offered tab
+    // (matches against course title or provider name, case-insensitive).
+    function getFilteredProviderCourses() {
+      const q = (state.trainingCourseSearch || "").trim().toLowerCase();
+      const courses = getProviderOfferedCourses();
+      if (!q) return courses;
+      return courses.filter(c => c.title.toLowerCase().includes(q) || c.provider.toLowerCase().includes(q));
+    }
+
+    // Every training provider that has ever listed a course on JobStart.
+    function getAllProviderNames() {
+      const names = new Set(COURSES.map(c => c.provider));
+      return [...names].sort((a, b) => a.localeCompare(b));
+    }
+
+    // Removes a provider along with every course it offers (and any
+    // enrollments against those courses) — mirrors deleteCompany's two-click
+    // confirm pattern.
+    function deleteProvider(providerName) {
+      if (state.pendingDeleteProviderName !== providerName) {
+        state.pendingDeleteProviderName = providerName;
+        render();
+        return;
+      }
+      const deadCourseIds = COURSES.filter(c => c.provider === providerName).map(c => c.id);
+      COURSES = COURSES.filter(c => c.provider !== providerName);
+      ENROLLMENTS = ENROLLMENTS.filter(e => !deadCourseIds.includes(e.courseId));
+      deadCourseIds.forEach(id => delete state.enrolledCourseIds[id]);
+      if (state.selectedApplicationsCourseId && deadCourseIds.includes(state.selectedApplicationsCourseId)) {
+        state.selectedApplicationsCourseId = null;
+      }
+      if (state.selectedCourseModal && deadCourseIds.includes(state.selectedCourseModal.id)) {
+        state.selectedCourseModal = null;
+      }
+      state.pendingDeleteProviderName = null;
+      render();
+    }
+
     // Shared sidebar nav for every training-portal screen, mirroring
     // renderCompanyNav so both employer-side portals feel like the same product.
     function renderTrainingNav(activeView) {
-      const myCourseIds = COURSES.filter(c => c.postedByMe).map(c => c.id);
+      const myCourses = getProviderOfferedCourses();
+      const myCourseIds = myCourses.map(c => c.id);
       const enrolleeCount = ENROLLMENTS.filter(e => myCourseIds.includes(e.courseId)).length;
       const items = [
-        { view: "trainingHome", icon: "", label: "Courses offered", count: COURSES.filter(c => c.postedByMe).length },
+        { view: "trainingHome", icon: "", label: "Courses offered", count: myCourses.length },
         { view: "trainingApplications", icon: "", label: "Enrollees", count: enrolleeCount },
+        { view: "trainingProviders", icon: "", label: "Providers", count: getAllProviderNames().length },
         { view: "trainingGaps", icon: "", label: "Skill gap insights", count: null }
       ];
       return `
@@ -2832,21 +2979,21 @@ ${r.strengths.join(", ")}
     // of the "Courses offered" view so it stays visible no matter which tab
     // is active.
     function renderTrainingHero() {
-      const myCourses = COURSES.filter(c => c.postedByMe);
+      const myCourses = getProviderOfferedCourses();
       const totalEnrollments = ENROLLMENTS.length;
-      const providerName = myCourses.length ? myCourses[myCourses.length - 1].provider : "Your Training Center";
-      const initials = providerName.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join("");
+      const providerCount = getAllProviderNames().length;
       return `
         <div class="card training-hero">
           <div class="profile-id-card" style="margin-bottom: 20px;">
-            <div class="profile-avatar">${initials || ""}</div>
+            <div class="profile-avatar">JS</div>
             <div>
-              <div class="profile-id-name">${providerName}</div>
+              <div class="profile-id-name">All Providers</div>
               <div class="profile-id-role"><span class="portal-role-tag training">Training Dashboard</span></div>
             </div>
           </div>
           <div class="quick-stats-row">
             <div class="quick-stat"><div class="quick-stat-num">${myCourses.length}</div><div class="quick-stat-label">Courses offered</div></div>
+            <div class="quick-stat"><div class="quick-stat-num">${providerCount}</div><div class="quick-stat-label">Providers</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${totalEnrollments}</div><div class="quick-stat-label">Total enrollments</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${CANDIDATE_POOL.length}</div><div class="quick-stat-label">Jobseekers in pool</div></div>
             <div class="quick-stat"><div class="quick-stat-num">${Object.keys(EMPTY_SKILLS).length}</div><div class="quick-stat-label">Skill categories tracked</div></div>
@@ -2984,14 +3131,14 @@ ${r.strengths.join(", ")}
       // wider two-column sidebar layout, so they get the extra desktop
       // breathing room; every other view keeps the tighter, centered
       // reading width.
-      const WIDE_VIEWS = ["results", "companyHome", "companyPostJob", "companyApplications", "trainingHome", "trainingGaps", "trainingOfferCourse", "trainingApplications"];
+      const WIDE_VIEWS = ["results", "companyHome", "companyPostJob", "companyApplications", "companyCompanies", "trainingHome", "trainingGaps", "trainingOfferCourse", "trainingApplications", "trainingProviders"];
       const containerEl = document.querySelector(".container");
       if (containerEl) containerEl.classList.toggle("wide", WIDE_VIEWS.includes(state.view));
 
       // The live clock is only relevant inside the Company/Training dashboards
       // (it reads like a workspace timestamp there) — hidden everywhere else,
       // including the job-seeker landing page.
-      const CLOCK_VIEWS = ["companyHome", "companyPostJob", "companyApplications", "trainingHome", "trainingGaps", "trainingOfferCourse", "trainingApplications"];
+      const CLOCK_VIEWS = ["companyHome", "companyPostJob", "companyApplications", "companyCompanies", "trainingHome", "trainingGaps", "trainingOfferCourse", "trainingApplications", "trainingProviders"];
       const clockEl = document.getElementById("liveClock");
       if (clockEl) clockEl.style.display = CLOCK_VIEWS.includes(state.view) ? "" : "none";
 
@@ -3167,15 +3314,20 @@ ${r.strengths.join(", ")}
             </div>
           </div>
 
-          <!-- TEMP: dev shortcut, delete this block (and skipQuizToProfile() /
-               skipQuizToPath()) when done testing -->
+          <!-- TEMP: dev shortcut, delete this block (and skipQuizToPath())
+               when done testing -->
           <div style="text-align:center; margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;">
-            <button class="btn btn-secondary btn-sm" onclick="skipQuizToProfile()">Skip quiz to profile (temp)</button>
-            <span style="color:var(--text-muted); font-size:0.82rem;">or skip to a specific path:</span>
-            <select id="skipPathSelect" class="btn-secondary btn-sm" style="border:1.5px solid var(--border); cursor:pointer;">
-              ${CAREER_PROFILES.map(p => `<option value="${p.id}">${p.title}</option>`).join("")}
-            </select>
-            <button class="btn btn-secondary btn-sm" onclick="skipQuizToPath(document.getElementById('skipPathSelect').value)">Go (temp)</button>
+            <span style="color:var(--text-muted); font-size:0.82rem;">Skip to a specific path:</span>
+            <div style="min-width:180px;">
+              ${renderFieldDropdown(
+                "skipPathSelect",
+                CAREER_PROFILES.find(p => p.id === state.skipPathId).title,
+                CAREER_PROFILES.map(p => [p.id, p.title]),
+                "state.skipPathId='%VALUE%'",
+                true
+              )}
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="skipQuizToPath(state.skipPathId)">Go</button>
           </div>
           <!-- END TEMP -->
         `;
@@ -3713,7 +3865,8 @@ ${r.strengths.join(", ")}
 
       // 6. COMPANIES PORTAL — dashboard home ("Job posts" tab)
       else if (state.view === "companyHome") {
-        const myJobs = getCompanyPostedJobs();
+        const allJobs = getCompanyPostedJobs();
+        const myJobs = getFilteredCompanyJobs();
         html = `
           ${renderCompanyHero()}
 
@@ -3723,12 +3876,15 @@ ${r.strengths.join(", ")}
               ${renderCompanyNav("companyHome")}
             </div>
 
-            <!-- MAIN: jobs this company has posted -->
+            <!-- MAIN: every job posted on JobStart, across every company -->
             <div class="profile-main">
               <div class="card">
                 <div class="jobs-list-header">
-                  <h3>Jobs you've posted</h3>
-                  <span class="section-subtitle" style="margin-bottom:0;">${myJobs.length} active listing${myJobs.length === 1 ? "" : "s"}</span>
+                  <h3>All jobs on JobStart</h3>
+                  <span class="section-subtitle" style="margin-bottom:0;">${myJobs.length} of ${allJobs.length} listing${allJobs.length === 1 ? "" : "s"}</span>
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                  <input type="text" id="companyJobSearchInput" class="form-input" placeholder="Search by job title or company…" value="${state.companyJobSearch || ""}" oninput="state.companyJobSearch=this.value; render(); const el=document.getElementById('companyJobSearchInput'); if (el) { el.focus(); const p=el.value.length; el.setSelectionRange(p,p); }">
                 </div>
                 ${myJobs.length ? myJobs.map(job => {
                   const count = APPLICATIONS.filter(a => a.jobId === job.id).length;
@@ -3737,7 +3893,7 @@ ${r.strengths.join(", ")}
                       <div class="list-row-top">
                         <div>
                           <div class="list-row-title">${job.title}</div>
-                          <div class="list-row-meta">${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
+                          <div class="list-row-meta"><span class="company-link" onclick="event.stopPropagation(); openCompanyModal('${job.company}')">${job.company}</span> &nbsp;·&nbsp; ${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
                         </div>
                         <div style="display:flex; gap:6px; align-items:center;">
                           ${job.closed ? `<span class="badge badge-red">Closed</span>` : ""}
@@ -3746,7 +3902,9 @@ ${r.strengths.join(", ")}
                       </div>
                     </div>
                   `;
-                }).join("") : `<div class="empty-state">You haven't posted any jobs yet. <br><button class="btn company-btn" style="margin-top:12px;" onclick="openPostJobForm()">+ Post your first job</button></div>`}
+                }).join("") : allJobs.length
+                    ? `<div class="empty-state">No jobs match "${state.companyJobSearch}".</div>`
+                    : `<div class="empty-state">No jobs have been posted yet. <br><button class="btn company-btn" style="margin-top:12px;" onclick="openPostJobForm()">+ Post the first job</button></div>`}
               </div>
             </div>
           </div>
@@ -3880,6 +4038,7 @@ ${r.strengths.join(", ")}
           mainHtml = `
             <div class="card">
               <h3 style="margin-bottom: 14px;">Applications received</h3>
+              <p class="section-hint">Across every job posted on JobStart.</p>
               ${myJobs.length ? myJobs.map(job => {
                 const count = APPLICATIONS.filter(a => a.jobId === job.id).length;
                 return `
@@ -3887,7 +4046,7 @@ ${r.strengths.join(", ")}
                     <div class="list-row-top">
                       <div>
                         <div class="list-row-title">${job.title}</div>
-                        <div class="list-row-meta">${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
+                        <div class="list-row-meta"><span class="company-link" onclick="event.stopPropagation(); openCompanyModal('${job.company}')">${job.company}</span> &nbsp;·&nbsp; ${job.location} &nbsp;·&nbsp; ${job.salary} &nbsp;·&nbsp; ${job.type}</div>
                       </div>
                       <div style="display:flex; gap:6px; align-items:center;">
                         ${job.closed ? `<span class="badge badge-red">Closed</span>` : ""}
@@ -3910,7 +4069,7 @@ ${r.strengths.join(", ")}
             </div>
             <div class="card">
               <div style="margin-bottom: 4px;">
-                <h3 style="margin-bottom: 0;">Applicants for ${job ? job.title : "this job"}</h3>
+                <h3 style="margin-bottom: 0;">Applicants for ${job ? job.title : "this job"}${job ? ` <span style="color:var(--text-muted); font-weight:600; font-size:0.85rem;">at ${job.company}</span>` : ""}</h3>
               </div>
               <p class="section-hint">${apps.length} application${apps.length === 1 ? "" : "s"} received &nbsp;·&nbsp; newest first.</p>
               ${apps.length ? apps.map(a => {
@@ -3969,9 +4128,54 @@ ${r.strengths.join(", ")}
         `;
       }
 
+      // 6e. COMPANIES PORTAL — every company that has posted on JobStart
+      else if (state.view === "companyCompanies") {
+        const names = getAllCompanyNames();
+        html = `
+          ${renderCompanyHero()}
+
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderCompanyNav("companyCompanies")}
+            </div>
+            <div class="profile-main">
+              <div class="card">
+                <div class="jobs-list-header">
+                  <h3>Companies on JobStart</h3>
+                  <span class="section-subtitle" style="margin-bottom:0;">${names.length} compan${names.length === 1 ? "y" : "ies"}</span>
+                </div>
+                ${names.length ? names.map(name => {
+                  const info = COMPANIES[name];
+                  const jobCount = JOBS.filter(j => j.company === name).length;
+                  const jobIds = JOBS.filter(j => j.company === name).map(j => j.id);
+                  const appCount = APPLICATIONS.filter(a => jobIds.includes(a.jobId)).length;
+                  const isPendingDelete = state.pendingDeleteCompanyName === name;
+                  return `
+                    <div class="list-row">
+                      <div class="list-row-top">
+                        <div>
+                          <div class="list-row-title">${name}</div>
+                          <div class="list-row-meta">${info ? info.industry : "No profile details yet"} &nbsp;·&nbsp; ${jobCount} job${jobCount === 1 ? "" : "s"} &nbsp;·&nbsp; ${appCount} application${appCount === 1 ? "" : "s"}</div>
+                        </div>
+                      </div>
+                      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+                        ${info ? `<button class="btn btn-secondary btn-sm" onclick="openCompanyModal('${name}')">View profile</button>` : ""}
+                        ${jobCount ? `<button class="btn btn-secondary btn-sm" onclick="state.companyJobSearch='${name.replace(/'/g, "\\'")}'; state.view='companyHome'; render();">View jobs</button>` : ""}
+                        <button class="btn btn-danger btn-sm" onclick="deleteCompany('${name.replace(/'/g, "\\'")}')">${isPendingDelete ? "Click again to confirm delete" : "Delete company"}</button>
+                      </div>
+                    </div>
+                  `;
+                }).join("") : `<div class="empty-state">No companies yet. Post a job to add one.</div>`}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       // 7. TRAINING PROVIDERS PORTAL — dashboard home ("Courses offered" tab)
       else if (state.view === "trainingHome") {
-        const myCourses = COURSES.filter(c => c.postedByMe);
+        const allCourses = getProviderOfferedCourses();
+        const myCourses = getFilteredProviderCourses();
         html = `
           ${renderTrainingHero()}
 
@@ -3986,7 +4190,10 @@ ${r.strengths.join(", ")}
               <div class="card">
                 <div class="jobs-list-header">
                   <h3>Courses on JobStart</h3>
-                  <span class="section-subtitle" style="margin-bottom:0;">${myCourses.length} course${myCourses.length === 1 ? "" : "s"} listed</span>
+                  <span class="section-subtitle" style="margin-bottom:0;">${myCourses.length} of ${allCourses.length} course${allCourses.length === 1 ? "" : "s"} listed</span>
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                  <input type="text" id="trainingCourseSearchInput" class="form-input" placeholder="Search by course title or provider…" value="${state.trainingCourseSearch || ""}" oninput="state.trainingCourseSearch=this.value; render(); const el=document.getElementById('trainingCourseSearchInput'); if (el) { el.focus(); const p=el.value.length; el.setSelectionRange(p,p); }">
                 </div>
                 ${myCourses.length ? myCourses.map(c => `
                   <div class="list-row" onclick="openCourseModal('${c.id}')" style="cursor:pointer;">
@@ -4002,7 +4209,9 @@ ${r.strengths.join(", ")}
                     </div>
                     <div style="font-size:0.82rem; color: var(--text-muted);">${c.enrolled} enrolled via JobStart</div>
                   </div>
-                `).join("") : `<div class="empty-state">No courses listed yet. <br><button class="btn training-btn" style="margin-top:12px;" onclick="openOfferCourseForm()">+ Offer your first course</button></div>`}
+                `).join("") : allCourses.length
+                    ? `<div class="empty-state">No courses match "${state.trainingCourseSearch}".</div>`
+                    : `<div class="empty-state">No courses listed yet. <br><button class="btn training-btn" style="margin-top:12px;" onclick="openOfferCourseForm()">+ Offer the first course</button></div>`}
               </div>
             </div>
           </div>
@@ -4011,7 +4220,7 @@ ${r.strengths.join(", ")}
 
       // 7b. TRAINING PROVIDERS PORTAL — enrollees (enrolled learners) per course
       else if (state.view === "trainingApplications") {
-        const myCourses = COURSES.filter(c => c.postedByMe);
+        const myCourses = getProviderOfferedCourses();
         let mainHtml;
         if (!state.selectedApplicationsCourseId) {
           mainHtml = `
@@ -4048,7 +4257,7 @@ ${r.strengths.join(", ")}
             </div>
             <div class="card">
               <div style="margin-bottom: 4px;">
-                <h3 style="margin-bottom: 0;">Enrollees for ${course ? course.title : "this course"}</h3>
+                <h3 style="margin-bottom: 0;">Enrollees for ${course ? course.title : "this course"}${course ? ` <span style="color:var(--text-muted); font-weight:600; font-size:0.85rem;">by ${course.provider}</span>` : ""}</h3>
               </div>
               <p class="section-hint">${apps.length} enrollee${apps.length === 1 ? "" : "s"} &nbsp;·&nbsp; newest first.</p>
               ${apps.length ? apps.map(a => `
@@ -4074,6 +4283,48 @@ ${r.strengths.join(", ")}
             </div>
             <div class="profile-main">
               ${mainHtml}
+            </div>
+          </div>
+        `;
+      }
+
+      // 7c. TRAINING PROVIDERS PORTAL — every provider that has listed a course
+      else if (state.view === "trainingProviders") {
+        const names = getAllProviderNames();
+        html = `
+          ${renderTrainingHero()}
+
+          <div class="profile-dashboard">
+            <div class="profile-sidebar">
+              ${renderTrainingNav("trainingProviders")}
+            </div>
+            <div class="profile-main">
+              <div class="card">
+                <div class="jobs-list-header">
+                  <h3>Providers on JobStart</h3>
+                  <span class="section-subtitle" style="margin-bottom:0;">${names.length} provider${names.length === 1 ? "" : "s"}</span>
+                </div>
+                ${names.length ? names.map(name => {
+                  const courses = COURSES.filter(c => c.provider === name);
+                  const courseIds = courses.map(c => c.id);
+                  const enrollCount = ENROLLMENTS.filter(e => courseIds.includes(e.courseId)).length;
+                  const isPendingDelete = state.pendingDeleteProviderName === name;
+                  return `
+                    <div class="list-row">
+                      <div class="list-row-top">
+                        <div>
+                          <div class="list-row-title">${name}</div>
+                          <div class="list-row-meta">${courses.length} course${courses.length === 1 ? "" : "s"} &nbsp;·&nbsp; ${enrollCount} enrollment${enrollCount === 1 ? "" : "s"}</div>
+                        </div>
+                      </div>
+                      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+                        ${courses.length ? `<button class="btn btn-secondary btn-sm" onclick="state.trainingCourseSearch='${name.replace(/'/g, "\\'")}'; state.view='trainingHome'; render();">View courses</button>` : ""}
+                        <button class="btn btn-danger btn-sm" onclick="deleteProvider('${name.replace(/'/g, "\\'")}')">${isPendingDelete ? "Click again to confirm delete" : "Delete provider"}</button>
+                      </div>
+                    </div>
+                  `;
+                }).join("") : `<div class="empty-state">No providers yet. Offer a course to add one.</div>`}
+              </div>
             </div>
           </div>
         `;
