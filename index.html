@@ -505,10 +505,45 @@
     .gap-bar-label { font-size: 0.84rem; font-weight: 600; width: 130px; flex-shrink: 0; text-transform: capitalize; }
     .gap-bar-val { font-size: 0.78rem; color: var(--text-muted); width: 60px; text-align: right; flex-shrink: 0; }
 
+    /* Gamification — XP toast, level ring, achievement grid. Reuses the
+       same tokens/radii/shadows as the rest of the app (card, badge,
+       progress-bar-fill) so nothing here introduces a new visual style. */
+    .xp-toast-stack { position: fixed; top: 18px; right: 18px; z-index: 999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    @media (max-width: 640px) { .xp-toast-stack { left: 12px; right: 12px; top: 12px; } }
+    .xp-toast { display: flex; align-items: center; gap: 12px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; box-shadow: 0 10px 30px -10px rgba(28,35,33,0.28); min-width: 240px; max-width: 340px; opacity: 0; transform: translateY(-10px) scale(0.98); transition: opacity 0.25s ease, transform 0.25s ease; }
+    .xp-toast.show { opacity: 1; transform: translateY(0) scale(1); }
+    .xp-toast-icon { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; background: linear-gradient(135deg, var(--primary-dark), var(--primary-light)); box-shadow: 0 5px 12px rgba(15,118,110,.18); }
+    .xp-toast-title { font-family: var(--font-display); font-weight: 700; font-size: 0.86rem; color: var(--text); }
+    .xp-toast-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 1px; }
+
+    .level-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .level-ring { position: relative; width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .level-ring::before { content: ""; position: absolute; inset: 4px; background: var(--card-bg); border-radius: 50%; }
+    .level-ring span { position: relative; font-family: var(--font-display); font-weight: 800; font-size: 0.92rem; color: var(--primary-dark); }
+    .level-name { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; }
+    .level-xp-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    .achievement-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; margin-top: 14px; }
+    .achievement-item { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 10px 4px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); cursor: default; }
+    .achievement-item.earned { background: #effaf9; border-color: #bfe8e2; }
+    .achievement-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; background: var(--border); filter: grayscale(1); opacity: 0.55; }
+    .achievement-item.earned .achievement-icon { background: linear-gradient(135deg, var(--primary-dark), var(--primary-light)); filter: none; opacity: 1; box-shadow: 0 4px 10px rgba(15,118,110,.2); }
+    .achievement-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); line-height: 1.25; }
+    .achievement-item.earned .achievement-label { color: var(--text); }
+
+    /* Custom hover tooltip — replaces the native title attribute so locked
+       achievements can tell the user exactly what to do next (with a live
+       progress count), and earned ones confirm the XP they banked. */
+    .achievement-tooltip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: 176px; background: #1c2321; color: #fff; padding: 10px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 500; line-height: 1.4; text-align: left; box-shadow: 0 10px 24px -8px rgba(0,0,0,.35); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 20; }
+    .achievement-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1c2321; }
+    .achievement-item:hover .achievement-tooltip, .achievement-item:focus-visible .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .achievement-tooltip-title { font-weight: 800; font-family: var(--font-display); font-size: 0.78rem; margin-bottom: 3px; color: #fff; }
+    .achievement-tooltip-next { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.16); color: var(--primary-light); font-weight: 700; }
+
     /* Print Styles */
     @media print {
       body { background: white; padding: 0; }
-      header, .no-print, .progress-container { display: none !important; }
+      header, .no-print, .progress-container, .xp-toast-stack { display: none !important; }
       .card, .visual-cv { border: none !important; box-shadow: none !important; padding: 0 !important; }
       .visual-cv { width: 100%; }
     }
@@ -522,11 +557,14 @@
         <span class="logo-mark" aria-hidden="true">J</span>
         <span class="logo-text">JobStart<span class="accent-dot">.</span></span>
       </a>
+      <span class="xp-badge no-print" id="headerXpBadge" style="display:none; cursor:pointer;" onclick="state.portal='seeker'; state.view='results'; render();" title="Your level and XP"></span>
       <div class="live-clock no-print" id="liveClock" style="display:none;"></div>
     </header>
 
     <div id="app"></div>
   </div>
+
+  <div class="xp-toast-stack no-print" id="xpToastStack" aria-live="polite"></div>
 
   <script>
     /* ==========================================================================
@@ -1533,7 +1571,11 @@
       view: "home", // home | portal | quiz | results | resumeBuilder | visualResume | companyHome | companyPostJob | companyApplications | trainingHome | trainingGaps | trainingOfferCourse | trainingApplications
       currentQ: 0, // question index; quiz starts directly at Q1
       xp: 0,
+      badges: [], // ids of earned achievements, see ACHIEVEMENTS
       answers: {}, // per-question: number (single/rating) or array of numbers (multi)
+      xpAwardedQ: {}, // per-question flag: true once the 10 XP "answered this question" bonus has been paid out — prevents re-toggling a checkbox, or re-answering after going back, from farming extra XP
+      xpAwardedApply: {}, // per-job flag: true once APPLY_XP has been paid out for that job — prevents apply/withdraw/reapply cycles from farming XP
+      xpAwardedEnroll: {}, // per-course flag: true once ENROLL_XP has been paid out for that course — prevents enroll/cancel/re-enroll cycles from farming XP
       interests: makeEmptyInterests(), // raw interest score per career field, derived from answers
       skills: {
         communication: 1,
@@ -1577,6 +1619,163 @@
     };
 
     /* ==========================================================================
+       GAMIFICATION — XP, levels, achievement badges, toast popups
+       ========================================================================== */
+
+    // XP required to reach each level. Level = how many thresholds you've
+    // cleared, +1. Keeps early levels quick (a few quiz answers) and later
+    // ones a bit further apart so leveling up still feels earned.
+    const LEVEL_THRESHOLDS = [0, 100, 200, 325, 475, 650];
+    const LEVEL_NAMES = ["Newcomer", "Explorer", "Go-Getter", "Rising Talent", "Skilled Seeker", "Career Builder"];
+
+    // XP awarded once per assessment question, regardless of question type.
+    const QUESTION_XP = 1;
+    // XP awarded once per distinct job applied to / course enrolled in — kept
+    // separate from the one-time "First Application"/"Job Hunter" and
+    // "Lifelong Learner"/"Skill Collector" achievement bonuses above, which
+    // still fire on top of this on the relevant apply/enroll action.
+    const APPLY_XP = 5;
+    const ENROLL_XP = 5;
+
+    function getLevelInfo(xp) {
+      let levelIdx = 0;
+      for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
+        if (xp >= LEVEL_THRESHOLDS[i]) levelIdx = i;
+      }
+      const isMax = levelIdx === LEVEL_THRESHOLDS.length - 1;
+      const floor = LEVEL_THRESHOLDS[levelIdx];
+      const ceiling = isMax ? floor : LEVEL_THRESHOLDS[levelIdx + 1];
+      const pct = isMax ? 100 : Math.round(((xp - floor) / (ceiling - floor)) * 100);
+      return {
+        level: levelIdx + 1,
+        name: LEVEL_NAMES[levelIdx],
+        floor, ceiling, pct,
+        xpToNext: isMax ? 0 : ceiling - xp
+      };
+    }
+
+    // Applying to jobs and enrolling in courses are locked behind Level 2
+    // ("Explorer") — a jobseeker has to bank some XP first (answering
+    // assessment questions is the fastest route) before either unlocks.
+    const APPLY_ENROLL_UNLOCK_LEVEL = 2;
+    function isApplyEnrollUnlocked() {
+      return getLevelInfo(state.xp).level >= APPLY_ENROLL_UNLOCK_LEVEL;
+    }
+    function xpNeededForApplyEnrollUnlock() {
+      return Math.max(0, LEVEL_THRESHOLDS[APPLY_ENROLL_UNLOCK_LEVEL - 1] - state.xp);
+    }
+
+    // Achievements are derived purely from current state each time they're
+    // checked — no separate bookkeeping to keep in sync with every action
+    // that could unlock one.
+    const ACHIEVEMENTS = [
+      { id: "started",     icon: "🚀", label: "Getting Started", desc: "Answer your first assessment question.", xp: 0,
+        test: s => Object.keys(s.answers).length >= 1,
+        progress: s => ({ cur: Object.keys(s.answers).length, target: 1 }) },
+      { id: "halfway",      icon: "🔥", label: "Halfway There", desc: "Answer 15 assessment questions.", xp: 15,
+        test: s => Object.keys(s.answers).length >= 15,
+        progress: s => ({ cur: Object.keys(s.answers).length, target: 15 }) },
+      { id: "explorer",     icon: "🧭", label: "Career Explorer", desc: "Complete the full career assessment.", xp: 50,
+        test: s => Object.keys(s.answers).length >= QUESTIONS.length,
+        progress: s => ({ cur: Object.keys(s.answers).length, target: QUESTIONS.length }) },
+      { id: "resume",       icon: "📄", label: "Resume Ready", desc: "Build your resume.", xp: 25,
+        test: s => !!(s.resume && s.resume.name && s.resume.objective),
+        progress: s => ({ cur: (s.resume && s.resume.name && s.resume.objective) ? 1 : 0, target: 1 }) },
+      { id: "first_apply",  icon: "📬", label: "First Application", desc: "Apply to your first job.", xp: 20,
+        test: s => Object.keys(s.appliedJobs).length >= 1,
+        progress: s => ({ cur: Object.keys(s.appliedJobs).length, target: 1 }) },
+      { id: "job_hunter",   icon: "💼", label: "Job Hunter", desc: "Apply to 3 different jobs.", xp: 30,
+        test: s => Object.keys(s.appliedJobs).length >= 3,
+        progress: s => ({ cur: Object.keys(s.appliedJobs).length, target: 3 }) },
+      { id: "first_course", icon: "🎓", label: "Lifelong Learner", desc: "Enroll in your first course.", xp: 20,
+        test: s => Object.keys(s.enrolledCourseIds).length >= 1,
+        progress: s => ({ cur: Object.keys(s.enrolledCourseIds).length, target: 1 }) },
+      { id: "skill_up",     icon: "📚", label: "Skill Collector", desc: "Enroll in 3 different courses.", xp: 30,
+        test: s => Object.keys(s.enrolledCourseIds).length >= 3,
+        progress: s => ({ cur: Object.keys(s.enrolledCourseIds).length, target: 3 }) }
+    ];
+
+    // Awards flat XP outside of an achievement (e.g. a per-question tick)
+    // and pops a small toast so the gain is visible in the moment.
+    function awardXP(amount, label) {
+      if (!amount) return;
+      state.xp += amount;
+      if (label) showXpToast("⚡", `+${amount} XP`, label);
+    }
+
+    // Grants one specific achievement by id (if not already earned) and queues
+    // its toast. Used both by checkAchievements (state-derived unlocks) and by
+    // action handlers that need an achievement tied to a specific click rather
+    // than to whatever state happens to be true when checkAchievements next runs.
+    function unlockAchievement(id) {
+      if (state.badges.includes(id)) return;
+      const a = ACHIEVEMENTS.find(x => x.id === id);
+      if (!a) return;
+      state.badges.push(a.id);
+      state.xp += a.xp;
+      showXpToast(a.icon, "Achievement unlocked!", a.label);
+    }
+
+    // IDs handled by an explicit unlockAchievement() call at the moment of the
+    // relevant action, rather than by the generic state-test loop below:
+    //  - "started": fires when the quiz is actually opened (Take the Quiz),
+    //    not merely once state.answers has an entry.
+    //  - "explorer": fires when Submit Quiz is clicked, not the instant the
+    //    last question's answer is recorded (which happens before Submit).
+    const MANUALLY_TRIGGERED_ACHIEVEMENTS = new Set(["started", "explorer"]);
+
+    // Recomputes which of the remaining, state-derived achievements are
+    // currently earned, diffs against what was already recorded, grants their
+    // XP bonus, and queues a toast for anything newly unlocked. Safe to call
+    // after any state-changing action.
+    function checkAchievements() {
+      ACHIEVEMENTS.forEach(a => {
+        if (MANUALLY_TRIGGERED_ACHIEVEMENTS.has(a.id)) return;
+        if (!state.badges.includes(a.id) && a.test(state)) {
+          unlockAchievement(a.id);
+        }
+      });
+    }
+
+    // Toast queue — shown one at a time so multiple simultaneous unlocks
+    // (e.g. finishing the quiz) don't all flash on top of each other.
+    let xpToastQueue = [];
+    let xpToastBusy = false;
+    function showXpToast(icon, title, sub) {
+      xpToastQueue.push({ icon, title, sub });
+      if (!xpToastBusy) drainXpToastQueue();
+    }
+    function drainXpToastQueue() {
+      const stack = document.getElementById("xpToastStack");
+      if (!stack || !xpToastQueue.length) { xpToastBusy = false; return; }
+      xpToastBusy = true;
+      const t = xpToastQueue.shift();
+      const el = document.createElement("div");
+      el.className = "xp-toast";
+      el.innerHTML = `<span class="xp-toast-icon">${t.icon}</span><span><span class="xp-toast-title">${t.title}</span><br><span class="xp-toast-sub">${t.sub}</span></span>`;
+      stack.appendChild(el);
+      requestAnimationFrame(() => el.classList.add("show"));
+      setTimeout(() => {
+        el.classList.remove("show");
+        setTimeout(() => { el.remove(); drainXpToastQueue(); }, 250);
+      }, 2600);
+    }
+
+    // Keeps the small XP/level pill in the header in sync on every render —
+    // only shown once a person has started earning XP, and only in the
+    // job-seeker portal (it has no meaning inside the Company/Training views).
+    function updateHeaderXpBadge() {
+      const el = document.getElementById("headerXpBadge");
+      if (!el) return;
+      const show = state.xp > 0 && state.portal === "seeker" && state.view !== "portal";
+      el.style.display = show ? "inline-flex" : "none";
+      if (show) {
+        const info = getLevelInfo(state.xp);
+        el.textContent = `Lv ${info.level} · ${state.xp} XP`;
+      }
+    }
+
+    /* ==========================================================================
        CORE CALCULATIONS & UTILITIES
        ========================================================================== */
 
@@ -1611,8 +1810,12 @@
     // next question (or stays put on the last question so Submit can show).
     function answerQuestion(optIndex) {
       state.answers[state.currentQ] = optIndex;
-      state.xp += 10;
+      if (!state.xpAwardedQ[state.currentQ]) {
+        state.xp += QUESTION_XP;
+        state.xpAwardedQ[state.currentQ] = true;
+      }
       recomputeScores();
+      checkAchievements();
 
       if (state.currentQ < QUESTIONS.length - 1) {
         state.currentQ++;
@@ -1627,8 +1830,12 @@
       const idx = current.indexOf(optIndex);
       const next = idx >= 0 ? current.filter(i => i !== optIndex) : [...current, optIndex];
       state.answers[state.currentQ] = next;
-      state.xp = next.length && idx < 0 ? state.xp + 10 : state.xp;
+      if (next.length && !state.xpAwardedQ[state.currentQ]) {
+        state.xp += QUESTION_XP;
+        state.xpAwardedQ[state.currentQ] = true;
+      }
       recomputeScores();
+      checkAchievements();
       render();
     }
 
@@ -1702,6 +1909,8 @@
     function submitQuiz() {
       state.view = "results";
       upsertMyCandidateProfile();
+      unlockAchievement("explorer");
+      checkAchievements();
       render();
     }
 
@@ -1793,7 +2002,11 @@
         view: "home",
         currentQ: 0,
         xp: 0,
+        badges: [],
         answers: {},
+        xpAwardedQ: {},
+        xpAwardedApply: {},
+        xpAwardedEnroll: {},
         interests: makeEmptyInterests(),
         skills: { communication: 1, tech: 1, customerService: 1, sales: 1, trade: 1, creative: 1, leadership: 1, numeracy: 1 },
         preferences: { setup: "Open", relocate: "Regional", shift: "Flexible", edu: "College Degree" },
@@ -1848,6 +2061,7 @@
       const hasProfile = CANDIDATE_POOL.some(c => c.id === "me");
       state.portal = "seeker";
       state.view = hasProfile ? "results" : "quiz";
+      if (!hasProfile) unlockAchievement("started");
       render();
     }
 
@@ -2108,6 +2322,7 @@ ${r.strengths.join(", ")}
       }
       // "save" — return to where the person came from
       upsertMyCandidateProfile();
+      checkAchievements();
       if (state.pendingApplyJobId) {
         const job = JOBS.find(j => j.id === state.pendingApplyJobId);
         state.applyReviewJob = job || null;
@@ -2118,6 +2333,7 @@ ${r.strengths.join(", ")}
 
     // Apply-with-resume-review flow
     function startApply(jobId) {
+      if (!isApplyEnrollUnlocked()) return;
       ensureResumeDefaults();
       state.selectedJobModal = null;
       state.pendingApplyJobId = jobId;
@@ -2140,8 +2356,9 @@ ${r.strengths.join(", ")}
 
     function confirmApply() {
       if (state.pendingApplyJobId) {
-        state.appliedJobs[state.pendingApplyJobId] = true;
-        const job = JOBS.find(j => j.id === state.pendingApplyJobId);
+        const jobId = state.pendingApplyJobId;
+        state.appliedJobs[jobId] = true;
+        const job = JOBS.find(j => j.id === jobId);
         ensureResumeDefaults();
         upsertMyCandidateProfile();
         // Always create a fresh application record — including when re-applying after
@@ -2149,7 +2366,7 @@ ${r.strengths.join(", ")}
         // company's applicant list instead of being overwritten.
         APPLICATIONS.push({
           id: "app_" + Date.now(),
-          jobId: state.pendingApplyJobId,
+          jobId: jobId,
           jobTitle: job ? job.title : "Job",
           company: job ? job.company : "",
           candidateId: "me",
@@ -2159,6 +2376,15 @@ ${r.strengths.join(", ")}
           status: "applied",
           appliedAt: Date.now()
         });
+        // Check achievements (e.g. "First Application") before awarding the flat
+        // per-job XP below, so the achievement toast is queued — and therefore
+        // shown — ahead of the plain "+XP" action toast.
+        checkAchievements();
+        if (!state.xpAwardedApply[jobId]) {
+          state.xp += APPLY_XP;
+          state.xpAwardedApply[jobId] = true;
+          showXpToast("⚡", `+${APPLY_XP} XP`, "Application submitted");
+        }
       }
       state.applyReviewJob = null;
       state.pendingApplyJobId = null;
@@ -2194,6 +2420,7 @@ ${r.strengths.join(", ")}
 
     // Jobseeker enrolls in a training-provider course, normally from the course-details modal.
     function enrollInCourse(courseId) {
+      if (!isApplyEnrollUnlocked()) return;
       if (state.enrolledCourseIds[courseId]) return;
       const course = COURSES.find(c => c.id === courseId);
       if (!course) return;
@@ -2209,6 +2436,15 @@ ${r.strengths.join(", ")}
         learnerName: state.resume.name || "Anonymous Learner",
         enrolledAt: Date.now()
       });
+      // Check achievements (e.g. "Lifelong Learner") before awarding the flat
+      // per-course XP below, so the achievement toast is queued — and
+      // therefore shown — ahead of the plain "+XP" action toast.
+      checkAchievements();
+      if (!state.xpAwardedEnroll[courseId]) {
+        state.xp += ENROLL_XP;
+        state.xpAwardedEnroll[courseId] = true;
+        showXpToast("⚡", `+${ENROLL_XP} XP`, "Course enrollment");
+      }
       render();
     }
 
@@ -2737,6 +2973,8 @@ ${r.strengths.join(", ")}
       const clockEl = document.getElementById("liveClock");
       if (clockEl) clockEl.style.display = CLOCK_VIEWS.includes(state.view) ? "" : "none";
 
+      updateHeaderXpBadge();
+
       // 0. PORTAL CHOOSER — retained as an optional role switcher, but no longer the first screen.
       if (state.view === "portal") {
         html = `
@@ -2862,6 +3100,7 @@ ${r.strengths.join(", ")}
           <div class="progress-container">
             <div class="progress-info">
               <span>Question ${state.currentQ + 1} of ${QUESTIONS.length}</span>
+              <span class="xp-badge">⚡ ${state.xp} XP</span>
             </div>
             <div class="progress-bar-bg">
               <div class="progress-bar-fill" style="width: ${progressPct}%"></div>
@@ -2978,6 +3217,50 @@ ${r.strengths.join(", ")}
           <div class="profile-dashboard">
             <!-- SIDEBAR: skill profile, preferences, resume actions — stays in view -->
             <div class="profile-sidebar no-print">
+              ${(() => {
+                const info = getLevelInfo(state.xp);
+                const ringPct = info.pct;
+                return `
+                  <div class="card">
+                    <div class="sidebar-section-title">Your Progress</div>
+                    <div class="level-card-top">
+                      <div class="level-ring" style="background: conic-gradient(var(--primary) 0% ${ringPct}%, #e6f6f4 ${ringPct}% 100%);">
+                        <span>${info.level}</span>
+                      </div>
+                      <div>
+                        <div class="level-name">${info.name}</div>
+                        <div class="level-xp-sub">${state.xp} XP${info.xpToNext ? ` · ${info.xpToNext} XP to next level` : " · Max level reached"}</div>
+                      </div>
+                    </div>
+                    <div class="progress-bar-bg">
+                      <div class="progress-bar-fill" style="width: ${ringPct}%"></div>
+                    </div>
+
+                    <div class="sidebar-section-title" style="margin-top:18px;">Achievements</div>
+                    <div class="achievement-grid">
+                      ${ACHIEVEMENTS.map(a => {
+                        const earned = state.badges.includes(a.id);
+                        const prog = a.progress ? a.progress(state) : null;
+                        const nextLine = earned
+                          ? `Earned · +${a.xp} XP banked`
+                          : (prog ? `Next: ${Math.min(prog.cur, prog.target)}/${prog.target} — keep going` : "Locked");
+                        return `
+                          <div class="achievement-item ${earned ? "earned" : ""}" tabindex="0">
+                            <span class="achievement-icon">${earned ? a.icon : "🔒"}</span>
+                            <span class="achievement-label">${a.label}</span>
+                            <div class="achievement-tooltip">
+                              <div class="achievement-tooltip-title">${a.label}</div>
+                              <div>${a.desc}</div>
+                              <div class="achievement-tooltip-next">${nextLine}</div>
+                            </div>
+                          </div>
+                        `;
+                      }).join("")}
+                    </div>
+                  </div>
+                `;
+              })()}
+
               <div class="card">
                 <div class="sidebar-section-title">Your Skill Profile</div>
                 ${Object.entries(state.skills).map(([key, val]) => `
@@ -3905,7 +4188,15 @@ ${r.strengths.join(", ")}
         const canWithdrawFromModal = myApp && WITHDRAWABLE_STATUSES.includes(myApp.status);
         let modalActionHtml;
         if (!myApp || myApp.status === "withdrawn") {
-          modalActionHtml = `<button class="btn" style="width:100%; box-sizing:border-box;" onclick="startApply(${job.id})">${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
+          if (!isApplyEnrollUnlocked()) {
+            modalActionHtml = `
+              <div style="width:100%; box-sizing:border-box; text-align:center; padding:13px 16px; border-radius:var(--radius-sm); background:var(--bg); border:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);">
+                🔒 Reach <strong>Level ${APPLY_ENROLL_UNLOCK_LEVEL} (${LEVEL_NAMES[APPLY_ENROLL_UNLOCK_LEVEL - 1]})</strong> to apply — ${xpNeededForApplyEnrollUnlock()} more XP to go. Answering assessment questions is the quickest way there.
+              </div>
+            `;
+          } else {
+            modalActionHtml = `<button class="btn" style="width:100%; box-sizing:border-box;" onclick="startApply(${job.id})">${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
+          }
         } else {
           modalActionHtml = `
             <span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:13px 26px; box-sizing:border-box; font-size:0.95rem;">${meta.label}</span>
@@ -3972,7 +4263,11 @@ ${r.strengths.join(", ")}
                 </div>
               ` : isEnrolled
                   ? `<button class="btn btn-secondary" style="width:100%; box-sizing:border-box;" onclick="cancelEnrollment('${c.id}')">Cancel enrollment</button>`
-                  : `<button class="btn" style="width:100%;" onclick="enrollInCourse('${c.id}')">Enroll in this course</button>`
+                  : (!isApplyEnrollUnlocked()
+                      ? `<div style="width:100%; box-sizing:border-box; text-align:center; padding:13px 16px; border-radius:var(--radius-sm); background:var(--bg); border:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);">
+                           🔒 Reach <strong>Level ${APPLY_ENROLL_UNLOCK_LEVEL} (${LEVEL_NAMES[APPLY_ENROLL_UNLOCK_LEVEL - 1]})</strong> to enroll — ${xpNeededForApplyEnrollUnlock()} more XP to go. Answering assessment questions is the quickest way there.
+                         </div>`
+                      : `<button class="btn" style="width:100%;" onclick="enrollInCourse('${c.id}')">Enroll in this course</button>`)
               }
             </div>
           </div>
