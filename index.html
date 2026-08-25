@@ -2229,6 +2229,9 @@
       const projText = r.projects.length
         ? r.projects.map(p => `- ${p.title || "Project"}: ${p.desc || ""}`).join("\n")
         : "- None added yet";
+      const eduText = (r.education.level || r.education.school || r.education.year)
+        ? [r.education.level, r.education.school, r.education.year].filter(Boolean).join(" — ")
+        : "None added yet";
 
       const text = `================================================
 JOBSTART CAREER PROFILE RESUME
@@ -2243,7 +2246,7 @@ SKILLS
 ${r.skills.join(", ")}
 
 EDUCATION
-${r.education}
+${eduText}
 
 WORK EXPERIENCE
 ${expText}
@@ -2256,9 +2259,6 @@ ${projText}
 
 RECOMMENDED JOB ROLES
 ${r.recommendedRoles.join(", ")}
-
-STRENGTHS IDENTIFIED BY ASSESSMENT
-${r.strengths.join(", ")}
 ================================================`;
 
       navigator.clipboard.writeText(text);
@@ -2278,6 +2278,9 @@ ${r.strengths.join(", ")}
         .map(([key]) => SKILL_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1));
       const roles = getTopCareerMatches(3).map(p => p.title);
       const strengthLabels = strengths.map(s => SKILL_LABELS[s] || s.charAt(0).toUpperCase() + s.slice(1));
+      // Strengths from the assessment quiz are folded straight into Skills
+      // (dedup'd) instead of living in their own section.
+      const mergedSkills = [...new Set([...topSkills, ...strengthLabels])];
 
       return {
         name: "",
@@ -2285,13 +2288,12 @@ ${r.strengths.join(", ")}
         phone: "",
         location: "",
         objective: `Entry-level jobseeker pursuing a career in ${best.title}, bringing strengths in ${strengthLabels.join(", ")}. Seeking a ${state.preferences.setup.toLowerCase()} role where I can grow professionally.`,
-        skills: topSkills.length ? topSkills : ["Communication"],
-        education: state.preferences.edu,
+        skills: mergedSkills.length ? mergedSkills : ["Communication"],
+        education: { level: "", school: "", year: "" },
         experience: [],
         certifications: [],
         projects: [],
-        recommendedRoles: roles,
-        strengths: strengthLabels
+        recommendedRoles: roles
       };
     }
 
@@ -3666,7 +3668,11 @@ ${r.strengths.join(", ")}
                 </div>
 
                 <h4 class="cv-section-title">Education</h4>
-                <p style="font-size: 0.88rem; margin-bottom: 20px;">${r.education}</p>
+                <p style="font-size: 0.88rem; margin-bottom: 20px;">
+                  ${(r.education.level || r.education.school || r.education.year)
+                    ? [r.education.level, r.education.school, r.education.year].filter(Boolean).join(" — ")
+                    : `<span style="color:var(--text-muted);">None added yet</span>`}
+                </p>
 
                 <h4 class="cv-section-title">Certifications</h4>
                 ${r.certifications.length ? r.certifications.map(c => `
@@ -3702,11 +3708,6 @@ ${r.strengths.join(", ")}
                     <div>${p.desc || ""}</div>
                   </div>
                 `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">None added yet</p>`}
-
-                <h4 class="cv-section-title">Strengths Identified by Assessment</h4>
-                <div class="tag-list">
-                  ${r.strengths.map(s => `<span class="tag-chip" style="cursor:default;">${s}</span>`).join("") || `<span style="font-size:0.85rem; color:var(--text-muted);">None identified yet</span>`}
-                </div>
               </div>
             </div>
           </div>
@@ -3762,10 +3763,24 @@ ${r.strengths.join(", ")}
               <input type="text" id="newSkillInput" class="form-input" placeholder="Add a skill, e.g. Bookkeeping" onkeydown="if(event.key==='Enter'){event.preventDefault(); addTag('skills','newSkillInput');}">
               <button class="btn btn-secondary" onclick="addTag('skills','newSkillInput')">+ Add</button>
             </div>
+          </div>
 
-            <h4 class="cv-section-title">Education</h4>
+          <div class="card">
+            <h4 class="cv-section-title" style="margin-top:0;">Education</h4>
+            <p class="section-hint">Add your education background — this isn't pulled from your assessment, so fill it in yourself.</p>
             <div class="form-group">
-              <input type="text" class="form-input" placeholder="e.g. College Graduate — BS in Information Technology, XYZ University" value="${r.education}" oninput="state.resume.education=this.value">
+              <label class="form-label">Education level / degree</label>
+              <input type="text" class="form-input" placeholder="e.g. College Graduate — BS in Information Technology" value="${r.education.level}" oninput="state.resume.education.level=this.value">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">School</label>
+                <input type="text" class="form-input" placeholder="e.g. XYZ University" value="${r.education.school}" oninput="state.resume.education.school=this.value">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Year graduated</label>
+                <input type="text" class="form-input" placeholder="e.g. 2025" value="${r.education.year}" oninput="state.resume.education.year=this.value">
+              </div>
             </div>
           </div>
 
@@ -3851,18 +3866,6 @@ ${r.strengths.join(", ")}
             <div class="tag-input-row">
               <input type="text" id="newRoleInput" class="form-input" placeholder="Add a job role" onkeydown="if(event.key==='Enter'){event.preventDefault(); addTag('recommendedRoles','newRoleInput');}">
               <button class="btn btn-secondary" onclick="addTag('recommendedRoles','newRoleInput')">+ Add</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h4 class="cv-section-title" style="margin-top:0;">Strengths Identified by Assessment</h4>
-            <p class="section-hint">Pulled from your quiz results — feel free to fine-tune.</p>
-            <div class="tag-list">
-              ${r.strengths.map((s, idx) => `<span class="tag-chip">${s}<button onclick="removeTag('strengths', ${idx})" aria-label="Remove ${s}">×</button></span>`).join("")}
-            </div>
-            <div class="tag-input-row">
-              <input type="text" id="newStrengthInput" class="form-input" placeholder="Add a strength" onkeydown="if(event.key==='Enter'){event.preventDefault(); addTag('strengths','newStrengthInput');}">
-              <button class="btn btn-secondary" onclick="addTag('strengths','newStrengthInput')">+ Add</button>
             </div>
           </div>
 
