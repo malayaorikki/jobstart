@@ -100,7 +100,9 @@
     .preview-pills { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 18px; }
     .preview-pill { border: 1.5px solid var(--border); background: white; padding: 8px 16px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; color: var(--text); }
     .preview-link { display: inline-flex; align-items: center; gap: 6px; color: var(--primary-dark); font-weight: 700; font-size: 0.9rem; text-decoration: none; }
-    .preview-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+    @media (hover: hover) and (pointer: fine) {
+  .preview-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+    }
 
     .match-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: 0 8px 28px -14px rgba(28,35,33,0.16); }
     .match-card-eyebrow { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
@@ -122,7 +124,10 @@
        from the base .match-card (which the homepage example card still uses
        at full size) so a grid of these doesn't feel oversized. */
     .job-cards-grid .match-card { margin-bottom: 0; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; padding: 18px; }
-    .job-cards-grid .match-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -12px rgba(28,35,33,0.18); border-color: var(--primary-light); }
+    .job-cards-grid .match-card:active, .courses-grid .match-card:active { transform: scale(0.98); }
+    @media (hover: hover) and (pointer: fine) {
+  .job-cards-grid .match-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -12px rgba(28,35,33,0.18); border-color: var(--primary-light); }
+    }
     .job-cards-grid .match-card-top { margin-bottom: 12px; }
     .job-cards-grid .match-card-salary { margin-bottom: 12px; }
     .job-cards-grid .match-skill-row { margin-bottom: 8px; }
@@ -135,9 +140,15 @@
     .audience-links { display:flex; justify-content:center; align-items:center; gap:8px 18px; flex-wrap:wrap; margin: -4px 0 20px; padding: 10px 14px; font-size:0.84rem; color:var(--text-muted); }
     .audience-links .audience-label { font-weight:600; color:var(--text-muted); }
     .audience-link { color:var(--text); text-decoration:none; font-weight:700; border-bottom:1px solid transparent; transition:color .15s ease,border-color .15s ease; }
-    .audience-link:hover { color:var(--primary-dark); border-color:var(--primary-light); }
-    .audience-link.employer-link:hover { color:var(--accent-dark); border-color:var(--accent); }
-    .audience-link.training-link:hover { color:var(--primary-dark); border-color:var(--primary-light); }
+    @media (hover: hover) and (pointer: fine) {
+  .audience-link:hover { color:var(--primary-dark); border-color:var(--primary-light); }
+    }
+    @media (hover: hover) and (pointer: fine) {
+  .audience-link.employer-link:hover { color:var(--accent-dark); border-color:var(--accent); }
+    }
+    @media (hover: hover) and (pointer: fine) {
+  .audience-link.training-link:hover { color:var(--primary-dark); border-color:var(--primary-light); }
+    }
     .secondary-audience { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:20px; }
     @media (min-width:700px) { .secondary-audience { grid-template-columns:1fr 1fr; } }
     .secondary-audience-card { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
@@ -166,26 +177,44 @@
     .paths-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 700px) { .paths-grid { grid-template-columns: repeat(2, 1fr); } }
     .path-card { display: flex; align-items: flex-start; gap: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; background: white; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; text-align: left; }
-    .path-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); border-color: var(--primary-light); }
+    .path-card:active { transform: scale(0.98); }
+    @media (hover: hover) and (pointer: fine) {
+  .path-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); border-color: var(--primary-light); }
+    }
     .path-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 3px; }
     .path-salary { font-size: 0.8rem; color: var(--text-muted); }
 
     .companies-strip { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
     .company-pill { border: 1px solid var(--border); background: white; padding: 9px 18px; border-radius: 999px; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.15s ease; }
-    .company-pill:hover { border-color: var(--primary-light); background: #f6fbfa; color: var(--primary-dark); }
+    .company-pill:active { background: #f6fbfa; border-color: var(--primary-light); }
+    @media (hover: hover) and (pointer: fine) {
+  .company-pill:hover { border-color: var(--primary-light); background: #f6fbfa; color: var(--primary-dark); }
+    }
 
     .btn { font-family: var(--font-body); background: var(--primary); color: white; border: none; padding: 13px 26px; border-radius: 999px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background 0.15s ease, transform 0.15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
+    @media (hover: hover) and (pointer: fine) {
+  .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    }
+    .btn:active { background: var(--primary-dark); transform: translateY(0) scale(0.98); }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
     .btn-secondary { background: #f1efe9; color: var(--text); }
-    .btn-secondary:hover { background: #e7e2da; }
+    .btn-secondary:active { background: #e7e2da; }
+    @media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover { background: #e7e2da; }
+    }
     .btn-outline { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); padding: 11.5px 26px; }
-    .btn-outline:hover { background: #effaf9; }
+    .btn-outline:active { background: #effaf9; }
+    @media (hover: hover) and (pointer: fine) {
+  .btn-outline:hover { background: #effaf9; }
+    }
     .btn-danger { background: transparent; border: 1.5px solid #c0392b; color: #c0392b; padding: 11.5px 26px; }
-    .btn-danger:hover { background: #c0392b; color: white; }
+    @media (hover: hover) and (pointer: fine) {
+  .btn-danger:hover { background: #c0392b; color: white; }
+    }
     .btn-danger.confirming { background: #c0392b; color: white; border-color: #c0392b; }
-    .btn-danger.confirming:hover { background: #a93226; }
+    @media (hover: hover) and (pointer: fine) {
+  .btn-danger.confirming:hover { background: #a93226; }
+    }
     .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
 
     /* Quiz Options */
@@ -275,7 +304,9 @@
     .pref-picker-label { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
     .pref-picker-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
     .pref-pick-btn { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 20px; background: white; font-family: var(--font-body); font-size: 0.83rem; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.15s ease; }
-    .pref-pick-btn:hover { border-color: var(--primary-light); background: #f6fbfa; }
+    @media (hover: hover) and (pointer: fine) {
+  .pref-pick-btn:hover { border-color: var(--primary-light); background: #f6fbfa; }
+    }
     .pref-pick-btn.selected { border-color: var(--primary); background: var(--primary); color: white; }
 
     .quick-stats-row { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -294,7 +325,9 @@
        portal's indigo accent, so "Close your skill gaps" reads as a sibling
        grid to "Jobs matched to you" rather than a plain list. */
     .courses-grid .match-card { margin-bottom: 0; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-    .courses-grid .match-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -12px rgba(28,35,33,0.18); border-color: #a5b4fc; }
+    @media (hover: hover) and (pointer: fine) {
+  .courses-grid .match-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -12px rgba(28,35,33,0.18); border-color: #a5b4fc; }
+    }
     .course-match-card .match-card-title { font-size: 1.02rem; margin-bottom: 4px; }
     .course-provider-link { color: var(--primary-dark); font-weight: 600; font-size: 0.86rem; cursor: default; }
     .course-match-ring { background: #effaf9 !important; }
@@ -318,12 +351,17 @@
 
     /* Job Listings */
     .job-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; background: white; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .job-card:active { transform: scale(0.99); }
     .job-card:last-child { margin-bottom: 0; }
-    .job-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); border-color: var(--primary-light); }
+    @media (hover: hover) and (pointer: fine) {
+  .job-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); border-color: var(--primary-light); }
+    }
     .job-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
     .job-title { font-weight: 700; font-size: 1rem; }
     .company-link { color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; font-size: 0.92rem; }
-    .company-link:hover { text-decoration: underline; }
+    @media (hover: hover) and (pointer: fine) {
+  .company-link:hover { text-decoration: underline; }
+    }
 
     /* Modal */
     .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(28,35,33,0.55); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(2px); }
@@ -336,6 +374,7 @@
     .detail-row .detail-label { color: var(--text-muted); font-weight: 600; }
     .detail-row .detail-value { font-weight: 700; color: var(--text); text-align: right; }
     .close-btn { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; border: none; background: #f1efe9; font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+    .close-btn:active { background: #e7e2da; }
     @media (pointer: coarse) {
       .close-btn::after, .row-icon-btn::after, .entry-remove::after {
         content: ""; position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%);
@@ -349,11 +388,20 @@
        don't compete with the row's primary content. */
     .row-icon-actions { display: flex; gap: 4px; flex-shrink: 0; }
     .row-icon-btn { width: 26px; height: 26px; border-radius: 50%; border: none; background: transparent; color: var(--text-muted); font-size: 0.85rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s ease, color 0.15s ease; }
-    .row-icon-btn:hover { background: #f1efe9; color: var(--text); }
-    .row-icon-btn.danger:hover { background: #fdecec; color: #c0392b; }
+    .row-icon-btn:active { background: #f1efe9; color: var(--text); }
+    @media (hover: hover) and (pointer: fine) {
+  .row-icon-btn:hover { background: #f1efe9; color: var(--text); }
+    }
+    @media (hover: hover) and (pointer: fine) {
+  .row-icon-btn.danger:hover { background: #fdecec; color: #c0392b; }
+    }
     .row-icon-btn.confirming { width: auto; padding: 0 10px; border-radius: 13px; background: #fdecec; color: #c0392b; font-size: 0.76rem; font-weight: 700; }
-    .row-icon-btn.confirming:hover { background: #fbdada; }
-    .close-btn:hover { background: #e7e2da; }
+    @media (hover: hover) and (pointer: fine) {
+  .row-icon-btn.confirming:hover { background: #fbdada; }
+    }
+    @media (hover: hover) and (pointer: fine) {
+  .close-btn:hover { background: #e7e2da; }
+    }
 
     /* Visual Resume Styling (Screen & Print) */
     .visual-cv { background: white; border: 1px solid var(--border); padding: 36px; border-radius: var(--radius); color: var(--text); }
@@ -388,14 +436,21 @@
 
     .entry-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 14px; background: var(--bg); position: relative; }
     .entry-remove { position: absolute; top: 10px; right: 10px; width: 26px; height: 26px; border-radius: 50%; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-    .entry-remove:hover { background: #fee2e2; color: #dc2626; }
+    .entry-remove:active { background: #fee2e2; color: #dc2626; }
+    @media (hover: hover) and (pointer: fine) {
+  .entry-remove:hover { background: #fee2e2; color: #dc2626; }
+    }
     .add-entry-btn { width: 100%; padding: 11px; border: 1.5px dashed var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--primary); font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.15s ease; font-family: var(--font-body); }
-    .add-entry-btn:hover { background: #effaf9; border-color: var(--primary-light); }
+    @media (hover: hover) and (pointer: fine) {
+  .add-entry-btn:hover { background: #effaf9; border-color: var(--primary-light); }
+    }
 
     .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
     .tag-chip { display: inline-flex; align-items: center; gap: 6px; background: #effaf9; color: var(--primary-dark); padding: 5px 10px 5px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; }
     .tag-chip button { background: none; border: none; color: var(--primary-dark); cursor: pointer; font-size: 0.9rem; line-height: 1; opacity: 0.6; padding: 0; }
-    .tag-chip button:hover { opacity: 1; }
+    @media (hover: hover) and (pointer: fine) {
+  .tag-chip button:hover { opacity: 1; }
+    }
     .tag-input-row { display: flex; gap: 8px; }
     .tag-input-row .form-input { flex: 1; }
 
@@ -403,12 +458,19 @@
     .portal-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
     @media (min-width: 700px) { .portal-grid { grid-template-columns: repeat(3, 1fr); } }
     .portal-card { text-align: left; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px 22px; background: white; cursor: pointer; transition: all 0.15s ease; display: flex; flex-direction: column; gap: 12px; }
-    .portal-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -12px rgba(28,35,33,0.18); border-color: var(--primary-light); }
+    .portal-card:active { transform: scale(0.98); }
+    @media (hover: hover) and (pointer: fine) {
+  .portal-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -12px rgba(28,35,33,0.18); border-color: var(--primary-light); }
+    }
     /* Only the hover border is color-coded here — a light preview of the portal's role
        color as you consider it. Everything else on the card (icon, arrows) is neutral
        teal so the badge and this hover are the only two colored touchpoints in the app. */
-    .portal-card.company:hover { border-color: var(--accent); }
-    .portal-card.training:hover { border-color: var(--primary-dark); }
+    @media (hover: hover) and (pointer: fine) {
+  .portal-card.company:hover { border-color: var(--accent); }
+    }
+    @media (hover: hover) and (pointer: fine) {
+  .portal-card.training:hover { border-color: var(--primary-dark); }
+    }
     .portal-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; background: #effaf9; }
     .portal-title { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; }
     .portal-desc { font-size: 0.85rem; color: var(--text-muted); }
@@ -424,7 +486,10 @@
     .dash-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; margin-top: 2px; }
     .dash-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
     .dash-tab { padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--border); background: white; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); cursor: pointer; font-family: var(--font-body); transition: all 0.15s ease; }
-    .dash-tab:hover { border-color: var(--primary-light); color: var(--text); }
+    .dash-tab:active { border-color: var(--primary-light); }
+    @media (hover: hover) and (pointer: fine) {
+  .dash-tab:hover { border-color: var(--primary-light); color: var(--text); }
+    }
     .dash-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
 
     /* Company Portal — sidebar nav, kept identical in shape to the job-seeker
@@ -448,16 +513,22 @@
     }
     .company-nav-btn .nav-icon { font-size: 1rem; flex-shrink: 0; }
     .company-nav-btn .nav-count { margin-left: auto; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); background: var(--bg); border-radius: 20px; padding: 2px 9px; }
-    .company-nav-btn:hover { background: var(--bg); color: var(--text); }
+    @media (hover: hover) and (pointer: fine) {
+  .company-nav-btn:hover { background: var(--bg); color: var(--text); }
+    }
     .company-nav-btn.active { background: #effaf9; border-color: var(--primary); color: var(--primary-dark); }
     .company-nav-btn.active .nav-count { background: white; color: var(--primary-dark); }
     .company-nav-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
     /* Action buttons stay JobStart teal in every portal — orange only marks the role
        (nav active state above, portal-role-tag, portal-picker icon), not the actions. */
     .company-btn { background: var(--primary); }
-    .company-btn:hover { background: var(--primary-dark); }
+    @media (hover: hover) and (pointer: fine) {
+  .company-btn:hover { background: var(--primary-dark); }
+    }
     .company-btn-outline { border-color: var(--primary); color: var(--primary); }
-    .company-btn-outline:hover { background: #effaf9; }
+    @media (hover: hover) and (pointer: fine) {
+  .company-btn-outline:hover { background: #effaf9; }
+    }
 
     /* Training Providers Portal — same sidebar-nav shell as the company
        portal, in its own indigo accent so it's visually distinct at a glance
@@ -477,18 +548,27 @@
     }
     .training-nav-btn .nav-icon { font-size: 1rem; flex-shrink: 0; }
     .training-nav-btn .nav-count { margin-left: auto; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); background: var(--bg); border-radius: 20px; padding: 2px 9px; }
-    .training-nav-btn:hover { background: var(--bg); color: var(--text); }
+    @media (hover: hover) and (pointer: fine) {
+  .training-nav-btn:hover { background: var(--bg); color: var(--text); }
+    }
     .training-nav-btn.active { background: #effaf9; border-color: var(--primary); color: var(--primary-dark); }
     .training-nav-btn.active .nav-count { background: white; color: var(--primary-dark); }
     .training-btn { background: var(--primary); }
-    .training-btn:hover { background: var(--primary-dark); }
+    @media (hover: hover) and (pointer: fine) {
+  .training-btn:hover { background: var(--primary-dark); }
+    }
 
     /* Generic list rows (candidates, applications, courses) */
     .list-row { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 12px; background: white; transition: all 0.15s ease; }
+    .list-row:active { border-color: var(--primary-light); }
     .list-row:last-child { margin-bottom: 0; }
-    .list-row:hover { border-color: var(--primary-light); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); }
+    @media (hover: hover) and (pointer: fine) {
+  .list-row:hover { border-color: var(--primary-light); box-shadow: 0 8px 20px -10px rgba(28,35,33,0.15); }
+    }
     .list-row-locked { opacity: 0.75; }
-    .list-row-locked:hover { border-color: var(--border) !important; box-shadow: none !important; }
+    @media (hover: hover) and (pointer: fine) {
+  .list-row-locked:hover { border-color: var(--border) !important; box-shadow: none !important; }
+    }
     .list-row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
     .list-row-title { font-weight: 700; font-size: 0.98rem; }
     .list-row-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
@@ -499,13 +579,17 @@
     .status-select { padding: 6px 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; color: var(--text); background: white; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
     /* Full-width variant used when a status-style dropdown replaces a form <select> */
     .status-select-block { display: flex; width: 100%; justify-content: space-between; box-sizing: border-box; }
-    .status-select:not(.status-select-locked):hover { border-color: var(--primary-light); }
+    @media (hover: hover) and (pointer: fine) {
+  .status-select:not(.status-select-locked):hover { border-color: var(--primary-light); }
+    }
     .status-select:focus { outline: none; border-color: var(--primary-light); }
     .status-select svg { color: var(--text-muted); }
     .status-dropdown-list { position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 100%; background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 8px 20px -8px rgba(28,35,33,0.18); padding: 4px; }
     .status-dropdown-list-up { top: auto; bottom: calc(100% + 6px); box-shadow: 0 -8px 20px -8px rgba(28,35,33,0.18); }
     .status-dropdown-item { padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; color: var(--text); white-space: nowrap; cursor: pointer; }
-    .status-dropdown-item:hover { background: var(--bg); }
+    @media (hover: hover) and (pointer: fine) {
+  .status-dropdown-item:hover { background: var(--bg); }
+    }
     .status-dropdown-item.is-active { background: var(--primary); color: white; font-weight: 600; }
     .status-select-locked { cursor: default; color: var(--text-muted); background: var(--bg); border-color: var(--border); }
     .skill-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
@@ -548,7 +632,10 @@
        progress count), and earned ones confirm the XP they banked. */
     .achievement-tooltip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: 176px; background: #1c2321; color: #fff; padding: 10px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 500; line-height: 1.4; text-align: left; box-shadow: 0 10px 24px -8px rgba(0,0,0,.35); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 20; }
     .achievement-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1c2321; }
-    .achievement-item:hover .achievement-tooltip, .achievement-item:focus-visible .achievement-tooltip, .achievement-item.tapped .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .achievement-item:focus-visible .achievement-tooltip, .achievement-item.tapped .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    @media (hover: hover) and (pointer: fine) {
+      .achievement-item:hover .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    }
     .achievement-tooltip-title { font-weight: 800; font-family: var(--font-display); font-size: 0.78rem; margin-bottom: 3px; color: #fff; }
     .achievement-tooltip-next { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.16); color: var(--primary-light); font-weight: 700; }
 
