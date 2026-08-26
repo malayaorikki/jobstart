@@ -3008,12 +3008,7 @@ ${r.recommendedRoles.join(", ")}
     function updateApplicationStatus(appId, status) {
       const app = APPLICATIONS.find(a => a.id === appId);
       if (app) app.status = status;
-      state.openStatusDropdown = null;
-      render();
-    }
-
-    function toggleStatusDropdown(appId) {
-      state.openStatusDropdown = state.openStatusDropdown === appId ? null : appId;
+      state.openFieldDropdown = null;
       render();
     }
 
@@ -4301,8 +4296,9 @@ ${r.recommendedRoles.join(", ")}
                 <h3 style="margin-bottom: 0;">Applicants for ${job ? job.title : "this job"}${job ? ` <span style="color:var(--text-muted); font-weight:600; font-size:0.85rem;">at ${job.company}</span>` : ""}</h3>
               </div>
               <p class="section-hint">${apps.length} application${apps.length === 1 ? "" : "s"} received &nbsp;·&nbsp; newest first.</p>
-              ${apps.length ? apps.map(a => {
+              ${apps.length ? apps.map((a, i) => {
                 const meta = STATUS_META[a.status] || STATUS_META.applied;
+                const isLastApp = i === apps.length - 1;
                 return `
                 <div class="list-row">
                   <div class="list-row-top">
@@ -4322,21 +4318,13 @@ ${r.recommendedRoles.join(", ")}
                       <span class="status-select status-select-locked" title="The applicant withdrew — status can no longer be changed.">
                         ${meta.label}
                       </span>
-                    ` : `
-                    <div class="status-dropdown">
-                      <button type="button" class="status-select" onclick="event.stopPropagation(); toggleStatusDropdown('${a.id}')">
-                        ${meta.label}
-                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                      </button>
-                      ${state.openStatusDropdown === a.id ? `
-                        <div class="status-dropdown-list" onclick="event.stopPropagation();">
-                          ${APPLICATION_STATUSES.filter(s => s !== "withdrawn").map(s => `
-                            <div class="status-dropdown-item ${a.status === s ? 'is-active' : ''}" onclick="updateApplicationStatus('${a.id}', '${s}')">${STATUS_META[s].label}</div>
-                          `).join("")}
-                        </div>
-                      ` : ""}
-                    </div>
-                    `}
+                    ` : renderFieldDropdown(
+                      a.id,
+                      meta.label,
+                      APPLICATION_STATUSES.filter(s => s !== "withdrawn").map(s => [s, STATUS_META[s].label]),
+                      `updateApplicationStatus('${a.id}', '%VALUE%')`,
+                      isLastApp
+                    )}
                   </div>
                 </div>
               `;}).join("") : `<div class="empty-state">No applications yet for this job.</div>`}
@@ -4923,10 +4911,6 @@ ${r.recommendedRoles.join(", ")}
 
     document.addEventListener("click", () => {
       let changed = false;
-      if (state.openStatusDropdown !== null && state.openStatusDropdown !== undefined) {
-        state.openStatusDropdown = null;
-        changed = true;
-      }
       if (state.openFieldDropdown !== null && state.openFieldDropdown !== undefined) {
         state.openFieldDropdown = null;
         changed = true;
