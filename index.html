@@ -249,9 +249,10 @@
     .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
 
     /* Quiz Options */
-    .q-category { text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
+    .q-category { text-transform: uppercase; font-size: 0.92rem; letter-spacing: 0.06em; color: var(--primary); font-weight: 800; margin-bottom: 8px; }
     .q-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
-    .q-title-alt { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; }
+    .q-title-alt { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4; font-style: italic; }
+    .q-instruction { font-size: 0.76rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 20px; font-style: italic; }
     .options-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
     .option-btn { width: 100%; text-align: left; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: white; cursor: pointer; transition: all 0.15s ease; font-family: var(--font-body); font-size: 0.94rem; font-weight: 500; color: var(--text); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     @media (hover: hover) and (pointer: fine) {
@@ -265,7 +266,7 @@
     .option-btn.selected .option-letter { background: var(--primary); color: white; }
     .option-txt-wrap { flex: 1; display: flex; flex-direction: column; gap: 2px; }
     .option-txt { flex: 1; }
-    .option-alt { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; }
+    .option-alt { font-size: 0.78rem; color: var(--text-muted); font-weight: 400; font-style: italic; }
     .option-arrow { color: var(--text-muted); flex-shrink: 0; }
 
     .quiz-footer { margin-top: 22px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -3505,9 +3506,10 @@ ${r.recommendedRoles.join(", ")}
           </div>
 
           <div class="card">
-            <div class="q-category">${q.cat}${isMulti ? ' · Select all that apply' : ''}${isRating ? ' · Rate your interest' : ''}</div>
+            <div class="q-category">${q.cat}</div>
             <div class="q-title">${q.q}</div>
             <div class="q-title-alt">${q.qAlt || ''}</div>
+            ${isMulti || isRating ? `<div class="q-instruction">${isMulti ? 'Select all that apply' : 'Rate your interest'}</div>` : ''}
 
             <div class="options-grid">
               ${q.opts.map((opt, idx) => {
@@ -3556,7 +3558,7 @@ ${r.recommendedRoles.join(", ")}
                 true
               )}
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="skipQuizToPath(state.skipPathId)">Go</button>
+            <button class="btn btn-secondary btn-sm" onclick="skipQuizToPath(state.skipPathId)">Go (temp)</button>
           </div>
           <!-- END TEMP -->
         `;
