@@ -31,14 +31,11 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html {
       -webkit-font-smoothing: antialiased;
-      /* Lock the type scale to what's authored below — without this, mobile
-         browsers (Android Chrome especially) silently "boost" font sizes in
-         narrow columns, which is exactly what makes a page look like a
-         different, inconsistent scale from device to device. */
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      overflow-x: hidden;
     }
-    body { font-family: var(--font-body); background: radial-gradient(circle at 50% -10%, rgba(20,184,166,.10), transparent 34%), var(--bg); color: var(--text); line-height: 1.55; padding: 24px 16px 60px; }
+    body { font-family: var(--font-body); background: radial-gradient(circle at 50% -10%, rgba(20,184,166,.10), transparent 34%), var(--bg); color: var(--text); line-height: 1.55; padding: 24px 16px 60px; overflow-x: hidden; }
     .container { max-width: 900px; margin: 0 auto; transition: max-width 0.2s ease; }
     /* Widen the canvas on larger screens so dashboard-style views (like the
        job seeker profile) have room for a real multi-column layout instead
@@ -54,7 +51,11 @@
     }
 
     /* Header & Navigation */
-    header { display: flex; flex-direction: row; align-items: center; justify-content: space-between; text-align: left; gap: 16px; margin-bottom: 28px; padding: 4px 2px; }
+    header { display: flex; flex-direction: row; align-items: center; justify-content: space-between; text-align: left; gap: 16px; margin-bottom: 28px; padding: 4px 2px; flex-wrap: wrap; row-gap: 8px; }
+    @media (max-width: 420px) {
+      header { gap: 10px; }
+      .live-clock { font-size: 0.78rem; }
+    }
     .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; font-style: normal; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 9px; letter-spacing: -0.04em; flex-shrink: 0; }
     .logo-mark { width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary-dark), var(--primary-light)); color: white; font-family: var(--font-display); font-size: .74rem; font-weight: 800; letter-spacing: -0.03em; box-shadow: 0 5px 12px rgba(15,118,110,.18); }
     .logo-text .accent-dot { color: var(--accent); }
@@ -335,6 +336,12 @@
     .detail-row .detail-label { color: var(--text-muted); font-weight: 600; }
     .detail-row .detail-value { font-weight: 700; color: var(--text); text-align: right; }
     .close-btn { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; border: none; background: #f1efe9; font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+    @media (pointer: coarse) {
+      .close-btn::after, .row-icon-btn::after, .entry-remove::after {
+        content: ""; position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%);
+      }
+      .row-icon-btn, .entry-remove { position: relative; }
+    }
 
     /* Minimalist row-level edit/delete icon buttons — for the small set of
        actions where the poster manages their own listing (job posts, course
@@ -541,7 +548,7 @@
        progress count), and earned ones confirm the XP they banked. */
     .achievement-tooltip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: 176px; background: #1c2321; color: #fff; padding: 10px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 500; line-height: 1.4; text-align: left; box-shadow: 0 10px 24px -8px rgba(0,0,0,.35); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 20; }
     .achievement-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1c2321; }
-    .achievement-item:hover .achievement-tooltip, .achievement-item:focus-visible .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .achievement-item:hover .achievement-tooltip, .achievement-item:focus-visible .achievement-tooltip, .achievement-item.tapped .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
     .achievement-tooltip-title { font-weight: 800; font-family: var(--font-display); font-size: 0.78rem; margin-bottom: 3px; color: #fff; }
     .achievement-tooltip-next { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.16); color: var(--primary-light); font-weight: 700; }
 
@@ -3469,7 +3476,7 @@ ${r.recommendedRoles.join(", ")}
                           ? `Earned · +${a.xp} XP banked`
                           : (prog ? `Next: ${Math.min(prog.cur, prog.target)}/${prog.target} — keep going` : "Locked");
                         return `
-                          <div class="achievement-item ${earned ? "earned" : ""}" tabindex="0">
+                          <div class="achievement-item ${earned ? "earned" : ""}" tabindex="0" onclick="event.stopPropagation(); this.classList.toggle('tapped');">
                             <span class="achievement-icon">${earned ? a.icon : "🔒"}</span>
                             <span class="achievement-label">${a.label}</span>
                             <div class="achievement-tooltip">
@@ -4736,6 +4743,8 @@ ${r.recommendedRoles.join(", ")}
         changed = true;
       }
       if (changed) render();
+
+      document.querySelectorAll(".achievement-item.tapped").forEach(el => el.classList.remove("tapped"));
     });
 
     // Initialize App
