@@ -1599,6 +1599,7 @@
       selectedCompanyModal: null,
       selectedCourseModal: null, // course currently open in the course-details modal
       selectedJobModal: null, // job currently open in the job-details modal
+      offerAcceptedModal: null, // job currently shown in the "offer accepted" celebration modal
       resume: null,           // built lazily via ensureResumeDefaults()
       applyReviewJob: null,   // job currently being reviewed for application
       pendingApplyJobId: null, // job id waiting on a resume edit before submitting
@@ -2060,6 +2061,7 @@
         selectedCompanyModal: null,
         selectedCourseModal: null,
         selectedJobModal: null,
+        offerAcceptedModal: null,
         resume: null,
         applyReviewJob: null,
         pendingApplyJobId: null,
@@ -2205,6 +2207,37 @@
       }
       state.appliedJobs[jobId] = false;
       render();
+    }
+
+    // Candidate confirms they accept a "hired" offer. Only valid while the
+    // application is in the "hired" status and hasn't already been accepted —
+    // this flips a separate offerAccepted flag rather than a new pipeline
+    // status, so the employer-side status history stays untouched.
+    function acceptOffer(jobId) {
+      const app = getMyApplication(jobId);
+      if (app && app.status === "hired" && !app.offerAccepted) {
+        app.offerAccepted = true;
+        awardXP(25, "Offer accepted");
+        state.offerAcceptedModal = JOBS.find(j => j.id === jobId) || null;
+        // Close the job details modal (if open) so it isn't stacked underneath
+        // the celebration modal — only one overlay should show at a time.
+        state.selectedJobModal = null;
+      }
+      render();
+    }
+
+    function closeOfferAcceptedModal() {
+      state.offerAcceptedModal = null;
+      render();
+    }
+
+    // Applicant-facing status label — shows "Offer Accepted" once the candidate
+    // has confirmed a hire, without touching the shared STATUS_META used by the
+    // employer-side pipeline view.
+    function getApplicantStatusLabel(app) {
+      if (!app) return "";
+      if (app.status === "hired" && app.offerAccepted) return "Offer Accepted";
+      return STATUS_META[app.status].label;
     }
 
     function openCompanyModal(companyName) {
@@ -3484,6 +3517,7 @@ ${r.recommendedRoles.join(", ")}
                     ${myApplications.map(({ job, app }) => {
                       const meta = STATUS_META[app.status];
                       const isWithdrawn = app.status === "withdrawn";
+                      const showAcceptOffer = app.status === "hired" && !app.offerAccepted;
                       return `
                         <div class="list-row ${isWithdrawn ? "list-row-locked" : ""}" ${isWithdrawn ? `title="This application was withdrawn and can no longer be opened."` : `onclick="openJobModal(${job.id})" style="cursor:pointer;"`}>
                           <div class="list-row-top">
@@ -3491,7 +3525,10 @@ ${r.recommendedRoles.join(", ")}
                               <div class="list-row-title">${job.title}</div>
                               <div class="list-row-meta">${job.company} &nbsp;·&nbsp; Applied ${new Date(app.appliedAt).toLocaleDateString()} at ${new Date(app.appliedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}</div>
                             </div>
-                            <span class="badge ${meta.badge}">${meta.label}</span>
+                            ${showAcceptOffer
+                              ? `<button class="btn btn-sm" style="flex-shrink:0;" onclick="event.stopPropagation(); acceptOffer(${job.id})">Accept offer</button>`
+                              : `<span class="badge ${meta.badge}">${getApplicantStatusLabel(app)}</span>`
+                            }
                           </div>
                         </div>
                       `;
@@ -3522,10 +3559,13 @@ ${r.recommendedRoles.join(", ")}
                     let actionHtml;
                     if (!myApp || myApp.status === "withdrawn") {
                       actionHtml = "";
+                    } else if (myApp.status === "hired" && !myApp.offerAccepted) {
+                      // Candidate can confirm the offer right from the matches grid.
+                      actionHtml = `<button class="btn btn-sm" style="flex:0 0 120px; height:30px; padding:0 10px; box-sizing:border-box; font-size:0.85rem; white-space:nowrap;" onclick="event.stopPropagation(); acceptOffer(${job.id})">Accept offer</button>`;
                     } else {
                       // Status-only badge — withdrawing an application happens from the
                       // job details modal (click into the card), not from this matches grid.
-                      actionHtml = `<span class="badge ${meta.badge}" style="display:inline-flex; align-items:center; justify-content:center; text-align:center; flex:0 0 120px; height:30px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-sizing:border-box; font-size:0.85rem;">${meta.label}</span>`;
+                      actionHtml = `<span class="badge ${meta.badge}" style="display:inline-flex; align-items:center; justify-content:center; text-align:center; flex:0 0 120px; height:30px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-sizing:border-box; font-size:0.85rem;">${getApplicantStatusLabel(myApp)}</span>`;
                     }
                     return `
                       <div class="match-card job-match-card" onclick="openJobModal(${job.id})">
@@ -4492,9 +4532,16 @@ ${r.recommendedRoles.join(", ")}
           } else {
             modalActionHtml = `<button class="btn" style="width:100%; box-sizing:border-box;" onclick="startApply(${job.id})">${myApp ? "Re-apply" : "Apply"} with my resume</button>`;
           }
+        } else if (myApp.status === "hired" && !myApp.offerAccepted) {
+          modalActionHtml = `
+            <div style="text-align:center; padding:13px 16px; border-radius:var(--radius-sm); background:#effaf9; border:1px solid #cdece7; font-size:0.85rem; color:var(--primary-dark); margin-bottom:10px;">
+              🎉 <strong>${job.company}</strong> wants to hire you for this role!
+            </div>
+            <button class="btn" style="width:100%; box-sizing:border-box;" onclick="acceptOffer(${job.id})">Accept offer</button>
+          `;
         } else {
           modalActionHtml = `
-            <span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:13px 26px; box-sizing:border-box; font-size:0.95rem;">${meta.label}</span>
+            <span class="badge ${meta.badge}" style="display:block; text-align:center; width:100%; padding:13px 26px; box-sizing:border-box; font-size:0.95rem;">${getApplicantStatusLabel(myApp)}</span>
             ${canWithdrawFromModal ? `<button class="btn btn-secondary" style="width:100%; box-sizing:border-box; margin-top:10px;" onclick="withdrawApplication(${job.id}); closeJobModal();">Withdraw application</button>` : ""}
           `;
         }
@@ -4624,6 +4671,36 @@ ${r.recommendedRoles.join(", ")}
                 <button class="btn btn-secondary" onclick="editResumeFromReview()">Edit resume</button>
                 <button class="btn" onclick="confirmApply()">Submit application</button>
               </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 10. OFFER ACCEPTED CELEBRATION MODAL — shown right after the candidate
+      // confirms a "hired" offer, congratulating them and recapping the job.
+      if (state.offerAcceptedModal) {
+        const job = state.offerAcceptedModal;
+        html += `
+          <div class="modal-overlay" onclick="closeOfferAcceptedModal()">
+            <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
+              <button class="close-btn" onclick="closeOfferAcceptedModal()" aria-label="Close">×</button>
+              <div style="font-size: 2.6rem; line-height:1; margin-bottom: 10px;">🎉</div>
+              <div class="hero-eyebrow" style="justify-content:center; width:100%;">Congratulations</div>
+              <h2 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 8px;">You got the job!</h2>
+              <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 22px;">
+                You accepted the offer for <strong style="color:var(--text);">${job.title}</strong> at <strong style="color:var(--text);">${job.company}</strong>. Welcome aboard!
+              </p>
+
+              <div class="detail-panel" style="text-align:left;">
+                <div class="detail-row"><span class="detail-label">Role</span><span class="detail-value">${job.title}</span></div>
+                <div class="detail-row"><span class="detail-label">Company</span><span class="detail-value">${job.company}</span></div>
+                <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">${job.location}</span></div>
+                <div class="detail-row"><span class="detail-label">Salary</span><span class="detail-value">${job.salary}</span></div>
+                <div class="detail-row"><span class="detail-label">Employment type</span><span class="detail-value">${job.type}</span></div>
+                <div class="detail-row"><span class="detail-label">Work setup</span><span class="detail-value">${job.setup}</span></div>
+              </div>
+
+              <button class="btn" style="width:100%; box-sizing:border-box; margin-top:20px;" onclick="closeOfferAcceptedModal()">Let's go 🚀</button>
             </div>
           </div>
         `;
