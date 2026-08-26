@@ -4486,7 +4486,7 @@ ${r.recommendedRoles.join(", ")}
           if (!isApplyEnrollUnlocked()) {
             modalActionHtml = `
               <div style="width:100%; box-sizing:border-box; text-align:center; padding:13px 16px; border-radius:var(--radius-sm); background:var(--bg); border:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);">
-                🔒 Reach <strong>Level ${APPLY_ENROLL_UNLOCK_LEVEL} (${LEVEL_NAMES[APPLY_ENROLL_UNLOCK_LEVEL - 1]})</strong> to apply — ${xpNeededForApplyEnrollUnlock()} more XP to go. Answering assessment questions is the quickest way there.
+                🔒 Reach <strong>Level ${APPLY_ENROLL_UNLOCK_LEVEL} (${LEVEL_NAMES[APPLY_ENROLL_UNLOCK_LEVEL - 1]})</strong> to apply — ${xpNeededForApplyEnrollUnlock()} more XP to go. In the meantime, why not try <strong>building your resume</strong> instead?
               </div>
             `;
           } else {
@@ -4560,7 +4560,7 @@ ${r.recommendedRoles.join(", ")}
                   ? `<button class="btn btn-secondary" style="width:100%; box-sizing:border-box;" onclick="cancelEnrollment('${c.id}')">Cancel enrollment</button>`
                   : (!isApplyEnrollUnlocked()
                       ? `<div style="width:100%; box-sizing:border-box; text-align:center; padding:13px 16px; border-radius:var(--radius-sm); background:var(--bg); border:1px solid var(--border); font-size:0.85rem; color:var(--text-muted);">
-                           🔒 Reach <strong>Level ${APPLY_ENROLL_UNLOCK_LEVEL} (${LEVEL_NAMES[APPLY_ENROLL_UNLOCK_LEVEL - 1]})</strong> to enroll — ${xpNeededForApplyEnrollUnlock()} more XP to go. Answering assessment questions is the quickest way there.
+                           🔒 Reach <strong>Level ${APPLY_ENROLL_UNLOCK_LEVEL} (${LEVEL_NAMES[APPLY_ENROLL_UNLOCK_LEVEL - 1]})</strong> to enroll — ${xpNeededForApplyEnrollUnlock()} more XP to go. In the meantime, why not try <strong>building your resume</strong> instead?
                          </div>`
                       : `<button class="btn" style="width:100%;" onclick="enrollInCourse('${c.id}')">Enroll in this course</button>`)
               }
