@@ -673,10 +673,18 @@
 
     /* Print Styles */
     @media print {
+      @page { size: auto; margin: 12mm; }
+      html, body {
+        width: 100% !important;
+        overflow: visible !important;
+        -webkit-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+      }
       body { background: white; padding: 0; }
       header, .no-print, .progress-container, .xp-toast-stack { display: none !important; }
+      .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
       .card, .visual-cv { border: none !important; box-shadow: none !important; padding: 0 !important; }
-      .visual-cv { width: 100%; }
+      .visual-cv { width: 100% !important; }
     }
   </style>
 </head>
