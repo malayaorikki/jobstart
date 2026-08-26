@@ -3563,7 +3563,7 @@ ${r.recommendedRoles.join(", ")}
                           ? `Earned · +${a.xp} XP banked`
                           : (prog ? `Next: ${Math.min(prog.cur, prog.target)}/${prog.target} — keep going` : "Locked");
                         return `
-                          <div class="achievement-item ${earned ? "earned" : ""}" tabindex="0" onclick="event.stopPropagation(); this.classList.toggle('tapped');">
+                          <div class="achievement-item ${earned ? "earned" : ""}" tabindex="0" onclick="event.stopPropagation(); toggleAchievementTooltip(this);">
                             <span class="achievement-icon">${earned ? a.icon : "🔒"}</span>
                             <span class="achievement-label">${a.label}</span>
                             <div class="achievement-tooltip">
@@ -4819,6 +4819,22 @@ ${r.recommendedRoles.join(", ")}
     updateLiveClock();
     setInterval(updateLiveClock, 1000);
 
+    // Tapping an achievement badge on touch devices reveals its tooltip
+    // (there's no :hover on phones). Only one tooltip is shown at a time,
+    // and it auto-dismisses after a few seconds so it doesn't linger.
+    let achievementTooltipTimer = null;
+    function toggleAchievementTooltip(el) {
+      const wasOpen = el.classList.contains("tapped");
+      document.querySelectorAll(".achievement-item.tapped").forEach(item => item.classList.remove("tapped"));
+      clearTimeout(achievementTooltipTimer);
+      if (!wasOpen) {
+        el.classList.add("tapped");
+        achievementTooltipTimer = setTimeout(() => {
+          el.classList.remove("tapped");
+        }, 3000);
+      }
+    }
+
     document.addEventListener("click", () => {
       let changed = false;
       if (state.openStatusDropdown !== null && state.openStatusDropdown !== undefined) {
@@ -4831,6 +4847,7 @@ ${r.recommendedRoles.join(", ")}
       }
       if (changed) render();
 
+      clearTimeout(achievementTooltipTimer);
       document.querySelectorAll(".achievement-item.tapped").forEach(el => el.classList.remove("tapped"));
     });
 
