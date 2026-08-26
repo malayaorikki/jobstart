@@ -3405,7 +3405,7 @@ ${r.recommendedRoles.join(", ")}
             <div class="hero-eyebrow">Your career starts here</div>
             <h1>Find the career that fits <span style="color:var(--primary);">you.</span></h1>
             <p>Answer 30 quick questions about your strengths, preferences, and goals. We'll turn your answers into a career match, practical next steps, and job opportunities in the Philippines.</p>
-            <button class="btn" onclick="startQuizOrGoToDashboard();">Take the Assessment</button>
+            <button class="btn" onclick="startQuizOrGoToDashboard();">${CANDIDATE_POOL.some(c => c.id === "me") ? "View Profile" : "Take the Assessment"}</button>
           </div>
 
           <div class="card preview-section">
@@ -3542,6 +3542,7 @@ ${r.recommendedRoles.join(", ")}
 
           <!-- TEMP: dev shortcut, delete this block (and skipQuizToPath())
                when done testing -->
+          ${state.currentQ === 0 ? `
           <div style="text-align:center; margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;">
             <span style="color:var(--text-muted); font-size:0.82rem;">Skip to a specific path:</span>
             <div style="min-width:180px;">
@@ -3555,6 +3556,7 @@ ${r.recommendedRoles.join(", ")}
             </div>
             <button class="btn btn-secondary btn-sm" onclick="skipQuizToPath(state.skipPathId)">Go</button>
           </div>
+          ` : ""}
           <!-- END TEMP -->
         `;
       }
