@@ -630,11 +630,11 @@
     /* Custom hover tooltip — replaces the native title attribute so locked
        achievements can tell the user exactly what to do next (with a live
        progress count), and earned ones confirm the XP they banked. */
-    .achievement-tooltip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: 176px; background: #1c2321; color: #fff; padding: 10px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 500; line-height: 1.4; text-align: left; box-shadow: 0 10px 24px -8px rgba(0,0,0,.35); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 20; }
+    .achievement-tooltip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px); width: 176px; background: #1c2321; color: #fff; padding: 10px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 500; line-height: 1.4; text-align: left; box-shadow: 0 10px 24px -8px rgba(0,0,0,.35); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s; z-index: 20; }
     .achievement-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1c2321; }
-    .achievement-item:focus-visible .achievement-tooltip, .achievement-item.tapped .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .achievement-item:focus-visible .achievement-tooltip, .achievement-item.tapped .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); transition-delay: 0s; }
     @media (hover: hover) and (pointer: fine) {
-      .achievement-item:hover .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+      .achievement-item:hover .achievement-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); transition-delay: 0s; }
     }
     .achievement-tooltip-title { font-weight: 800; font-family: var(--font-display); font-size: 0.78rem; margin-bottom: 3px; color: #fff; }
     .achievement-tooltip-next { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.16); color: var(--primary-light); font-weight: 700; }
