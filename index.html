@@ -1969,11 +1969,10 @@
       recomputeScores();
       checkAchievements();
 
-      if (state.currentQ < QUESTIONS.length - 1) {
-        state.currentQ++;
-        scrollToTop();
-      }
+      const advanced = state.currentQ < QUESTIONS.length - 1;
+      if (advanced) state.currentQ++;
       render();
+      if (advanced) scrollToTop();
     }
 
     // Toggles one checkbox on a "select all that apply" question. Doesn't
@@ -1997,8 +1996,8 @@
     function advanceQuiz() {
       if (state.currentQ < QUESTIONS.length - 1) {
         state.currentQ++;
-        scrollToTop();
         render();
+        scrollToTop();
       }
     }
 
@@ -2186,8 +2185,8 @@
         // job-seeker landing page instead of stepping to an invalid index.
         state.view = "home";
       }
-      scrollToTop();
       render();
+      scrollToTop();
     }
 
     function resetApp() {
@@ -3334,7 +3333,22 @@ ${r.recommendedRoles.join(", ")}
     // question or a new view (like the resume builder) so the person lands
     // on the new content instead of wherever they'd scrolled to before.
     function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // requestAnimationFrame (double-buffered) ensures this runs after the
+      // browser has actually laid out whatever render() just put on screen.
+      // Without this, calling scrollToTop() before/alongside a DOM swap can
+      // get silently dropped on some mobile browsers — especially on taller
+      // questions (e.g. multi-select with many options) where the reflow
+      // takes a moment and the in-flight smooth-scroll gets cancelled.
+      // Setting scrollTop directly on documentElement/body too (not just
+      // window.scrollTo) covers iOS Safari quirks where one or the other is
+      // the "real" scrolling element depending on page state.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        });
+      });
     }
 
     function render() {
