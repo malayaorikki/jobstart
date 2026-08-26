@@ -1924,6 +1924,7 @@
 
       if (state.currentQ < QUESTIONS.length - 1) {
         state.currentQ++;
+        scrollToTop();
       }
       render();
     }
@@ -1949,6 +1950,7 @@
     function advanceQuiz() {
       if (state.currentQ < QUESTIONS.length - 1) {
         state.currentQ++;
+        scrollToTop();
         render();
       }
     }
@@ -2132,6 +2134,7 @@
     function prevQuestion() {
       if (state.currentQ > -1) {
         state.currentQ--;
+        scrollToTop();
         render();
       }
     }
@@ -2434,6 +2437,7 @@ ${r.recommendedRoles.join(", ")}
     function openResumeBuilder() {
       ensureResumeDefaults();
       state.view = "resumeBuilder";
+      scrollToTop();
       render();
     }
 
@@ -2504,6 +2508,7 @@ ${r.recommendedRoles.join(", ")}
       syncResumeContactFieldsFromDOM();
       if (target === "preview") {
         state.view = "visualResume";
+        scrollToTop();
         render();
         return;
       }
@@ -2515,6 +2520,7 @@ ${r.recommendedRoles.join(", ")}
         state.applyReviewJob = job || null;
       }
       state.view = "results";
+      scrollToTop();
       render();
     }
 
@@ -2532,6 +2538,7 @@ ${r.recommendedRoles.join(", ")}
       state.applyReviewJob = null;
       state.pendingApplyJobId = null;
       state.view = "resumeBuilder";
+      scrollToTop();
       render();
     }
 
@@ -3267,6 +3274,13 @@ ${r.recommendedRoles.join(", ")}
     /* ==========================================================================
        RENDER VIEWS
        ========================================================================== */
+
+    // Scrolls the page back to the top — used when moving to a new quiz
+    // question or a new view (like the resume builder) so the person lands
+    // on the new content instead of wherever they'd scrolled to before.
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     function render() {
       const app = document.getElementById("app");
