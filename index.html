@@ -673,10 +673,18 @@
 
     /* Print Styles */
     @media print {
+      @page { size: auto; margin: 12mm; }
+      html, body {
+        width: 100% !important;
+        overflow: visible !important;
+        -webkit-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+      }
       body { background: white; padding: 0; }
       header, .no-print, .progress-container, .xp-toast-stack { display: none !important; }
+      .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
       .card, .visual-cv { border: none !important; box-shadow: none !important; padding: 0 !important; }
-      .visual-cv { width: 100%; }
+      .visual-cv { width: 100% !important; }
     }
   </style>
 </head>
@@ -3890,56 +3898,77 @@ ${r.recommendedRoles.join(", ")}
 
             <div class="cv-grid">
               <div>
-                <h4 class="cv-section-title">Contact</h4>
-                <div style="font-size:0.85rem; margin-bottom:20px;">
-                  ${[r.phone, r.location, r.email].filter(Boolean).map(v => `<div>${v}</div>`).join("") || `<span style="color:var(--text-muted);">Add your contact details</span>`}
-                </div>
-
-                <h4 class="cv-section-title">Skills</h4>
-                <div class="tag-list" style="margin-bottom:20px;">
-                  ${r.skills.map(s => `<span class="tag-chip" style="cursor:default;">${s}</span>`).join("") || `<span style="font-size:0.85rem; color:var(--text-muted);">None added yet</span>`}
-                </div>
-
-                <h4 class="cv-section-title">Certifications</h4>
-                ${r.certifications.length ? r.certifications.map(c => `
-                  <div style="font-size:0.85rem; margin-bottom:10px;">
-                    <div style="font-weight:600;">${c.name || "Certification"}</div>
-                    <div style="color:var(--text-muted);">${[c.issuer, c.year].filter(Boolean).join(" · ")}</div>
+                <div class="${[r.phone, r.location, r.email].filter(Boolean).length ? "" : "no-print"}">
+                  <h4 class="cv-section-title">Contact</h4>
+                  <div style="font-size:0.85rem; margin-bottom:20px;">
+                    ${[r.phone, r.location, r.email].filter(Boolean).map(v => `<div>${v}</div>`).join("") || `<span style="color:var(--text-muted);">Add your contact details</span>`}
                   </div>
-                `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">None added yet</p>`}
+                </div>
+
+                <div class="${r.skills.length ? "" : "no-print"}">
+                  <h4 class="cv-section-title">Skills</h4>
+                  <div class="tag-list" style="margin-bottom:20px;">
+                    ${r.skills.map(s => `<span class="tag-chip" style="cursor:default;">${s}</span>`).join("") || `<span style="font-size:0.85rem; color:var(--text-muted);">None added yet</span>`}
+                  </div>
+                </div>
+
+                <div class="${r.certifications.length ? "" : "no-print"}">
+                  <h4 class="cv-section-title">Certifications</h4>
+                  ${r.certifications.length ? r.certifications.map(c => `
+                    <div style="font-size:0.85rem; margin-bottom:10px;">
+                      <div style="font-weight:600;">${c.name || "Certification"}</div>
+                      <div style="color:var(--text-muted);">${[c.issuer, c.year].filter(Boolean).join(" · ")}</div>
+                    </div>
+                  `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">None added yet</p>`}
+                </div>
+
+                <div class="no-print">
+                  <h4 class="cv-section-title">Recommended Job Roles</h4>
+                  <div class="tag-list" style="margin-bottom:20px;">
+                    ${r.recommendedRoles.length ? r.recommendedRoles.map(role => `<span class="tag-chip" style="cursor:default;">${role}</span>`).join("") : `<span style="font-size:0.85rem; color:var(--text-muted);">None yet</span>`}
+                  </div>
+                </div>
               </div>
 
               <div>
-                <h4 class="cv-section-title">Career Objective</h4>
-                <p style="font-size: 0.9rem; margin-bottom: 20px;">${r.objective}</p>
+                <div class="${r.objective ? "" : "no-print"}">
+                  <h4 class="cv-section-title">Career Objective</h4>
+                  <p style="font-size: 0.9rem; margin-bottom: 20px;">${r.objective}</p>
+                </div>
 
-                <h4 class="cv-section-title">Work Experience</h4>
-                ${r.experience.length ? r.experience.map(e => `
-                  <div style="font-size:0.88rem; margin-bottom:14px;">
-                    <div style="font-weight:700;">${e.title || "Job Title"}</div>
-                    <div style="color:var(--text-muted); margin-bottom:4px;">${[e.company, e.duration].filter(Boolean).join(" · ")}</div>
-                    <div>${e.desc || ""}</div>
-                  </div>
-                `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">No work experience added yet — that's okay for fresh graduates.</p>`}
+                <div class="${r.experience.length ? "" : "no-print"}">
+                  <h4 class="cv-section-title">Work Experience</h4>
+                  ${r.experience.length ? r.experience.map(e => `
+                    <div style="font-size:0.88rem; margin-bottom:14px;">
+                      <div style="font-weight:700;">${e.title || "Job Title"}</div>
+                      <div style="color:var(--text-muted); margin-bottom:4px;">${[e.company, e.duration].filter(Boolean).join(" · ")}</div>
+                      <div>${e.desc || ""}</div>
+                    </div>
+                  `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">No work experience added yet — that's okay for fresh graduates.</p>`}
+                </div>
 
-                <h4 class="cv-section-title">Education</h4>
-                ${(r.education.level || r.education.school || r.education.year)
-                  ? `
-                  <div style="font-size:0.88rem; margin-bottom:20px;">
-                    <div style="font-weight:700;">${r.education.school || ""}</div>
-                    <div>${r.education.level || ""}</div>
-                    <div>Year Graduated: ${r.education.year || ""}</div>
-                  </div>
-                  `
-                  : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">None added yet</p>`}
+                <div class="${(r.education.level || r.education.school || r.education.year) ? "" : "no-print"}">
+                  <h4 class="cv-section-title">Education</h4>
+                  ${(r.education.level || r.education.school || r.education.year)
+                    ? `
+                    <div style="font-size:0.88rem; margin-bottom:20px;">
+                      <div style="font-weight:700;">${r.education.school || ""}</div>
+                      <div>${r.education.level || ""}</div>
+                      <div>Year Graduated: ${r.education.year || ""}</div>
+                    </div>
+                    `
+                    : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">None added yet</p>`}
+                </div>
 
-                <h4 class="cv-section-title">Projects</h4>
-                ${r.projects.length ? r.projects.map(p => `
-                  <div style="font-size:0.88rem; margin-bottom:12px;">
-                    <div style="font-weight:700;">${p.title || "Project"}</div>
-                    <div>${p.desc || ""}</div>
-                  </div>
-                `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">None added yet</p>`}
+                <div class="${r.projects.length ? "" : "no-print"}">
+                  <h4 class="cv-section-title">Projects</h4>
+                  ${r.projects.length ? r.projects.map(p => `
+                    <div style="font-size:0.88rem; margin-bottom:12px;">
+                      <div style="font-weight:700;">${p.title || "Project"}</div>
+                      <div>${p.desc || ""}</div>
+                    </div>
+                  `).join("") : `<p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">None added yet</p>`}
+                </div>
               </div>
             </div>
           </div>
