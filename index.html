@@ -2133,11 +2133,15 @@
     }
 
     function prevQuestion() {
-      if (state.currentQ > -1) {
+      if (state.currentQ > 0) {
         state.currentQ--;
-        scrollToTop();
-        render();
+      } else {
+        // Already on the first question — "Back" exits the quiz to the
+        // job-seeker landing page instead of stepping to an invalid index.
+        state.view = "home";
       }
+      scrollToTop();
+      render();
     }
 
     function resetApp() {
