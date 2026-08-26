@@ -3875,13 +3875,15 @@ ${r.recommendedRoles.join(", ")}
           <div class="card visual-cv">
             <div class="cv-header">
               <div class="cv-name">${r.name || "Your Name"}</div>
-              <div style="color: var(--text-muted); font-size: 0.92rem; margin-top: 4px;">
-                ${[r.email, r.phone, r.location].filter(Boolean).join("  ·  ") || "Add your contact details"}
-              </div>
             </div>
 
             <div class="cv-grid">
               <div>
+                <h4 class="cv-section-title">Contact</h4>
+                <div style="font-size:0.85rem; margin-bottom:20px;">
+                  ${[r.phone, r.location, r.email].filter(Boolean).map(v => `<div>${v}</div>`).join("") || `<span style="color:var(--text-muted);">Add your contact details</span>`}
+                </div>
+
                 <h4 class="cv-section-title">Skills</h4>
                 <div class="tag-list" style="margin-bottom:20px;">
                   ${r.skills.map(s => `<span class="tag-chip" style="cursor:default;">${s}</span>`).join("") || `<span style="font-size:0.85rem; color:var(--text-muted);">None added yet</span>`}
