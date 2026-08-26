@@ -77,26 +77,25 @@
     .progress-bar-bg { position: relative; width: 100%; height: 10px; background: var(--border); border-radius: 20px; overflow: visible; }
     .progress-bar-fill { position: relative; height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--primary), var(--primary-light)); transition: width 0.35s ease; }
     .progress-bar-fill::after { content: ""; position: absolute; right: -1px; top: 50%; width: 12px; height: 12px; transform: translateY(-50%); background: var(--card-bg); border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-    .xp-badge {
+    .header-progress {
       position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-      display: inline-flex; align-items: center; gap: 7px;
-      background: linear-gradient(135deg, #effaf9, #dcf5f0);
-      color: var(--primary-dark);
-      padding: 6px 15px;
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
       border-radius: 999px;
-      border: 1px solid rgba(15, 118, 110, 0.16);
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 0.8rem;
-      letter-spacing: 0.01em;
-      box-shadow: 0 3px 10px -4px rgba(15, 118, 110, 0.35);
+      padding: 6px 16px 6px 6px;
+      box-shadow: 0 3px 10px -4px rgba(15, 118, 110, 0.25);
       white-space: nowrap;
       z-index: 1;
     }
-    .xp-badge .xp-badge-level { font-size: 1.05em; font-weight: 800; }
-    .xp-badge .xp-badge-sep { color: var(--primary-dark); font-weight: 800; font-size: 1.15em; opacity: 0.9; }
+    .header-progress-ring { position: relative; width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .header-progress-ring::before { content: ""; position: absolute; inset: 3px; background: var(--card-bg); border-radius: 50%; }
+    .header-progress-ring span { position: relative; font-family: var(--font-display); font-weight: 800; font-size: 0.78rem; color: var(--primary-dark); }
+    .header-progress-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .header-progress-name { font-family: var(--font-display); font-weight: 700; font-size: 0.82rem; color: var(--text); }
+    .header-progress-sub { font-size: 0.72rem; color: var(--text-muted); }
     @media (max-width: 560px) {
-      .xp-badge { position: static; transform: none; order: 3; flex-basis: 100%; justify-content: center; margin: 2px auto 0; }
+      .header-progress { position: static; transform: none; order: 3; flex-basis: 100%; justify-content: center; margin: 2px auto 0; }
     }
 
     /* Hero / Home View */
@@ -685,7 +684,13 @@
         <button type="button" class="home-btn no-print" aria-label="Go home" title="Home" onclick="state.portal = 'seeker'; state.view = 'home'; render();">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V20a1 1 0 0 0 1 1h4.5v-6h2v6H17.5a1 1 0 0 0 1-1V9.5"/></svg>
         </button>
-        <span class="xp-badge no-print" id="headerXpBadge" style="display:none;" title="Your level and XP"></span>
+        <div class="header-progress no-print" id="headerXpBadge" style="display:none;" title="Your level and XP">
+          <div class="header-progress-ring" id="headerXpRing"><span id="headerXpLevel"></span></div>
+          <div class="header-progress-text">
+            <div class="header-progress-name" id="headerXpName"></div>
+            <div class="header-progress-sub" id="headerXpSub"></div>
+          </div>
+        </div>
         <div class="live-clock no-print" id="liveClock" style="display:none;"></div>
       </div>
     </header>
@@ -1907,7 +1912,10 @@
       el.style.display = show ? "inline-flex" : "none";
       if (show) {
         const info = getLevelInfo(state.xp);
-        el.innerHTML = `<span class="xp-badge-level">Lv ${info.level}</span><span class="xp-badge-sep">|</span>${state.xp} XP`;
+        document.getElementById("headerXpRing").style.background = `conic-gradient(var(--primary) 0% ${info.pct}%, #e6f6f4 ${info.pct}% 100%)`;
+        document.getElementById("headerXpLevel").textContent = info.level;
+        document.getElementById("headerXpName").textContent = info.name;
+        document.getElementById("headerXpSub").textContent = `${state.xp} XP${info.xpToNext ? ` · ${info.xpToNext} XP to next level` : " · Max level reached"}`;
       }
     }
 
