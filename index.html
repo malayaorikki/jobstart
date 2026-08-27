@@ -8,6 +8,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- EmailJS: sends the "offer accepted" thank-you email from the browser, no backend needed. -->
+  <!-- Sign up free at https://www.emailjs.com, then fill in the 3 placeholders below. -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      // TODO: replace with your EmailJS Public Key (Account > General)
+      emailjs.init({ publicKey: "0ANlRMl0HQHZxyzWP" });
+    })();
+  </script>
   <style>
     :root {
       --primary: #0f766e;
@@ -2393,6 +2402,67 @@
     function closeOfferAcceptedModal() {
       state.offerAcceptedModal = null;
       render();
+    }
+
+    // Fires when the candidate hits "Let's go 🚀" on the offer-accepted modal.
+    // Sends a thank-you email (via EmailJS, no backend required) to the address
+    // on their resume, recapping the role they just accepted, then closes the modal.
+    //
+    // SETUP REQUIRED (one-time, free at https://www.emailjs.com):
+    //   1. Create an Email Service (e.g. connect your Gmail) -> copy its Service ID.
+    //   2. Create an Email Template with variables matching EMAILJS_TEMPLATE_PARAMS below
+    //      (to_email, to_name, job_title, company, location, salary, job_type, setup) -> copy its Template ID.
+    //   3. Copy your Public Key from Account > General and paste it into the
+    //      emailjs.init() call in <head>.
+    //   4. Paste your Service ID and Template ID into the two constants right below.
+    const EMAILJS_SERVICE_ID = "service_ubdq5f4";
+    const EMAILJS_TEMPLATE_ID = "template_7vdbxug";
+
+    function sendOfferThankYouEmail() {
+      const job = state.offerAcceptedModal;
+      if (!job) {
+        closeOfferAcceptedModal();
+        return;
+      }
+
+      ensureResumeDefaults();
+      const r = state.resume;
+
+      if (!r.email) {
+        // No email on file — nothing to send to, just close the modal.
+        closeOfferAcceptedModal();
+        return;
+      }
+
+      const templateParams = {
+        to_email: r.email,
+        to_name: r.name || "there",
+        job_title: job.title,
+        company: job.company,
+        location: job.location,
+        salary: job.salary,
+        job_type: job.type,
+        setup: job.setup
+      };
+
+      if (typeof emailjs === "undefined" ||
+          EMAILJS_SERVICE_ID === "YOUR_EMAILJS_SERVICE_ID" ||
+          EMAILJS_TEMPLATE_ID === "YOUR_EMAILJS_TEMPLATE_ID") {
+        console.warn("EmailJS isn't configured yet — see the setup notes above sendOfferThankYouEmail(). Skipping email send.");
+        closeOfferAcceptedModal();
+        return;
+      }
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+        .then(() => {
+          console.log("Thank-you email sent to", r.email);
+        })
+        .catch((err) => {
+          console.error("Failed to send thank-you email:", err);
+        })
+        .finally(() => {
+          closeOfferAcceptedModal();
+        });
     }
 
     // Applicant-facing status label — shows "Offer Accepted" once the candidate
@@ -4921,7 +4991,7 @@ ${r.recommendedRoles.join(", ")}
                 <div class="detail-row"><span class="detail-label">Work setup</span><span class="detail-value">${job.setup}</span></div>
               </div>
 
-              <button class="btn" style="width:100%; box-sizing:border-box; margin-top:20px;" onclick="closeOfferAcceptedModal()">Let's go 🚀</button>
+              <button class="btn" style="width:100%; box-sizing:border-box; margin-top:20px;" onclick="sendOfferThankYouEmail()">Let's go 🚀</button>
             </div>
           </div>
         `;
