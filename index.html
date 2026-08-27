@@ -2600,7 +2600,9 @@ ${r.recommendedRoles.join(", ")}
 
     function editResumeFromReview() {
       state.applyReviewJob = null;
+      state.pendingApplyJobId = null;
       state.view = "resumeBuilder";
+      scrollToTop();
       render();
     }
 
@@ -3950,8 +3952,8 @@ ${r.recommendedRoles.join(", ")}
                   ${(r.education.level || r.education.school || r.education.year)
                     ? `
                     <div style="font-size:0.88rem; margin-bottom:20px;">
-                      ${r.education.school ? `<div style="font-weight:700;">${r.education.school}</div>` : ""}
-                      ${r.education.level ? `<div>${r.education.level}</div>` : ""}
+                      <div style="font-weight:700;">${r.education.school || ""}</div>
+                      <div>${r.education.level || ""}</div>
                       ${r.education.year ? `<div>Year Graduated: ${r.education.year}</div>` : ""}
                     </div>
                     `
