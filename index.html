@@ -687,6 +687,11 @@
       .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
       .card, .visual-cv { border: none !important; box-shadow: none !important; padding: 0 !important; }
       .visual-cv { width: 100% !important; }
+      /* Keep each resume entry (a job, a project, a certification, etc.) intact
+         on one page instead of letting the browser split it mid-block. */
+      .cv-grid > div > div { page-break-inside: avoid; break-inside: avoid; }
+      .cv-header { page-break-after: avoid; break-after: avoid; }
+      .cv-section-title { page-break-after: avoid; break-after: avoid; }
     }
   </style>
 </head>
